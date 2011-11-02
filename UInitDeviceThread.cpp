@@ -54,7 +54,7 @@ void __fastcall TInitDeviceThread::Execute()
    Sleep(1000);
 
    return;
-
+  */
 
 
 	if(!device.SetLength(test_num))
@@ -72,7 +72,7 @@ void __fastcall TInitDeviceThread::Execute()
 		return;
 	}
 	while(!status.bits.data);
-*/
+
 	Data = device.GetData(test_num);
 
 	if(!Data) {

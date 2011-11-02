@@ -61,6 +61,7 @@ class Device
 	  bool GetStatus(Status& value); //состояние
 	  bool Start(); //запуск цикла сбора данных фотоприемника
 	  WORD* GetData(DWORD& dwReadBlockNumData); //чтение блока данных
+	  bool GetData(int dwReadBlockNumData, WORD *Data);
 	  bool SetLength(BYTE value); //установка длины блока данных, используется вместе с GetData
 	  bool SetTemperature(double value);  //установка температуры термостата (277.8К - 327.8К)
 	  bool GetTemperature(double& value); //чтение температуры термостата (277.8К - 327.8К)

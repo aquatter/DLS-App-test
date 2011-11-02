@@ -4,7 +4,8 @@ object MainForm: TMainForm
   Caption = #1055#1088#1080#1073#1086#1088' '#1076#1080#1085#1072#1084#1080#1095#1077#1089#1082#1086#1075#1086' '#1088#1072#1089#1089#1077#1103#1085#1080#1103
   ClientHeight = 837
   ClientWidth = 965
-  Color = clBtnFace
+  Color = clWindow
+  Ctl3D = False
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
@@ -29,7 +30,7 @@ object MainForm: TMainForm
   end
   object Splitter2: TSplitter
     Left = 0
-    Top = 329
+    Top = 327
     Width = 965
     Height = 3
     Cursor = crVSplit
@@ -53,14 +54,14 @@ object MainForm: TMainForm
     Left = 0
     Top = 0
     Width = 965
-    Height = 40
+    Height = 38
     AutoSize = True
     ButtonHeight = 38
     ButtonWidth = 121
     Caption = 'ToolBar1'
     Color = clBtnFace
     DisabledImages = ImageList3
-    EdgeBorders = [ebBottom]
+    DrawingStyle = dsGradient
     Images = ImageList1
     List = True
     ParentColor = False
@@ -69,7 +70,6 @@ object MainForm: TMainForm
     ShowHint = True
     TabOrder = 0
     Transparent = False
-    ExplicitLeft = -8
     object ToolButton6: TToolButton
       Left = 0
       Top = 0
@@ -410,7 +410,7 @@ object MainForm: TMainForm
         Left = 277
         Top = 11
         Width = 44
-        Height = 21
+        Height = 19
         Alignment = taRightJustify
         TabOrder = 1
         Text = '0,5'
@@ -419,7 +419,7 @@ object MainForm: TMainForm
         Left = 460
         Top = 11
         Width = 60
-        Height = 21
+        Height = 19
         Alignment = taRightJustify
         NumbersOnly = True
         TabOrder = 2
@@ -674,7 +674,7 @@ object MainForm: TMainForm
         Left = 291
         Top = 13
         Width = 46
-        Height = 21
+        Height = 19
         Alignment = taRightJustify
         TabOrder = 0
         Text = '50'
@@ -684,7 +684,7 @@ object MainForm: TMainForm
         Left = 495
         Top = 13
         Width = 46
-        Height = 21
+        Height = 19
         Alignment = taRightJustify
         TabOrder = 1
         Text = '0.07'
@@ -705,7 +705,7 @@ object MainForm: TMainForm
   end
   object Panel5: TPanel
     Left = 0
-    Top = 40
+    Top = 38
     Width = 965
     Height = 289
     Align = alTop
@@ -714,6 +714,7 @@ object MainForm: TMainForm
     BevelOuter = bvNone
     Caption = 'Panel5'
     TabOrder = 2
+    ExplicitTop = 40
     object Splitter1: TSplitter
       Left = 489
       Top = 0
@@ -963,23 +964,22 @@ object MainForm: TMainForm
       TabOrder = 1
       ViewStyle = vsReport
       OnDblClick = ListView3DblClick
-      ExplicitHeight = 169
     end
   end
   object Panel6: TPanel
     Left = 0
-    Top = 332
+    Top = 330
     Width = 965
-    Height = 505
+    Height = 507
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 3
-    ExplicitTop = 328
-    ExplicitHeight = 311
+    ExplicitTop = 332
+    ExplicitHeight = 505
     object Splitter3: TSplitter
       Left = 492
       Top = 0
-      Height = 505
+      Height = 507
       Color = clBtnFace
       ParentColor = False
       ExplicitLeft = 728
@@ -990,11 +990,11 @@ object MainForm: TMainForm
       Left = 0
       Top = 0
       Width = 492
-      Height = 505
+      Height = 507
       Align = alLeft
       BevelOuter = bvNone
       TabOrder = 0
-      ExplicitHeight = 245
+      ExplicitHeight = 505
       object Splitter6: TSplitter
         Left = 0
         Top = 55
@@ -1009,7 +1009,7 @@ object MainForm: TMainForm
         Left = 0
         Top = 58
         Width = 492
-        Height = 447
+        Height = 449
         BackWall.Pen.Visible = False
         Legend.Visible = False
         Title.Text.Strings = (
@@ -1042,7 +1042,7 @@ object MainForm: TMainForm
         ShowHint = True
         TabOrder = 0
         OnMouseMove = Chart3MouseMove
-        ExplicitHeight = 187
+        ExplicitHeight = 447
         PrintMargins = (
           15
           20
@@ -1117,8 +1117,6 @@ object MainForm: TMainForm
         Constraints.MaxHeight = 55
         Constraints.MinHeight = 55
         TabOrder = 1
-        ExplicitLeft = -3
-        ExplicitTop = -3
         object Label14: TLabel
           Left = 0
           Top = 19
@@ -1150,7 +1148,6 @@ object MainForm: TMainForm
           List = True
           ShowCaptions = True
           TabOrder = 1
-          ExplicitLeft = 314
           object ToolButton8: TToolButton
             Left = 0
             Top = 0
@@ -1165,7 +1162,7 @@ object MainForm: TMainForm
       Left = 495
       Top = 0
       Width = 470
-      Height = 505
+      Height = 507
       Align = alClient
       BorderStyle = bsNone
       Font.Charset = DEFAULT_CHARSET
@@ -1176,9 +1173,7 @@ object MainForm: TMainForm
       ParentFont = False
       ScrollBars = ssVertical
       TabOrder = 1
-      ExplicitLeft = 520
-      ExplicitTop = 40
-      ExplicitHeight = 129
+      ExplicitHeight = 505
     end
   end
   object Timer1: TTimer

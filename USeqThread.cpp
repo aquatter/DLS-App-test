@@ -43,6 +43,12 @@ void __fastcall TSeqThread::Execute() {
 			s= "”гол рассе€ни€: " + FloatToStr(AcfParams.Initial_Angle + AcfParams.Angle_Shift*num_seq);
 			Synchronize(&Draw);
 
+			if (AcfParams.Multi_Angle)
+				ScatAngle = AcfParams.Initial_Angle + AcfParams.Angle_Shift*num_seq;
+			else
+            	ScatAngle = AcfParams.Initial_Angle;
+
+
 
 			for (int i = 0; i < AcfParams.n_rec; i++) {
 				mm=2;
@@ -72,6 +78,8 @@ void __fastcall TSeqThread::Execute() {
 					SaveAcf();
 				}
 				SaveData();
+
+				//delete [] Data;
 			}
 
 			if (AcfParams.DoMean){
@@ -84,6 +92,7 @@ void __fastcall TSeqThread::Execute() {
 
 			if (AcfParams.Multi_Angle)
 				ChangeAngle();
+
 
 			break;
 		}
@@ -471,7 +480,15 @@ bool __fastcall TSeqThread::Init(int n){
 	M = 8;
 	Navt = M*N;
 	_m = new int[M*N];
+
 	double dt = 6.5e-3;
+
+	switch (DataParams.Discr_Time) {
+		case 0: dt=6.5e-3; break;
+		case 1: dt=10e-3; break;
+		case 2: dt=19.92e-3; break;
+		case 3: dt=49.8e-3; break;
+	}
 
 	acf.Clear();
 	acf.Init(Navt, 1, mitDouble);
@@ -509,7 +526,15 @@ void __fastcall TSeqThread::Init(){
 	M = 8;
 	Navt = M*N;
 	_m = new int[M*N];
+
 	double dt = 6.5e-3;
+
+	switch (AcfParams.Time_discr) {
+		case 0: dt=6.5e-3; break;
+		case 1: dt=10e-3; break;
+		case 2: dt=19.92e-3; break;
+		case 3: dt=49.8e-3; break;
+	}
 
 	acf.Clear();
 	acf.Init(Navt, 1, mitDouble);
@@ -667,6 +692,12 @@ int __fastcall TSeqThread::OpenData(int n_seq, int n_rec, bool GetCnt)
 		Synchronize(&Draw);
 
 	}
+	else
+	{
+		FileSeek(f, (int)(n*sizeof(WORD)+sizeof(int)), 0);
+		FileRead(f, (void *)&DataParams, sizeof(TDataParams));
+	}
+
 	FileClose(f);
 
 	return n;
@@ -674,7 +705,7 @@ int __fastcall TSeqThread::OpenData(int n_seq, int n_rec, bool GetCnt)
 
 bool __fastcall TSeqThread::GetPhysicalSnapShot(){
 	DataParams.WaveLength = AcfParams.lambda;
-	DataParams.ScatAngle = AcfParams.Initial_Angle + 15*num_seq;
+	DataParams.ScatAngle = ScatAngle;
 
 	double t;
 //	if (!device.GetTemperature(t))

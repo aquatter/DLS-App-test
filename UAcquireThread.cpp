@@ -37,6 +37,7 @@ __fastcall TAcquireThread::TAcquireThread(bool CreateSuspended) : TThread
 // ---------------------------------------------------------------------------
 void __fastcall TAcquireThread::Execute() {
 
+/*
 	int f = FileOpen("dls.idata", fmOpenRead);
 //	WORD* Data = new WORD[num_blocks*BLOCK_DATA_NUM];
 
@@ -50,48 +51,80 @@ void __fastcall TAcquireThread::Execute() {
 //	}
 
 	return;
-
+  */
 	int blocksSize = 254;
 	int modValue = fmod(num_blocks, blocksSize);
 	int count = num_blocks / blocksSize;
-	measuresData.Clear();
+	//measuresData.Clear();
 
 //	mm = 2;
 //	Synchronize(&Draw);
+/*
 	mm = 0;
 	s = "Серия "+ IntToStr(num_seq+1)+ " из "+IntToStr(AcfParams.n_seq);
 	s1 = "Измерение "+ IntToStr(num_rec+1)+ " из "+IntToStr(AcfParams.n_rec);
 	Synchronize(&Draw);
-    mm = 3;
-    pos = 0;
+	mm = 3;
+	pos = 0;
 	Synchronize(&Draw);
 
 	for (int i=0; i < num_blocks; i++) {
 		Sleep(10);
-        pos = 100*i/num_blocks;
-        Synchronize(&Draw);
+		pos = 100*i/num_blocks;
+		Synchronize(&Draw);
 	}
 
 
 //	Sleep(AcfParams.Rec_time);
 	return;
+ */
+
+	WORD *pData = Data;
 
 
-
-
-
+	Status status;
 
 
 	for (int i = 0; i < count; i++) {
 
+     	status.byte = 0;
+		pData += i*blocksSize*BLOCK_DATA_NUM;
+
+		if (!device.SetLength(blocksSize)) return;
+		if(!device.Start()) return;
+
+		do {
+			Sleep(40);
+			if (!device.GetStatus(status)) return; }
+		while (!status.bits.data);
+
+		if (!device.GetData(blocksSize, pData)) return;
+
+		/*
 		if (!ReadDataBlocks(blocksSize)) {
 			measuresData.Clear();
 			break;
 		}
 		pos = 100 * i / count;
 		Synchronize(&Draw);
+		*/
 	}
 
+    pData = Data + count*blocksSize*BLOCK_DATA_NUM;
+	status.byte = 0;
+
+	if (!device.SetLength(modValue)) return;
+	if(!device.Start()) return;
+
+	do {
+		Sleep(40);
+		if (!device.GetStatus(status)) return;}
+	while (!status.bits.data);
+
+	if (!device.GetData(modValue, pData)) return;
+
+
+	/*
 	if (!ReadDataBlocks(modValue)) {
 		measuresData.Clear();
 		mm = 1;
@@ -112,6 +145,7 @@ void __fastcall TAcquireThread::Execute() {
 
 	mm = 1;
 	Synchronize(&Draw);
+	*/
 }
 
 void __fastcall TAcquireThread::ProcessAcfData() {

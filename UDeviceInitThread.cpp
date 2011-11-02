@@ -47,10 +47,11 @@ void __fastcall TDeviceInitThread::Execute() {
 		error = true;
 		s += "Ошибка установки угла \n";
 	}
+	/*
 
 	do {
 		device.GetStatus(status);
-        WaitForSingleObject(q, 100);
+		WaitForSingleObject(q, 100);
 	}
 	while ((!status.bits.goniometer) && (!error));
 
@@ -63,22 +64,23 @@ void __fastcall TDeviceInitThread::Execute() {
 		error = true;
 		s += "Ошибка включения фотодатчика \n";
 	}
-
+	 */
 	if (!device.SetFrequency(AcfParams.Time_discr)) {
-    	error = true;
-    	s += "Ошибка установки частоты \n";
+		error = true;
+		s += "Ошибка установки частоты \n";
 	}
 
+	/*
 	if (!device.SetPrism(AcfParams.Prism)) {
 		error = true;
 		s += "Ошибка установки призмы Глана \n";
 	}
 
-    do {
-    	device.GetStatus(status);
-        WaitForSingleObject(q, 100);
-    }
-    while ((!status.bits.prism) && (!error));
+	do {
+		device.GetStatus(status);
+		WaitForSingleObject(q, 100);
+	}
+	while ((!status.bits.prism) && (!error));
 
 	if (!device.SetAperture(AcfParams.Aperture)) {
 		error = true;
@@ -96,11 +98,12 @@ void __fastcall TDeviceInitThread::Execute() {
 		s += "Ошибка установки поляризатора";
 	}
 
-    do {
-    	device.GetStatus(status);
-    	WaitForSingleObject(q, 100);
+	do {
+		device.GetStatus(status);
+		WaitForSingleObject(q, 100);
 	}
 	while ((!status.bits.polar) && (!error));
+	 */
 
 	CloseHandle(q);
 

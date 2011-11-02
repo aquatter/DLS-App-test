@@ -65,30 +65,48 @@ bool Device::Start()
 	return ftd2xxDevice.Exec(command_data);
 }
 
+bool Device::GetData(int dwReadBlockNumData, WORD *Data)
+{
+	__command_data command_data;
+    InitCommandData(command_data,2,2*dwReadBlockNumData*BLOCK_DATA_NUM+1);
+    command_data.WriteData[0] = 0x12;
+    command_data.WriteData[1] = 0x03;
+	if(!ftd2xxDevice.Exec(command_data))
+		return false;
+
+	for(int i=0; i < dwReadBlockNumData*BLOCK_DATA_NUM; i++)
+	{
+		int index = 2*i+1;
+		Data[i] = command_data.ReadData[index] + command_data.ReadData[index+1]*256;
+	}
+	return true;
+}
+
 WORD* Device::GetData(DWORD& dwReadBlockNumData)
 {
-  /*	__command_data command_data;
+	__command_data command_data;
 	InitCommandData(command_data,2,2*dwReadBlockNumData*BLOCK_DATA_NUM+1);
 	command_data.WriteData[0] = 0x12;
 	command_data.WriteData[1] = 0x03;
 	if(!ftd2xxDevice.Exec(command_data))
 	  return NULL;
-    */
-	int f = FileOpen("dls.idata", fmOpenRead);
+
+
+   //	int f = FileOpen("dls.idata", fmOpenRead);
 
 	WORD* Data = new WORD[dwReadBlockNumData*BLOCK_DATA_NUM];
 
-	FileRead(f, (void *)Data,  dwReadBlockNumData*BLOCK_DATA_NUM*sizeof(WORD));
-	FileClose(f);
+   //	FileRead(f, (void *)Data,  dwReadBlockNumData*BLOCK_DATA_NUM*sizeof(WORD));
+   //	FileClose(f);
 
-	/*
+
 	for(int i=0;i<dwReadBlockNumData*BLOCK_DATA_NUM;i++)
 	{
 		int index = 2*i+1;
 		Data[i] = command_data.ReadData[index] + command_data.ReadData[index+1]*256;
 	}
 
-	*/
+
 	return Data;
 }
 
@@ -227,8 +245,8 @@ bool Device::SetFrequency(int index)
 	__command_data command_data;
 	InitCommandData(command_data,3,1);
 	command_data.WriteData[0] = 0x13;
-	command_data.WriteData[1] = 0x0A;
-//	command_data.WriteData[1] = 0x0B;
+//	command_data.WriteData[1] = 0x0A;
+	command_data.WriteData[1] = 0x0B; // changed !!!! -------------------------------------------
 	command_data.WriteData[2] = index;
 	return ftd2xxDevice.Exec(command_data);
 }
