@@ -6,6 +6,7 @@
 #include "UMyInfernalType.h"
 #include <vector>
 #include "Device.h"
+#include "UProgectData.h"
 
 using namespace std;
 
@@ -25,6 +26,17 @@ typedef void(__stdcall*pLinApprox)(double*x, double*y, int n, double*a,
 typedef void(__stdcall*pDimVector)(void*a, int n);
 typedef void(__stdcall*pDelVector)(void*a, int n);
 typedef double(*pExp2)(double x);
+
+
+class Seq_Exception : public Exception
+{
+public:
+	inline __fastcall Seq_Exception(const System::UnicodeString Msg): Exception(Msg) {}
+	inline __fastcall virtual ~Seq_Exception(void){};
+};
+
+enum dls_mode {acf_ = 0, rec_, none_};
+
 
 struct TGrad {
 	UnicodeString a, b, angle;
@@ -71,7 +83,7 @@ struct TAcfParams {
 
 	int Time_discr;
 	bool Multi_Angle;
-	char Initial_Angle;
+	float Initial_Angle;
 	float Angle_Shift;
 	int num_Angles;
 	int n_seq;
@@ -116,6 +128,20 @@ struct TReportData {
 	double t;
 };
 
+enum TAquireMode {from_device = 0, from_hdd};
+
+struct TSeqThreadParams
+{
+	UnicodeString Save_Dir, File_Name;
+
+	float ScatAngle;
+	bool DoMean, DoAcf, Multi_Angle;
+	int n_rec, n_seq;
+	int num_rec, num_seq;
+	char Initial_Angle;
+	TAquireMode mode;
+};
+
 extern void *CaptureDone, *AcfDone;
 extern Device device;
 extern TMyInfernalType RawData, RawData_t, acf, acf_t, cum, cum_t, contin_g,
@@ -136,6 +162,10 @@ void Interp(double*p, int n, double tin, double dt);
 double NuttallWin(double x, double x0, double w);
 double FormulaPuazeilia(double t);
 bool OptionsFormExecute();
+bool OpenProject(UnicodeString Name, TProjectData &pd);
+void ExtractDataParams(UnicodeString Name, TDataParams *params);
+void ProcessData(dls_mode mode, UnicodeString Name, int seq_num, int rec_num);
+void OpenData(WORD *data, int &n, UnicodeString Name);
 
 // extern void __declspec(dllimport) DLSCumulants(double *p, double *t, double *w, int n, double &a0,  double &a1, double &a2);
 

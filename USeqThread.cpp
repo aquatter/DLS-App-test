@@ -35,56 +35,110 @@ __fastcall TSeqThread::TSeqThread(bool CreateSuspended) : TThread
 // ---------------------------------------------------------------------------
 void __fastcall TSeqThread::Execute() {
 
-	if (AcfParams.Multi_Angle)
-		ScatAngle = AcfParams.Initial_Angle + num_seq*AcfParams.angle_step;
-	else
-		ScatAngle = AcfParams.Initial_Angle;
-
-	mm=0;
-	Synchronize(&Draw);
-
-	Init();
-
-	for (int i = 0; i < AcfParams.n_rec; i++) {
-		mm=2;
-		num_rec = i;
-		Synchronize(&Draw);
-
-		TAcquireThread *t = new TAcquireThread(true);
-		t->num_blocks = num_blocks;
-		t->num_seq = num_seq;
-		t->num_rec = num_rec;
-		t->ScatAngle = ScatAngle;
-		t->Data=Data;
-
-		t->Start();
-		Sleep(10);
-
-		WaitForSingleObject(&(t->Handle), INFINITE);
-		t->Free();
-		if (AcfParams.DoAcf) {
-			CalculateACF();
-			CalculateCumulants();
-			mm=1;
+	switch (mode) {
+		case from_device:
+		{
+			Init();
+			mm=4;
+			s= "Угол рассеяния: " + FloatToStr(AcfParams.Initial_Angle + AcfParams.Angle_Shift*num_seq);
 			Synchronize(&Draw);
-			if (AcfParams.DoMean)
-				DoMean();
-            SaveAcf();
+
+
+			for (int i = 0; i < AcfParams.n_rec; i++) {
+				mm=2;
+				num_rec = i;
+				Synchronize(&Draw);
+				rec_ = &seq_->Add();
+
+				TAcquireThread *t = new TAcquireThread(true);
+				t->num_blocks = num_blocks;
+				t->num_rec = i;
+				t->Data=Data;
+				t->Start();
+				Sleep(10);
+
+				WaitForSingleObject(&(t->Handle), INFINITE);
+				t->Free();
+
+				GetPhysicalSnapShot();
+
+				if (AcfParams.DoAcf) {
+					CalculateACF();
+					CalculateCumulants(acf_app);
+					mm=1;
+			   		Synchronize(&Draw);
+					if (AcfParams.DoMean)
+						DoMean();
+					SaveAcf();
+				}
+				SaveData();
+			}
+
+			if (AcfParams.DoMean){
+				num_rec = AcfParams.n_rec;
+				FinishMean();
+				SaveAcf(false);
+			}
+
+			Clear();
+
+			if (AcfParams.Multi_Angle)
+				ChangeAngle();
+
+			break;
 		}
-        SaveData();
+		case from_hdd:
+		{
+			bool init_ = false;
+			num_rec = 0;
+			for (size_t i=0; i < pd[num_seq].SizeOf(); i++) {
+				if (!pd[num_seq][i].process_)
+					continue;
+				if (!init_)
+				{
+					if (FileExists(pd[num_seq][i].Data_))
+						init_ = Init(OpenData(num_seq, i, true));
+					else
+					{
+						s = "Не удалось открыть файл: " + pd[num_seq][i].Data_;
+						mm=4;
+						Synchronize(&Draw);
+						return;
+					}
+				}
+
+				if (FileExists(pd[num_seq][i].Data_))
+					OpenData(num_seq, i, false);
+				else
+				{
+					s = "Не удалось открыть файл: " + pd[num_seq][i].Data_;
+					mm=4;
+					Synchronize(&Draw);
+                    return;
+				}
+
+                CalculateACF();
+				CalculateCumulants(acf_app);
+				SaveAcf(num_seq, i);
+                mm=1;
+				Synchronize(&Draw);
+
+				if (AcfParams.DoMean){
+					DoMean();
+				}
+				num_rec++;
+			}
+
+			if ((AcfParams.DoMean) && (num_rec != 0)){
+				FinishMean();
+                SaveAcf(num_seq, -1);
+			}
+
+            Clear();
+        	break;
+        }
 
 	}
-	if (AcfParams.DoMean){
-		FinishMean();
-		SaveAcf(false);
-	}
-
-	Clear();
-
-    if (AcfParams.Multi_Angle) {
-    	// многоугловой режим
-
-    }
 }
 
 void __fastcall TSeqThread::CalculateACF() {
@@ -210,9 +264,10 @@ void __fastcall TSeqThread::CalculateACF() {
 void __fastcall TSeqThread::Draw() {
 	switch (mm) {
 		case 0:
-			MainForm->Memo1->Lines->Add("Угол рассеяния "+FloatToStrF(ScatAngle, ffFixed, 5, 2));
+		   //	MainForm->Memo1->Lines->Add("Угол рассеяния "+FloatToStrF(params_.ScatAngle, ffFixed, 5, 2));
 			break;
 		case 1:
+            MainForm->Memo1->Lines->Add("");
 			MainForm->LineSeries3->Clear();
 			MainForm->Series5->Clear();
 //			MainForm->Series1->Clear();
@@ -222,34 +277,49 @@ void __fastcall TSeqThread::Draw() {
 //				MainForm->Series1->AddXY(i, Data[i]);
 				}
 			MainForm->Memo1->Lines->Add("Температура "+FloatToStrF(DataParams.Temperature-273.15, ffFixed, 5, 2));
-			MainForm->Memo1->Lines->Add("Показатель полидисперсности " + FloatToStrF(AcfParams.PI, ffFixed,5,3));
-			MainForm->Memo1->Lines->Add("Средний диаметр частиц " + FloatToStrF(AcfParams.x_pcs, ffFixed, 5, 2)+" нм");
+			s = "Показатель полидисперсности " + FloatToStrF(AcfParams.PI, ffFixed,5,3);
+			MainForm->Memo1->Lines->Add(s);
+			MainForm->Label3->Caption = s;
+			s = "Средний диаметр частиц " + FloatToStrF(AcfParams.x_pcs, ffFixed, 5, 2)+" нм";
+			MainForm->Memo1->Lines->Add(s);
+			MainForm->Label2->Caption = s;
 			MainForm->Memo1->Lines->Add("");
 
 			break;
 		case 2:
-			StatusRecForm->Label2->Caption = "Измерение "+IntToStr(num_rec+1)+" из "+IntToStr(AcfParams.n_rec);
+        	MainForm->Memo1->Lines->Add("");
+			s= "Измерение "+IntToStr(num_rec+1)+" из "+IntToStr(AcfParams.n_rec);
+//			StatusRecForm->Label2->Caption = s;
+			MainForm->Memo1->Lines->Add(s);
 			break;
 
 		case 3:
-
-            MainForm->Memo1->Lines->Add("Среднее значение");
+			MainForm->Memo1->Lines->Add("");
+			MainForm->Memo1->Lines->Add("Усредненная АКФ:");
 			MainForm->LineSeries3->Clear();
 			MainForm->Series5->Clear();
 			for (int i=0; i < acf.w; i++) {
 				MainForm->LineSeries3->AddXY(acf_t.a[i], acf.a[i]);
 				MainForm->Series5->AddXY(acf_t.a[i], acf_app[i]);
 				}
-			MainForm->Memo1->Lines->Add("Показатель полидисперсности " + FloatToStrF(AcfParams.PI, ffFixed,5,3));
-			MainForm->Memo1->Lines->Add("Средний диаметр частиц " + FloatToStrF(AcfParams.x_pcs, ffFixed, 5, 2)+" нм");
-			MainForm->Memo1->Lines->Add("");
+
+			s = "Показатель полидисперсности " + FloatToStrF(AcfParams.PI, ffFixed,5,3);
+            MainForm->Memo1->Lines->Add(s);
+            MainForm->Label3->Caption = s;
+            s = "Средний диаметр частиц " + FloatToStrF(AcfParams.x_pcs, ffFixed, 5, 2)+" нм";
+            MainForm->Memo1->Lines->Add(s);
+            MainForm->Label2->Caption = s;
+            MainForm->Memo1->Lines->Add("");
 			break;
+		case 4: MainForm->Memo1->Lines->Add(s); break;
+
+
 	default:
 		;
 	}
 }
 
-bool __fastcall TSeqThread::CalculateCumulants(){
+bool CalculateCumulants(double *acf_app){
 
 	int cnt, w, ind_left, ind_right;
 	double max_100, _max;
@@ -269,7 +339,7 @@ bool __fastcall TSeqThread::CalculateCumulants(){
 		double thr = acf.a[ind_left] / 50;
 
 		ind_right = ind_left;
-		while ((ind_right < acf_t.w) && (acf_t.a[ind_right] < AcfParams.cut_after))
+		while ((ind_right < acf_t.w) && (acf.a[ind_right] >= thr))
 			ind_right++;
 
 
@@ -355,6 +425,7 @@ bool __fastcall TSeqThread::CalculateCumulants(){
 	AcfParams.a2 *= 1e12;
 	AcfParams.PI = fabs(2 * AcfParams.a2 / pow(AcfParams.a1, 2));
 
+
 	double q = 4*M_PI*DataParams.RefIndex*sin(DataParams.ScatAngle/2*M_PI/180)/(DataParams.WaveLength*1e-9);
 
 	AcfParams.x_pcs = AcfParams.Kb*DataParams.Temperature*pow(q,2)/(3*M_PI*DataParams.Viscosity*AcfParams.a1)*1e9;
@@ -386,6 +457,44 @@ bool __fastcall TSeqThread::CalculateCumulants(){
 	delete [] cum;
 	delete [] cum_t;
 
+	return true;
+}
+
+bool __fastcall TSeqThread::Init(int n){
+ 	n0 = n;
+	Data = new WORD[n0];
+	sum1 = new __int64[n0];
+	sum2 = new __int64[n0];
+	step = 100;
+
+	N = 14;
+	M = 8;
+	Navt = M*N;
+	_m = new int[M*N];
+	double dt = 6.5e-3;
+
+	acf.Clear();
+	acf.Init(Navt, 1, mitDouble);
+	acf_t.Clear();
+	acf_t.Init(Navt, 1, mitDouble);
+	acf_app = new double[Navt];
+
+
+	for (int i=0; i < N; i++)
+	{
+		for (int j=0; j < M; j++)
+		{
+			_m[i*M+j]=(j+1)*pow(2,i)+M*(pow(2,i)-1);
+			acf_t.a[i*M+j]=_m[i*M+j]*dt*step;
+		}
+	}
+
+	if (AcfParams.DoMean){
+		acf_mean = new double[Navt];
+		memset(acf_mean, 0, Navt*sizeof(double));
+	}
+
+	return true;
 }
 
 void __fastcall TSeqThread::Init(){
@@ -420,9 +529,8 @@ void __fastcall TSeqThread::Init(){
 
 	if (AcfParams.DoMean){
 		acf_mean = new double[Navt];
-        memset(acf_mean, 0, Navt*sizeof(double));
+		memset(acf_mean, 0, Navt*sizeof(double));
 	}
-
 }
 
 void __fastcall TSeqThread::Clear(){
@@ -432,7 +540,7 @@ void __fastcall TSeqThread::Clear(){
 	delete [] sum2;
 	delete [] _m;
 	delete [] acf_app;
-	if (AcfParams.DoMean)
+	if (AcfParams.DoMean || params_.DoMean)
     	delete [] acf_mean;
 }
 
@@ -448,7 +556,7 @@ void __fastcall TSeqThread::FinishMean(){
    for (int i=0; i < Navt; i++)
 	 acf.a[i] = acf_mean[i]/num_rec;
 
-   CalculateCumulants();
+   CalculateCumulants(acf_app);
 
    mm=3;
    Synchronize(&Draw);
@@ -458,27 +566,126 @@ void __fastcall TSeqThread::SaveData(){
 
 	char buff[50];
 	sprintf(buff, "_%.3d_%.3d", num_seq+1, num_rec+1);
-	UnicodeString s = AcfParams.Save_Dir + "\\" + AcfParams.File_Name + buff+".idata";
+	s = AcfParams.Save_Dir + "\\" + AcfParams.File_Name + buff+".idata";
+	rec_->Data_ = s;
 	int f = FileCreate(s);
 	FileWrite(f, &n0, sizeof(int));
 	FileWrite(f, (void *)Data, n0*sizeof(WORD));
 	FileWrite(f, &DataParams, sizeof(TDataParams));
 	FileClose(f);
 
+
+	s = "Сохранение данных: "+s;
+	mm=4;
+	Synchronize(&Draw);
+
 }
 
 void __fastcall TSeqThread::SaveAcf(bool k){
 
 	char buff[50];
+
 	if (k)
 		sprintf(buff, "_%.3d_%.3d", num_seq+1, num_rec+1);
 	else
 		sprintf(buff, "_%.3d", num_seq+1);
 
-	UnicodeString s = AcfParams.Save_Dir + "\\" + AcfParams.File_Name + buff+".tdf";
-    SaveAcf2Tdf(s);
+	s = AcfParams.Save_Dir + "\\" + AcfParams.File_Name + buff+".tdf";
+
+	if (k)
+		rec_->Acf_ = s;
+	else
+		seq_->Mean_Acf_ = s;
+
+	SaveAcf2Tdf(s);
+
+	s = "Сохранение АКФ: "+s;
+	mm=4;
+	Synchronize(&Draw);
 
 }
 
+void __fastcall TSeqThread::SaveAcf(int ns, int nr){
 
+	char buff[50];
+	if (nr != -1)
+		sprintf(buff, "_%.3d_%.3d", ns+1, nr+1);
+	else
+		sprintf(buff, "_%.3d", ns+1);
+
+	s = pd.Path + "\\" + pd.Name + buff+".tdf";
+	SaveAcf2Tdf(s);
+
+	s = "Сохранение АКФ: "+s;
+    mm=4;
+    Synchronize(&Draw);
+}
+
+bool __fastcall TSeqThread::ChangeAngle()
+{
+	if (device.SetAngle(AcfParams.Initial_Angle +AcfParams.Angle_Shift*(num_seq+1)))
+	/*(char)(AcfParams.Initial_Angle+num_seq+1)*/
+	{
+		Status status;
+		void *q = CreateEventA(NULL, 1, 0, NULL);
+
+		do {
+			device.GetStatus(status);
+			WaitForSingleObject(q, 100);
+		}
+		while (!status.bits.goniometer);
+
+		CloseHandle(q);
+		return true;
+	}
+	return false;
+}
+
+void __fastcall TSeqThread::SetParams(TSeqThreadParams params)
+{
+    params_ = params;
+}
+
+
+int __fastcall TSeqThread::OpenData(int n_seq, int n_rec, bool GetCnt)
+{
+	char buff[50];
+    sprintf(buff, "_%.3d_%.3d", n_seq+1, n_rec+1);
+//	UnicodeString s = params_.Save_Dir + "\\" + params_.File_Name + buff+".idata";
+	s = pd[n_seq][n_rec].Data_;
+
+	int f = FileOpen(s, fmOpenRead);
+	int n = 0;
+	FileRead(f, &n, sizeof(int));
+
+	if (!GetCnt) {
+		FileRead(f, (void *) Data, n*sizeof(WORD));
+		FileRead(f, (void *)&DataParams, sizeof(TDataParams));
+
+        s = "Открытие  данных: "+s;
+		mm=4;
+		Synchronize(&Draw);
+
+	}
+	FileClose(f);
+
+	return n;
+}
+
+bool __fastcall TSeqThread::GetPhysicalSnapShot(){
+	DataParams.WaveLength = AcfParams.lambda;
+	DataParams.ScatAngle = AcfParams.Initial_Angle + 15*num_seq;
+
+	double t;
+//	if (!device.GetTemperature(t))
+//		return false;
+
+
+	DataParams.Temperature = 298.15;
+	DataParams.Viscosity = FormulaPuazeilia(DataParams.Temperature);
+	DataParams.RefIndex = AcfParams.n;
+	DataParams.Discr_Time = AcfParams.Time_discr;
+	return true;
+}
 // ---------------------------------------------------------------------------
+

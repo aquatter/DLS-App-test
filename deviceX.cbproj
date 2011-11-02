@@ -19,11 +19,11 @@
 			<Base>true</Base>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Base)'!=''">
-			<LinkPackageStatics>rtl.lib;vcl.lib;Tee.lib;bcbsmp.lib;vclx.lib;vclactnband.lib;Tee812.lib;VirtualTreesD12.lib;vclimg.lib;VirtualTreesC6.lib</LinkPackageStatics>
+			<LinkPackageStatics>rtl.lib;vcl.lib;Tee.lib;bcbsmp.lib;vclx.lib;vclactnband.lib;Tee812.lib;VirtualTreesD12.lib;vclimg.lib;VirtualTreesC6.lib;xmlrtl.lib</LinkPackageStatics>
 			<OutputExt>exe</OutputExt>
 			<Multithreaded>true</Multithreaded>
 			<PackageImports>vclx.bpi;vcl.bpi;dbrtl.bpi;Rave76VCL.bpi;bdertl.bpi;rtl.bpi;bcbie.bpi;vclactnband.bpi;xmlrtl.bpi;bcbsmp.bpi;vcldb.bpi;vcldbx.bpi;dsnap.bpi;dsnapcon.bpi;TeeUI.bpi;TeeDB.bpi;Tee.bpi;adortl.bpi;vclib.bpi;ibxpress.bpi;IndyCore.bpi;IndySystem.bpi;IndyProtocols.bpi;inet.bpi;intrawebdb_100_120.bpi;Intraweb_100_120.bpi;vclie.bpi;websnap.bpi;webdsnap.bpi;inetdbbde.bpi;inetdbxpress.bpi;soaprtl.bpi;vclribbon.bpi;dbexpress.bpi;DbxCommonDriver.bpi;DataSnapIndy10ServerTransport.bpi;DataSnapProviderClient.bpi;DataSnapServer.bpi;DbxClientDriver.bpi;DBXInterBaseDriver.bpi;DBXMySQLDriver.bpi;dbxcds.bpi;DBXSybaseASEDriver.bpi;DBXSybaseASADriver.bpi;DBXOracleDriver.bpi;DBXMSSQLDriver.bpi;DBXInformixDriver.bpi;DBXDb2Driver.bpi;quantControlPanel.bpi;tmrbtn.bpi;grdext.bpi;VirtualTreesC6D.bpi;VirtualTreesC6.bpi</PackageImports>
-			<AllPackageLibs>rtl.lib;vcl.lib;Tee.lib;bcbsmp.lib;vclx.lib;vclactnband.lib;Tee812.lib;VirtualTreesD12.lib;vclimg.lib;VirtualTreesC6.lib</AllPackageLibs>
+			<AllPackageLibs>rtl.lib;vcl.lib;Tee.lib;bcbsmp.lib;vclx.lib;vclactnband.lib;Tee812.lib;VirtualTreesD12.lib;vclimg.lib;VirtualTreesC6.lib;xmlrtl.lib</AllPackageLibs>
 			<ProjectType>CppVCLApplication</ProjectType>
 			<DCC_CBuilderOutput>JPHNE</DCC_CBuilderOutput>
 			<Defines>NO_STRICT</Defines>
@@ -190,6 +190,10 @@
 			<CppCompile Include="UDeviceInitThread.cpp">
 				<DependentOn>UDeviceInitThread.h</DependentOn>
 				<BuildOrder>30</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="UProgectData.cpp">
+				<DependentOn>UProgectData.h</DependentOn>
+				<BuildOrder>31</BuildOrder>
 			</CppCompile>
 			<FormResources Include="UReportEditForm.dfm"/>
 			<FormResources Include="MainFormUnit.dfm"/>

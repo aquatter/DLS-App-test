@@ -27,6 +27,10 @@
 #include "TeEngine.hpp"
 #include "TeeProcs.hpp"
 #include "UDlsINIFile.h"
+#include <msxmldom.hpp>
+#include <XMLDoc.hpp>
+#include <xmldom.hpp>
+#include <XMLIntf.hpp>
 
 //#include  "UDlsVars.h"
 //---------------------------------------------------------------------------
@@ -76,35 +80,26 @@ __published:	// IDE-managed Components
 	TProgressBar *ProgressBar1;
 	TCheckBox *CheckBox4;
 	TButton *Button1;
-	TLabel *Label2;
-	TLabel *Label3;
 	TCheckBox *CheckBox2;
 	TChart *Chart2;
 	TLineSeries *Series3;
 	TLineSeries *Series2;
-	TButton *Button2;
 	TLabel *Label4;
 	TEdit *Edit1;
 	TLabel *Label5;
 	TEdit *Edit2;
 	TCheckBox *CheckBox3;
-	TChart *Chart3;
-	TPanel *Panel1;
 	TMenuItem *N5;
-	TLabel *Label14;
 	TButton *Button6;
 	TLineSeries *Series4;
 	TAreaSeries *LineSeries2;
 	TButton *Button7;
 	TLabel *Label15;
-	TAreaSeries *LineSeries1;
 	TPanel *Panel3;
 	TListView *ListView1;
 	TListView *ListView2;
 	TButton *Button5;
-	TLineSeries *Series6;
 	TToolButton *ToolButton5;
-	TButton *Button9;
 	TToolButton *ToolButton6;
 	TImageList *ImageList3;
 	TLineSeries *Series1;
@@ -115,7 +110,33 @@ __published:	// IDE-managed Components
 	TLineSeries *LineSeries3;
 	TLineSeries *Series5;
 	TSplitter *Splitter1;
+	TXMLDocument *XMLDocument1;
+	TMenuItem *N6;
+	TListView *ListView3;
+	TSplitter *Splitter2;
+	TPanel *Panel6;
+	TPanel *Panel7;
+	TSplitter *Splitter3;
+	TChart *Chart3;
+	TPanel *Panel1;
+	TAreaSeries *LineSeries1;
+	TLineSeries *Series6;
+	TSplitter *Splitter4;
+	TPanel *Panel8;
+	TLabel *Label2;
+	TLabel *Label3;
+	TButton *Button9;
+	TSplitter *Splitter5;
+	TPanel *Panel9;
+	TButton *Button2;
+	TSplitter *Splitter6;
 	TMemo *Memo1;
+	TToolBar *ToolBar2;
+	TToolButton *ToolButton7;
+	TToolBar *ToolBar3;
+	TToolButton *ToolButton8;
+	TImageList *ImageList4;
+	TLabel *Label14;
 	void __fastcall Timer1Timer(TObject *Sender);
 	void __fastcall chckbxLFDClick(TObject *Sender);
 	void __fastcall chckbxFEUClick(TObject *Sender);
@@ -163,6 +184,9 @@ __published:	// IDE-managed Components
 	void __fastcall ToolButton6Click(TObject *Sender);
 	void __fastcall Button8Click(TObject *Sender);
 	void __fastcall FormResize(TObject *Sender);
+	void __fastcall N6Click(TObject *Sender);
+	void __fastcall ListView3DblClick(TObject *Sender);
+
 
 
 

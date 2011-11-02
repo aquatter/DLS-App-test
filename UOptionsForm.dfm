@@ -20,12 +20,11 @@ object OptionsForm: TOptionsForm
     Top = 0
     Width = 442
     Height = 553
-    ActivePage = TabSheet3
+    ActivePage = TabSheet1
     Align = alTop
     TabOrder = 0
     object TabSheet1: TTabSheet
       Caption = #1055#1088#1072#1084#1077#1090#1088#1099' '#1088#1077#1075#1080#1089#1090#1088#1072#1094#1080#1080' '#1089#1080#1075#1085#1072#1083#1072
-      ExplicitHeight = 477
       object Label19: TLabel
         Left = 27
         Top = 99
@@ -505,6 +504,9 @@ object OptionsForm: TOptionsForm
     object TabSheet2: TTabSheet
       Caption = #1056#1072#1089#1095#1077#1090' '#1088#1072#1089#1087#1088#1077#1076#1077#1083#1077#1085#1080#1103
       ImageIndex = 1
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
       ExplicitHeight = 477
       object Label1: TLabel
         Left = 12
@@ -933,7 +935,6 @@ object OptionsForm: TOptionsForm
     object TabSheet3: TTabSheet
       Caption = #1060#1080#1079#1080#1095#1077#1089#1082#1080#1077' '#1087#1072#1088#1072#1084#1077#1090#1088#1099
       ImageIndex = 2
-      ExplicitHeight = 593
       object Label8: TLabel
         Left = 17
         Top = 72

@@ -9,6 +9,8 @@
 #include "math.hpp"
 #include <memory>
 #include "UOptionsForm.h"
+#include "USeqThread.h"
+#include "UTimerThread.h"
 
 //---------------------------------------------------------------------------
 
@@ -198,11 +200,12 @@ void OpenTdf(UnicodeString s)
   try
   {
 	unsigned count;
-	AcfParams.lambda=f->ReadFloat("PCSPHYSPAR", "WAVELENGTH", 632.8)*10;
-	AcfParams.eta=f->ReadFloat("PCSPHYSPAR", "VISCOSITY", 1.0)*1e-3;
-	device.deviceSettings.Angle=f->ReadFloat("PCSPHYSPAR", "SCATANGLE", 90.0);
-	AcfParams.T=f->ReadFloat("PCSPHYSPAR", "TEMPERATURE", 298.15);
-	AcfParams.n=f->ReadFloat("PCSPHYSPAR", "REFRINDEX", 1.33);
+
+	DataParams.WaveLength=f->ReadFloat("PCSPHYSPAR", "WAVELENGTH", 632.8);
+	DataParams.Viscosity = f->ReadFloat("PCSPHYSPAR", "VISCOSITY", 1.0)*1e-3;
+	DataParams.ScatAngle=f->ReadFloat("PCSPHYSPAR", "SCATANGLE", 90.0);
+	DataParams.Temperature=f->ReadFloat("PCSPHYSPAR", "TEMPERATURE", 298.15);
+	DataParams.RefIndex=f->ReadFloat("PCSPHYSPAR", "REFRINDEX", 1.33);
 	f->ReadSectionValues("PCSDATA2", str_list);
 
 	count=str_list->Count;
@@ -219,13 +222,13 @@ void OpenTdf(UnicodeString s)
 	  acf_t.a[i]=str1.ToDouble()*1e6;
 	  acf.a[i]=str2.ToDouble()-1;
 	}
-
+	/*
 	MainForm->LineSeries3->Clear();
 	for (int i=0; i < count; i++) {
 		MainForm->LineSeries3->AddXY(acf_t.a[i], acf.a[i]);
 	}
 	MainForm->PageControl1->ActivePageIndex=2;
-
+    */
   } catch (...)
   {
 	delete f;
@@ -561,4 +564,208 @@ TAcfParams::TAcfParams() {
   Kb=1.380650424e-23;
   eta=0.8872;
   _time=-1;
+}
+
+bool OpenProject(UnicodeString Name, TProjectData &pd)
+{
+
+	MainForm->ListView3->Clear();
+	UnicodeString Path = ExtractFileDir(Name) + "\\";
+	pd.Path  = Path;
+	pd.Name = ChangeFileExt(ExtractFileName(Name), "");
+
+	_di_IXMLNode root, seq_node, rec_node;
+	TListItem *item;
+
+	MainForm->XMLDocument1->LoadFromFile(Name);
+	root = MainForm->XMLDocument1->ChildNodes->Nodes["Dynamic_Light_Scattering_XML_Document"];
+	int n = root->ChildNodes->Count;
+    AcfParams.n_seq = n-3;
+
+
+	item = MainForm->ListView3->Items->Add();
+	for (int k = 0; k < 10; k++)
+		item->SubItems->Add("");
+
+	item->Caption = root->ChildNodes->Nodes["Date"]->Text;
+	item->SubItems->Strings[0] = root->ChildNodes->Nodes["Name"]->Text;
+    item->Data = 0;
+
+	seq_node = root->ChildNodes->Nodes["Series"];
+	AcfParams.n_rec = seq_node->ChildNodes->Count-1;
+
+	for (int i=0; i < n-3; i++) {
+		TProjectData::TSeq &seq_ = pd.Add();
+
+		int m = seq_node->ChildNodes->Count;
+		rec_node = seq_node->ChildNodes->Nodes["Measurement"];
+
+		for (int j=0; j < m-1; j++) {
+
+			TProjectData::TRec &rec_ = seq_.Add();
+
+			item = MainForm->ListView3->Items->Add();
+			for (int k = 0; k < 10; k++)
+				item->SubItems->Add("");
+
+
+			item->SubItems->Strings[1] = IntToStr(i+1);
+			item->SubItems->Strings[2] = IntToStr(j+1);
+
+			UnicodeString _name  = rec_node->ChildNodes->Nodes["ACF"]->Text;
+
+			if (FileExists(Path+_name))
+				item->SubItems->Strings[3] = "рассчитана";
+			else
+				item->SubItems->Strings[3] = "не рассчитана";
+
+
+			UnicodeString _name_data  = rec_node->ChildNodes->Nodes["Data"]->Text;
+
+			TDataParams params;
+			if (FileExists(Path+_name_data))
+			{
+				ExtractDataParams(Path+_name_data, &params);
+				item->SubItems->Strings[4] = FloatToStrF(params.ScatAngle, ffFixed, 5, 2);
+				item->SubItems->Strings[5] = FloatToStrF(params.Temperature, ffFixed, 5, 2);
+			}
+			else
+				ShowMessage("Файл не найден: \n"+Path+_name_data);
+
+
+			item->SubItems->Strings[6] = Path+_name_data;
+			item->SubItems->Strings[7] = Path+_name;
+			rec_.Acf_ = Path+_name;
+			rec_.Data_ = Path+_name_data;
+
+			item->Data = (void *) new TPoint(i, j);
+//			MainForm->Memo1->Lines->Add(IntToStr((int)&rec_) + " "+IntToStr((int)rec_.num_rec));
+			rec_node = rec_node->NextSibling();
+		}
+
+		UnicodeString _name  = seq_node->ChildNodes->Nodes["Mean_ACF"]->Text;
+
+        item = MainForm->ListView3->Items->Add();
+		for (int k = 0; k < 10; k++)
+			item->SubItems->Add("");
+
+		item->SubItems->Strings[0] = "Усредненная АКФ";
+		item->SubItems->Strings[1] = IntToStr(i+1);
+        item->Data = (void *) new TPoint(i, -1);
+		seq_.Mean_Acf_ = Path+_name;
+
+        if (FileExists(Path+_name))
+			item->SubItems->Strings[3] = "рассчитана";
+		else
+			item->SubItems->Strings[3] = "не рассчитана";
+
+		seq_node = seq_node->NextSibling();
+	}
+
+
+	MainForm->XMLDocument1->XML->Clear();
+	MainForm->XMLDocument1->Active = false;
+}
+
+
+void ExtractDataParams(UnicodeString Name, TDataParams *params){
+
+	int f = FileOpen(Name, fmOpenRead);
+	int n = 0;
+	FileRead(f, &n, sizeof(int));
+	FileSeek(f, (int)(n*sizeof(WORD)+sizeof(int)), 0);
+	FileRead(f, (void *)params, sizeof(TDataParams));
+	FileClose(f);
+}
+
+void ProcessData(dls_mode mode, UnicodeString Name, int seq_num, int rec_num)
+{
+	switch (mode) {
+		case acf_:
+		{
+			OpenTdf(Name);
+			double *acf_app = new double[AcfParams.n_avt];
+			CalculateCumulants(acf_app);
+			MainForm->LineSeries3->Clear();
+			MainForm->Series5->Clear();
+			for (int i=0; i < AcfParams.n_avt; i++) {
+				MainForm->LineSeries3->AddXY(acf_t.a[i], acf.a[i]);
+				MainForm->Series5->AddXY(acf_t.a[i], acf_app[i]);
+			}
+
+			UnicodeString s;
+
+			MainForm->Memo1->Lines->Add("");
+			s= "Открытие файла: "+Name;
+			MainForm->Memo1->Lines->Add(s);
+			MainForm->Memo1->Lines->Add("");
+			if (rec_num != -1) {
+				s = "Серия "+ IntToStr((int)seq_num+1) + " Измерение " + IntToStr((int)rec_num+1);
+				MainForm->Memo1->Lines->Add(s);
+			}
+			else
+			{
+				s = "Серия "+ IntToStr((int)seq_num+1) + " Усредненная АКФ";
+				MainForm->Memo1->Lines->Add(s);
+			}
+
+//			s = "Температура "+FloatToStrF(DataParams.Temperature-273.15, ffFixed, 5, 2);
+//			MainForm->Memo1->Lines->Add(s);
+
+			s = "Показатель полидисперсности " + FloatToStrF(AcfParams.PI, ffFixed,5,3);
+			MainForm->Memo1->Lines->Add(s);
+			MainForm->Label3->Caption = s;
+			s = "Средний диаметр частиц " + FloatToStrF(AcfParams.x_pcs, ffFixed, 5, 2)+" нм";
+			MainForm->Label2->Caption = s;
+			MainForm->Memo1->Lines->Add(s);
+
+			delete [] acf_app;
+        	break;
+		}
+
+		case rec_:
+		{
+			pd.Disable_All();
+			if (rec_num == -1) {
+				pd.Enable_Seq(seq_num);
+				AcfParams.DoMean = true;
+			}
+			else
+			{
+				pd.Enable_Rec(seq_num, rec_num);
+				AcfParams.DoMean = false;
+			}
+			TTimerThread *t = new  TTimerThread(true);
+			t->FreeOnTerminate = true;
+			t->mode = from_hdd;
+			t->Start();
+
+			 /*
+			WORD *data;
+			int n;
+			OpenData(data, n, Name);
+			TSeqThread *t = new TSeqThread(true);
+			t->FreeOnTerminate = true;
+//			t->mode = mode;
+			t->Start();
+            */
+	        break;
+		}
+
+
+
+//		case rec_: break;
+	}
+}
+
+
+
+void OpenData(WORD *data, int &n, UnicodeString Name)
+{
+	int f = FileOpen(Name, fmOpenRead);
+	FileRead(f, &n, sizeof(int));
+	data = new WORD[n];
+	FileRead(f, (void *) data, n*sizeof(WORD));
+	FileRead(f, (void *)&DataParams, sizeof(TDataParams));
+	FileClose(f);
 }

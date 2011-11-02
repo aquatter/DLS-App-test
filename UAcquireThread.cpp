@@ -45,8 +45,6 @@ void __fastcall TAcquireThread::Execute() {
 	FileRead(f, (void *)Data,  num_blocks*BLOCK_DATA_NUM*sizeof(WORD));
 	FileClose(f);
 
-	GetPhysicalSnapShot();
-
 //	if (!GetPhysicalSnapShot()) {
 //		return;
 //	}
@@ -314,20 +312,6 @@ void __fastcall TAcquireThread::Draw() {
 	}
 
 }
-bool __fastcall TAcquireThread::GetPhysicalSnapShot(){
-	DataParams.WaveLength = AcfParams.lambda;
-	DataParams.ScatAngle = ScatAngle;
 
-	double t;
-//	if (!device.GetTemperature(t))
-//		return false;
-
-
-	DataParams.Temperature = 298.15;
-	DataParams.Viscosity = FormulaPuazeilia(DataParams.Temperature);
-	DataParams.RefIndex = AcfParams.n;
-	DataParams.Discr_Time = AcfParams.Time_discr;
-	return true;
-}
 
 // ---------------------------------------------------------------------------

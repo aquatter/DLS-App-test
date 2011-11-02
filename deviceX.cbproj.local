@@ -1,7 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <BorlandProject>
-  <Transactions>
+	<Transactions>
     <Transaction>2011.10.17 00:38:44.000.cpp,D:\Files\Delphi Files\dls\Device X\Unit1.cpp=D:\Files\Delphi Files\dls\Device X\UDeviceInitThread.cpp</Transaction>
     <Transaction>2011.10.17 00:38:44.000.h,D:\Files\Delphi Files\dls\Device X\Unit1.h=D:\Files\Delphi Files\dls\Device X\UDeviceInitThread.h</Transaction>
+    <Transaction>2011.10.26 22:21:19.211.cpp,D:\Files\Delphi Files\dls\Device X\Unit1.cpp=D:\Files\Delphi Files\dls\Device X\UProgectData.cpp</Transaction>
+    <Transaction>2011.10.26 22:21:19.211.h,D:\Files\Delphi Files\dls\Device X\Unit1.h=D:\Files\Delphi Files\dls\Device X\UProgectData.h</Transaction>
   </Transactions>
 </BorlandProject>

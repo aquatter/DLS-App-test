@@ -31,7 +31,7 @@ public:
 	int __fastcall ProcessInitialData();
 	bool __fastcall ReadDataBlocks(int num);
 	void __fastcall ProcessAcfData();
-	bool __fastcall GetPhysicalSnapShot();
+
 };
 
 extern TAcquireThread *AcquireThread;

@@ -45,8 +45,8 @@ void __fastcall TDLSContinThread::Execute()
 
 void __fastcall TDLSContinThread::Draw()
 {
-  MainForm->Panel1->Visible=false;
-
+//  MainForm->Panel1->Visible=false;
+//
   MainForm->LineSeries1->Clear();
   MainForm->Series6->Clear();
 

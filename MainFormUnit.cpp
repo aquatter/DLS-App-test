@@ -24,6 +24,7 @@
 #include "UStatusRecForm.h"
 #include "UTimerThread.h"
 #include "UDeviceInitThread.h"
+#include "UProgectData.h"
 
 // ---------------------------------------------------------------------------
 #pragma package(smart_init)
@@ -145,12 +146,12 @@ bool __fastcall TMainForm::UpdateDevicesCondition() {
 	}
 	else {
 		ListView1->Items->Item[0]->ImageIndex = (status.bits.feed) ? 1 : 0;
-//		ListView1->Items->Item[1]->ImageIndex = (status.bits.photomultiplier)
-//			? 1 : 0;
+		// ListView1->Items->Item[1]->ImageIndex = (status.bits.photomultiplier)
+		// ? 1 : 0;
 		ListView1->Items->Item[2]->ImageIndex = (status.bits.goniometer)
 			? 1 : 0;
-//		ListView1->Items->Item[3]->ImageIndex = (status.bits.signal) ? 1 : 0;
-//		ListView1->Items->Item[4]->ImageIndex = (status.bits.data) ? 1 : 0;
+		// ListView1->Items->Item[3]->ImageIndex = (status.bits.signal) ? 1 : 0;
+		// ListView1->Items->Item[4]->ImageIndex = (status.bits.data) ? 1 : 0;
 
 		// shpFeed->Brush->Color = (status.bits.feed) ? clLime : clRed;
 		// shpPhotomultiplier->Brush->Color = (status.bits.photomultiplier) ? clLime : clRed;
@@ -178,13 +179,12 @@ bool __fastcall TMainForm::UpdateTemperature() {
 	return true;
 }
 
-
-bool __fastcall TMainForm::UpdateIntensity()
-{
+bool __fastcall TMainForm::UpdateIntensity() {
 	int value = 0;
 	bool rez = false;
 	rez = device.GetIntensity(value);
-	OptionsForm->Label58->Caption = "Текущее значение интенсивности сигнала: "+ IntToStr(value);
+	OptionsForm->Label58->Caption =
+		"Текущее значение интенсивности сигнала: " + IntToStr(value);
 
 	return rez;
 }
@@ -209,7 +209,7 @@ bool __fastcall TMainForm::SaveDataToFile(UnicodeString uFileNameStr) {
 void __fastcall TMainForm::Timer1Timer(TObject *Sender) {
 	try {
 		bTimerExecuting = true;
-//		UpdateDevicesCondition();
+		// UpdateDevicesCondition();
 		UpdateTemperature();
 		UpdateIntensity();
 
@@ -811,17 +811,17 @@ void __fastcall TMainForm::ToolButton4Click(TObject *Sender) {
 
 void __fastcall TMainForm::ToolButton2Click(TObject *Sender) {
 
-    OptionsForm->Button2->Caption = "OK";
-	if (OptionsFormExecute())
-	{
-        StopMonitoring();
+	OptionsForm->Button2->Caption = "OK";
+	if (OptionsFormExecute()) {
+		StopMonitoring();
+		bool error;
 		TDeviceInitThread *t = new TDeviceInitThread(true);
-		t->FreeOnTerminate=true;
+		t->FreeOnTerminate = true;
 		t->monitoring = true;
+		t->error_ = &error;
 		t->Start();
 	}
 	return;
-
 
 	OptionsForm->CheckBox1->Checked = AcfParams.lfd;
 	OptionsForm->CheckBox2->Checked = AcfParams.feu;
@@ -1208,8 +1208,11 @@ void __fastcall TMainForm::CheckBox2Click(TObject *Sender) {
 // ---------------------------------------------------------------------------
 
 void __fastcall TMainForm::Button2Click(TObject *Sender) {
-	if (!acf.load)
+
+	if (!acf.load){
+		ShowMessage("АКФ нe рассчитана!");
 		return;
+	}
 
 	/*
 	if (acf.a[0] < 0) {
@@ -1217,20 +1220,22 @@ void __fastcall TMainForm::Button2Click(TObject *Sender) {
 	return;
 	}
 	 */
-	int w = acf.w;
-	double eta = FormulaPuazeilia(AcfParams.T);
+	int w = acf.w, ind_left, ind_right;
+//	double eta = FormulaPuazeilia(AcfParams.T);
 
-	double q = 4 * M_PI * AcfParams.n * sin
-		(device.deviceSettings.Angle / 2 * M_PI / 180) / (AcfParams.lambda * 1e-10);
+	double q = 4*M_PI*DataParams.RefIndex*sin(DataParams.ScatAngle/2*M_PI/180)/(DataParams.WaveLength*1e-9);
 
-	double tmp = 3 * M_PI * eta / (AcfParams.Kb * AcfParams.T * pow(q, 2))
-		* 1e-3;
+	double tmp = 3*M_PI*DataParams.Viscosity/(AcfParams.Kb*DataParams.Temperature*pow(q, 2))*1e-3;
 
 	double left, right;
 
 	if (AcfParams.right_boundary) {
-		int ind = 0;
+		int ind_left = 0;
 
+		while ((ind_left < acf.w) && (acf_t.a[ind_left] < AcfParams.cut))
+			ind_left++;
+
+		/*
 		for (int i = 0; i < acf_t.w; i++) {
 			if (acf_t.a[i] > AcfParams.cut) {
 				ind = i;
@@ -1238,23 +1243,39 @@ void __fastcall TMainForm::Button2Click(TObject *Sender) {
 			}
 		}
 
-		double thr = acf.a[ind] / 50;
+		*/
+		double thr = acf.a[ind_left] / 50;
 
+		ind_right = ind_left;
+		while ((ind_right < acf_t.w) && (acf.a[ind_right] >= thr))
+			ind_right++;
+
+		/*
 		ind = 0;
 		for (int i = 0; i < acf_t.w; i++) {
 			if (acf.a[i] < thr) {
 				ind = i;
 				break;
 			}
-		}
+         */
+
+
 		left = AcfParams.cut;
-		right = acf_t.a[ind];
+		right = acf_t.a[ind_right];
 	}
 	else {
+       	ind_left = 0;
+        while ((ind_left < acf_t.w) && (acf_t.a[ind_left] < AcfParams.cut))
+        	ind_left++;
+
+        ind_right = ind_left;
+        while ((ind_right < acf_t.w) && (acf_t.a[ind_right] < AcfParams.cut_after))
+        	ind_right++;
+
 		left = AcfParams.cut;
 		right = AcfParams.cut_after;
 	}
-
+	/*
 	double _max = -MaxInt;
 	for (int i = 0; i < w; i++) {
 		if ((acf_t.a[i] >= left) && (acf.a[i] > _max) && (acf_t.a[i] <= right))
@@ -1263,21 +1284,25 @@ void __fastcall TMainForm::Button2Click(TObject *Sender) {
 		}
 	}
 
+	*/
+
 	// double max_100 = _max/100;
 
-	int nt = 0;
+	int nt = ind_right-ind_left;
 
+   /*
 	for (int i = 0; i < w; i++) {
 		if ((acf_t.a[i] >= left) && (acf_t.a[i] <= right)) {
 			nt++;
-			/*
+
 			if (acf.a[i] < 0) {
 			ShowMessage("Ошибка! Автокорреляционная функция содержит отрицательные элементы");
 			return;
 			}
-			 */
+
 		}
 	}
+			 */
 
 	if (nt < 20) {
 		ShowMessage
@@ -1290,7 +1315,17 @@ void __fastcall TMainForm::Button2Click(TObject *Sender) {
 	cum_t.Clear();
 	cum_t.Init(nt, 1, mitDouble);
 
-	nt = 0;
+//	nt = 0;
+	for (int i=ind_left; i < ind_right; i++) {
+		if (acf.a[i] < 0)
+			cum.a[i-ind_left] = 1e-5;
+		else
+			cum.a[i-ind_left] = acf.a[i]; /// _max;
+		cum_t.a[i-ind_left] = acf_t.a[i];
+	}
+
+
+	/*
 	for (int i = 0; i < w; i++) {
 		if ((acf_t.a[i] >= left) && (acf_t.a[i] <= right)) {
 			if (acf.a[i] < 0) {
@@ -1329,14 +1364,16 @@ void __fastcall TMainForm::Button2Click(TObject *Sender) {
 	DLSLogSpace(d1, d2, AcfParams.ns, contin_s.a);
 	FreeLibrary(lib);
 
-	Panel1->Visible = true;
+//	Panel1->Visible = true;
 	LineSeries1->Clear();
 
+	Memo1->Lines->Add("");
+    Memo1->Lines->Add("Расчет распределения частиц... ");
 	DLSContinThread = new TDLSContinThread(true);
 	DLSContinThread->FreeOnTerminate = true;
 	DLSContinThread->nt = nt;
 	DLSContinThread->k = tmp;
-	DLSContinThread->Resume();
+	DLSContinThread->Start();
 
 	// HINSTANCE lib = LoadLibrary("dls.dll");
 	// pDLSContin DLSContin = (pDLSContin)GetProcAddress(lib, "DLSContin");
@@ -1496,6 +1533,9 @@ void __fastcall TMainForm::FormClose(TObject *Sender, TCloseAction &Action) {
 	AcfParams.grad.clear();
 	CloseHandle(CaptureDone);
 	CloseHandle(AcfDone);
+
+	UnicodeString s = pd.Path + "dls("+Now().FormatString("dd_MM_YYYY_hh_mm_ss")+").log";
+	Memo1->Lines->SaveToFile(s);
 }
 // ---------------------------------------------------------------------------
 
@@ -1507,7 +1547,7 @@ void __fastcall TMainForm::FormCreate(TObject *Sender) {
 
 	CaptureDone = CreateEventA(NULL, true, false, NULL);
 	AcfDone = CreateEventA(NULL, true, false, NULL);
-
+	// ListView3->GroupView = true;
 
 	// ShowScrollBar(ListView1->Handle, sbHorizontal, 0);
 	// ShowScrollBar(ListView1->Handle, sbHorizontal, 0);
@@ -1642,34 +1682,40 @@ void __fastcall TMainForm::off(bool b) {
 };
 
 void __fastcall TMainForm::Button8Click(TObject *Sender) {
-
 	OptionsForm->Button2->Caption = "Запуск";
 
 	if (!OptionsFormExecute()) {
-    	return;
+		return;
 	}
 
-//	AcfParams.Rec_time = StrToInt(RecThreadStartForm->Edit1->Text);
+	// AcfParams.Rec_time = StrToInt(RecThreadStartForm->Edit1->Text);
 
 	StopMonitoring();
-	StatusRecForm->Show();
-
+//	StatusRecForm->Show();
+    ListView3->Clear();
 	// InitDeviceThread = new TInitDeviceThread(true);
 	// InitDeviceThread->Resume();
 	//
 	//
 	// return;
+
+
+
+
+	pd.Clear();
 	TTimerThread *t = new TTimerThread(true);
 	t->FreeOnTerminate = true;
+	t->mode = from_device;
+
 	t->Start();
 
-/*
+	/*
 	AcquireThread = new TAcquireThread(true);
 	AcquireThread->FreeOnTerminate = true;
 	AcquireThread->test_num = StrToInt(RecThreadStartForm->Edit2->Text);
 
 	AcquireThread->Resume();
-  */
+	 */
 	/* int n_t=100;
 	double *eta_t = new double[n_t];
 	double *temp_t = new double[n_t];
@@ -1705,10 +1751,108 @@ void __fastcall TMainForm::Button8Click(TObject *Sender) {
 	 */
 
 }
+
 // ---------------------------------------------------------------------------
-void __fastcall TMainForm::FormResize(TObject *Sender)
-{
-	Panel4->Width = Width/2;
+void __fastcall TMainForm::FormResize(TObject *Sender) {
+	Panel4->Width = Width / 2;
+	Panel5->Height = (Height-ToolBar1->Height) /2;
+	Panel7->Width = Width / 2;
+	Memo1->Height = 100;
 }
-//---------------------------------------------------------------------------
+// ---------------------------------------------------------------------------
+
+void __fastcall TMainForm::N6Click(TObject *Sender) {
+	OpenDialog1->InitialDir = ExtractFileDir(Application->ExeName);
+	OpenDialog1->Filter = "dls files|*.dls";
+
+	if (!OpenDialog1->Execute())
+		return;
+
+    pd.Clear();
+	OpenProject(OpenDialog1->FileName, pd);
+
+
+
+
+}
+// ---------------------------------------------------------------------------
+
+void __fastcall TMainForm::ListView3DblClick(TObject *Sender) {
+	TListItem *item = ListView3->Selected;
+
+	if (item) {
+		if (item->Data != 0) {
+			TPoint *p = (TPoint *)item->Data;
+			UnicodeString acf_path;
+			if (p->y != -1)
+				acf_path = pd[p->x][p->y].Acf_;
+			else
+				acf_path = pd[p->x].Mean_Acf_;
+
+			if (FileExists(acf_path))
+				ProcessData(acf_, acf_path, p->x, p->y);
+			else
+				ProcessData(rec_, "", p->x, p->y);
+
+
+			return;
+
+//			TProjectData::TRec *rec_ = (TProjectData::TRec *)item->Data;
+//			int *k = (int *)item->Data;
+//			rec_->Acf_
+//			Memo1->Lines->Add(rec_->Acf_);
+			Memo1->Lines->Add(IntToStr((int)p->x)+" "+IntToStr((int)p->y));
+//			Memo1->Lines->Add(IntToStr(k[0]));
+			return;
+			TProjectData::TSeqRec *sr = (TProjectData::TSeqRec *)item->Data;
+//			UnicodeString acf_path;
+
+			acf_path = sr->GetAcf();
+			size_t seq = 0;
+			size_t rec = 0;
+			sr->GetNums(rec, seq);
+			//ProcessData(acf_, acf_path, seq, rec);
+
+
+		}
+
+		/*
+		UnicodeString sseq = item->SubItems->Strings[1];
+		UnicodeString srec = item->SubItems->Strings[2];
+		if ((sseq != "") && (srec != "")) {
+			unsigned seq = item->SubItems->Strings[1].ToInt()-1;
+			unsigned rec = item->SubItems->Strings[2].ToInt()-1;
+			UnicodeString rec_path = pd[seq][rec].Data_;
+			UnicodeString acf_path = pd[seq][rec].Acf_;
+
+
+			if (FileExists(acf_path)) {
+				ProcessData(acf_, acf_path, seq, rec);
+			}
+		}
+         */
+
+
+		/*
+		UnicodeString rec_path = item->SubItems->Strings[6];
+		UnicodeString acf_path = item->SubItems->Strings[7];
+
+		if (FileExists(acf_path)) {
+			ProcessData(acf_, acf_path, item->SubItems->Strings[1],	item->SubItems->Strings[2]);
+		}
+		else
+		{
+			if (FileExists(rec_path))
+				ProcessData(rec_, rec_path, item->SubItems->Strings[1],	item->SubItems->Strings[2]);
+			else
+			{
+				ShowMessage("Файл "+ rec_path + " не найден");
+				return;
+			}
+		}
+		*/
+	}
+
+}
+// ---------------------------------------------------------------------------
 
