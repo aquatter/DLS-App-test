@@ -90,6 +90,7 @@ void __fastcall TTimerThread::Execute() {
 
 
 			void *q = CreateEventA(NULL, 1, 0, NULL);
+			void *wait_event = CreateEventA(NULL, 1, 0, NULL);
 			bool error = false;
 			/*
 			TDeviceInitThread *InitDevice = new TDeviceInitThread(true);
@@ -121,9 +122,10 @@ void __fastcall TTimerThread::Execute() {
 
 			TInitDeviceThread *Init = new TInitDeviceThread(true);
 			Init->test_num = 10;
+			Init->wait_event = wait_event;
 			Init->Start();
 			Sleep(10);
-			if (WaitForSingleObject(&(Init->Handle), 10000) == WAIT_TIMEOUT) {
+			if (WaitForSingleObject(wait_event, 10000) == WAIT_TIMEOUT) {
 
 				s = "Ошибка инициализации устройства";
 				Synchronize(&Draw);
@@ -135,6 +137,8 @@ void __fastcall TTimerThread::Execute() {
 			}
 			num_blocks = Init->num_blocks;
 
+
+
 			mm = 2;
 			Synchronize(&Draw);
 
@@ -145,6 +149,7 @@ void __fastcall TTimerThread::Execute() {
 			Init->Free();
 
 			for (int i = 0; i < AcfParams.n_seq; i++) {
+            	ResetEvent(wait_event);
 				num_seq = i;
 				mm = 1;
 				s = "";
@@ -157,12 +162,13 @@ void __fastcall TTimerThread::Execute() {
 				Seq->num_seq = num_seq;
 				Seq->mode = mode;
 				Seq->seq_ = &pd.Add();
+				Seq->wait_event = wait_event;
 
 				Seq->Start();
 				Sleep(10);
 
 				WaitForSingleObject(q, AcfParams.seq_time);
-				WaitForSingleObject(&(Seq->Handle), INFINITE);
+				WaitForSingleObject(wait_event, INFINITE);
 
 				Seq->Free();
 			}
@@ -173,7 +179,7 @@ void __fastcall TTimerThread::Execute() {
 
 
 
-		
+		    CloseHandle(wait_event);
 			CloseHandle(q);
             mm=5;
             Synchronize(&Draw);
@@ -181,21 +187,25 @@ void __fastcall TTimerThread::Execute() {
 		}
 		case from_hdd:
 		{
+        	void *wait_event = CreateEventA(NULL, 1, 0, NULL);
 			for (size_t i=0; i < pd.SizeOf(); i++) {
+            	ResetEvent(wait_event);
 				if (!pd[i].process_)
 					continue;
 				TSeqThread *Seq = new TSeqThread(true);
 				Seq->mode = mode;
 				Seq->num_seq = i;
+				Seq->wait_event = wait_event;
 
 				Seq->Start();
 				Sleep(10);
-				WaitForSingleObject(&(Seq->Handle), INFINITE);
+				WaitForSingleObject(wait_event, INFINITE);
 				Seq->Free();
 			}
 
 			mm=5;
 			Synchronize(&Draw);
+			CloseHandle(wait_event);
 			break;
 		}
 	}

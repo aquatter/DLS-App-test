@@ -57,10 +57,15 @@ void __fastcall TInitDeviceThread::Execute()
   */
 
 
-	if(!device.SetLength(test_num))
-	  return;
-	if(!device.Start())
-	  return;
+	if(!device.SetLength(test_num)){
+        SetEvent(wait_event);
+		return;
+	}
+
+	if(!device.Start()) {
+    	SetEvent(wait_event);
+		return;
+	}
 
 	Status status;
 	status.byte=0;
@@ -68,21 +73,26 @@ void __fastcall TInitDeviceThread::Execute()
 	do
 	{
 		Sleep(40);
-		if(!device.GetStatus(status))
-		return;
+		if(!device.GetStatus(status)){
+        	SetEvent(wait_event);
+			return;
+		}
 	}
 	while(!status.bits.data);
 
 	Data = device.GetData(test_num);
 
 	if(!Data) {
-	    num_blocks = 0;
+		num_blocks = 0;
+		SetEvent(wait_event);
 		return;
 	}
 
 	num_blocks =  ProcessInitialData()/BLOCK_DATA_NUM;
 
-   	delete [] Data;
+	delete [] Data;
+
+	SetEvent(wait_event);
 
 }
 

@@ -48,9 +48,10 @@ void __fastcall TSeqThread::Execute() {
 			else
             	ScatAngle = AcfParams.Initial_Angle;
 
-
+            void *RecEvent = CreateEventA(NULL, 1, 0, NULL);
 
 			for (int i = 0; i < AcfParams.n_rec; i++) {
+            	ResetEvent(RecEvent);
 				mm=2;
 				num_rec = i;
 				Synchronize(&Draw);
@@ -60,10 +61,11 @@ void __fastcall TSeqThread::Execute() {
 				t->num_blocks = num_blocks;
 				t->num_rec = i;
 				t->Data=Data;
+				t->WaitEvent = RecEvent;
 				t->Start();
 				Sleep(10);
 
-				WaitForSingleObject(&(t->Handle), INFINITE);
+				WaitForSingleObject(RecEvent, INFINITE);
 				t->Free();
 
 				GetPhysicalSnapShot();
@@ -93,7 +95,8 @@ void __fastcall TSeqThread::Execute() {
 			if (AcfParams.Multi_Angle)
 				ChangeAngle();
 
-
+			CloseHandle(RecEvent);
+            SetEvent(wait_event);
 			break;
 		}
 		case from_hdd:
@@ -112,6 +115,7 @@ void __fastcall TSeqThread::Execute() {
 						s = "Не удалось открыть файл: " + pd[num_seq][i].Data_;
 						mm=4;
 						Synchronize(&Draw);
+						SetEvent(wait_event);
 						return;
 					}
 				}
@@ -123,6 +127,7 @@ void __fastcall TSeqThread::Execute() {
 					s = "Не удалось открыть файл: " + pd[num_seq][i].Data_;
 					mm=4;
 					Synchronize(&Draw);
+					SetEvent(wait_event);
                     return;
 				}
 
@@ -143,7 +148,8 @@ void __fastcall TSeqThread::Execute() {
                 SaveAcf(num_seq, -1);
 			}
 
-            Clear();
+			Clear();
+			SetEvent(wait_event);
         	break;
         }
 

@@ -31,6 +31,7 @@ public:
 	int n0;
 	__int64 *sum1;
 	__int64 *sum2;
+    void *wait_event;
 
 	TAquireMode mode;
 	TSeqThreadParams params_;

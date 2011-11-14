@@ -90,15 +90,27 @@ void __fastcall TAcquireThread::Execute() {
      	status.byte = 0;
 		pData += i*blocksSize*BLOCK_DATA_NUM;
 
-		if (!device.SetLength(blocksSize)) return;
-		if(!device.Start()) return;
+		if (!device.SetLength(blocksSize)) {
+        	SetEvent(WaitEvent);
+			return;
+		};
+		if(!device.Start()){
+        	SetEvent(WaitEvent);
+			return;
+		};
 
 		do {
 			Sleep(40);
-			if (!device.GetStatus(status)) return; }
+			if (!device.GetStatus(status)){
+            	SetEvent(WaitEvent);
+				return;
+			} }
 		while (!status.bits.data);
 
-		if (!device.GetData(blocksSize, pData)) return;
+		if (!device.GetData(blocksSize, pData)){
+			SetEvent(WaitEvent);
+			return;
+		}
 
 		/*
 		if (!ReadDataBlocks(blocksSize)) {
@@ -113,15 +125,27 @@ void __fastcall TAcquireThread::Execute() {
     pData = Data + count*blocksSize*BLOCK_DATA_NUM;
 	status.byte = 0;
 
-	if (!device.SetLength(modValue)) return;
-	if(!device.Start()) return;
+	if (!device.SetLength(modValue)) {
+    	SetEvent(WaitEvent);
+		return;
+	}
+	if(!device.Start()) {
+     	SetEvent(WaitEvent);
+		return;
+	}
 
 	do {
 		Sleep(40);
-		if (!device.GetStatus(status)) return;}
+		if (!device.GetStatus(status)){
+        	SetEvent(WaitEvent);
+			return;
+		}}
 	while (!status.bits.data);
 
-	if (!device.GetData(modValue, pData)) return;
+	if (!device.GetData(modValue, pData)) {
+     	SetEvent(WaitEvent);
+		return;
+	}
 
 
 	/*
@@ -146,6 +170,7 @@ void __fastcall TAcquireThread::Execute() {
 	mm = 1;
 	Synchronize(&Draw);
 	*/
+	SetEvent(WaitEvent);
 }
 
 void __fastcall TAcquireThread::ProcessAcfData() {

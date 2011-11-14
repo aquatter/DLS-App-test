@@ -15,6 +15,7 @@ public:
 
 	DWORD test_num;
 	WORD* Data;
+	void *wait_event;
 	int num_blocks;
 	UnicodeString s;
 	__fastcall TInitDeviceThread(bool CreateSuspended);

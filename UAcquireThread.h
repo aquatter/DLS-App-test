@@ -19,6 +19,7 @@ public:
 	UnicodeString s1;
 	MeasuresData measuresData;
 	WORD* Data;
+	void *WaitEvent;
 	int pos;
 	int num_blocks;
 	int num_seq;
