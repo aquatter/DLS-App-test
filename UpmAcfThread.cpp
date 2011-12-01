@@ -44,7 +44,7 @@ void __fastcall TpmAcfThread::Execute()
 //  return;
   double t_izm = 1e5;
   double n_cnt_max = t_izm/AcfParams.t_discr;
-  n_bins=Floor(n_cnt_max+100);
+  n_bins=Floor((double)(n_cnt_max+100));
 
   acf_pm = new int[n_bins];
   memset(acf_pm, 0, n_bins*sizeof(int));

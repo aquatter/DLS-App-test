@@ -83,7 +83,7 @@ struct TAcfParams {
 
 	int Time_discr;
 	bool Multi_Angle;
-	float Initial_Angle;
+	char Initial_Angle;
 	float Angle_Shift;
 	int num_Angles;
 	int n_seq;
@@ -166,6 +166,164 @@ bool OpenProject(UnicodeString Name, TProjectData &pd);
 void ExtractDataParams(UnicodeString Name, TDataParams *params);
 void ProcessData(dls_mode mode, UnicodeString Name, int seq_num, int rec_num);
 void OpenData(WORD *data, int &n, UnicodeString Name);
+double GetTime_Discr(int i);
+
+
+
+typedef struct ThreadData
+{
+	char index;
+	int value;
+} *PThreadData;
+
+DWORD WINAPI SetThreadParams(LPVOID lpParam)
+{
+ //	PThreadData d = (PThreadData)lpParam;
+    Sleep(1000);
+
+	/*
+	if (d->index <= 22) {
+		device.WriteData(d->index, d->value);
+		void *q = CreateEvent(NULL, true, false, NULL);
+		Status status;
+		status.byte = 0;
+		device.SetAngle(d->index);
+		do {
+			WaitForSingleObject(q, 100);
+			device.GetStatus(status);
+		}
+		while (status.bits.goniometer);
+		CloseHandle(q);
+	}
+
+	if (d->index == 24) {
+		device.WriteData(d->index, d->value);
+		void *q = CreateEvent(NULL, true, false, NULL);
+		Status status;
+		status.byte = 0;
+		device.SetAperture(d->index);
+		do {
+			WaitForSingleObject(q, 100);
+			device.GetStatus(status);
+		}
+		while (status.bits.aperture);
+		CloseHandle(q);
+	}
+	*/
+}
+
+
+
+
+class TThreadParams: public TThread
+{
+protected:
+	void __fastcall Execute()
+	{
+		Sleep(1000);
+		if (Draw) {
+        	Synchronize(Draw);
+		}
+
+		/*
+		switch (mode) {
+			case 0: {
+				void *q = CreateEvent(NULL, true, false, NULL);
+				Status status;
+				status.byte = 0;
+				device.SetAngle(AcfParams.Initial_Angle);
+				do {
+					WaitForSingleObject(q, 100);
+					device.GetStatus(status);
+				}
+				while (status.bits.goniometer);
+
+				status.byte = 0;
+				device.SetAperture(AcfParams.Aperture);
+				do {
+					WaitForSingleObject(q, 100);
+					device.GetStatus(status);
+				}
+				while (status.bits.aperture);
+				CloseHandle(q);
+			}
+			case 1: {
+				device.WriteData(AcfParams.Initial_Angle*2, value);
+				void *q = CreateEvent(NULL, true, false, NULL);
+				Status status;
+				status.byte = 0;
+				device.SetAngle(AcfParams.Initial_Angle);
+				do {
+					WaitForSingleObject(q, 100);
+					device.GetStatus(status);
+				}
+				while (status.bits.goniometer);
+				CloseHandle(q);
+			}
+			case 2: {
+            	device.WriteData(24, value);
+                void *q = CreateEvent(NULL, true, false, NULL);
+                Status status;
+                status.byte = 0;
+                device.SetAperture(AcfParams.Aperture);
+                do {
+                	WaitForSingleObject(q, 100);
+                	device.GetStatus(status);
+                }
+                while (status.bits.aperture);
+                CloseHandle(q);
+			}
+
+		}
+
+        */
+		/*
+		if (d->index <= 22) {
+			device.WriteData(d->index, d->value);
+			void *q = CreateEvent(NULL, true, false, NULL);
+			Status status;
+			status.byte = 0;
+			device.SetAngle(d->index);
+			do {
+				WaitForSingleObject(q, 100);
+				device.GetStatus(status);
+			}
+			while (status.bits.goniometer);
+			CloseHandle(q);
+		}
+
+		if (d->index == 24) {
+			device.WriteData(d->index, d->value);
+			void *q = CreateEvent(NULL, true, false, NULL);
+			Status status;
+			status.byte = 0;
+			device.SetAperture(d->index);
+			do {
+				WaitForSingleObject(q, 100);
+				device.GetStatus(status);
+			}
+			while (status.bits.aperture);
+			CloseHandle(q);
+		}
+        */
+
+		SetEvent(wait_event);
+
+
+
+	}
+
+public:
+
+	//char index;
+	int value;
+	TThreadMethod Draw;
+	int mode;
+	void *wait_event;
+	__fastcall TThreadParams(bool CreateSuspended) : TThread(CreateSuspended) {};
+};
+
+
 
 // extern void __declspec(dllimport) DLSCumulants(double *p, double *t, double *w, int n, double &a0,  double &a1, double &a2);
 

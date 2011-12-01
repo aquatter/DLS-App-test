@@ -4,17 +4,18 @@
 #pragma hdrstop
 #include <tchar.h>
 //---------------------------------------------------------------------------
-USEFORM("UReportEditForm.cpp", ReportEditForm);
-USEFORM("MainFormUnit.cpp", MainForm);
-USEFORM("UGradForm.cpp", GradForm);
-USEFORM("UStatusRecForm.cpp", StatusRecForm);
-USEFORM("UGraphApproxForm.cpp", GraphApproxForm);
-USEFORM("UAddGradForm.cpp", AddGradForm);
-USEFORM("UOptionsForm.cpp", OptionsForm);
 USEFORM("UReportForm.cpp", ReportForm);
-USEFORM("UAutoProgressForm.cpp", AutoProgressForm);
+USEFORM("UOptionsForm.cpp", OptionsForm);
 USEFORM("UAdd2ReportForm.cpp", Add2ReportForm);
+USEFORM("UAutoProgressForm.cpp", AutoProgressForm);
 USEFORM("URecThreadStartForm.cpp", RecThreadStartForm);
+USEFORM("UGradForm.cpp", GradForm);
+USEFORM("MainFormUnit.cpp", MainForm);
+USEFORM("UReportEditForm.cpp", ReportEditForm);
+USEFORM("UStatusRecForm.cpp", StatusRecForm);
+USEFORM("UAddGradForm.cpp", AddGradForm);
+USEFORM("UGraphApproxForm.cpp", GraphApproxForm);
+USEFORM("UTAdjustAngleAperForm.cpp", AdjustAngleAperForm);
 //---------------------------------------------------------------------------
 WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int)
 {
@@ -34,6 +35,7 @@ WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int)
 		Application->CreateForm(__classid(TGraphApproxForm), &GraphApproxForm);
 		Application->CreateForm(__classid(TRecThreadStartForm), &RecThreadStartForm);
 		Application->CreateForm(__classid(TStatusRecForm), &StatusRecForm);
+		Application->CreateForm(__classid(TAdjustAngleAperForm), &AdjustAngleAperForm);
 		Application->Run();
 	}
 	catch (Exception &exception)

@@ -39,14 +39,15 @@ void __fastcall TSeqThread::Execute() {
 		case from_device:
 		{
 			Init();
-			mm=4;
-			s= "Угол рассеяния: " + FloatToStr(AcfParams.Initial_Angle + AcfParams.Angle_Shift*num_seq);
-			Synchronize(&Draw);
 
 			if (AcfParams.Multi_Angle)
-				ScatAngle = AcfParams.Initial_Angle + AcfParams.Angle_Shift*num_seq;
+				ScatAngle = (AcfParams.Initial_Angle + num_seq)*15;
 			else
-            	ScatAngle = AcfParams.Initial_Angle;
+				ScatAngle = AcfParams.Initial_Angle*15;
+
+			mm=4;
+			s= "Угол рассеяния: " + FloatToStr(ScatAngle);
+			Synchronize(&Draw);
 
             void *RecEvent = CreateEventA(NULL, 1, 0, NULL);
 
@@ -65,7 +66,7 @@ void __fastcall TSeqThread::Execute() {
 				t->Start();
 				Sleep(10);
 
-				WaitForSingleObject(RecEvent, INFINITE);
+				WaitForSingleObject(RecEvent, 10000);
 				t->Free();
 
 				GetPhysicalSnapShot();
@@ -92,7 +93,7 @@ void __fastcall TSeqThread::Execute() {
 
 			Clear();
 
-			if (AcfParams.Multi_Angle)
+			if (AcfParams.Multi_Angle && (num_seq != (AcfParams.n_seq-1)))
 				ChangeAngle();
 
 			CloseHandle(RecEvent);
@@ -299,10 +300,12 @@ void __fastcall TSeqThread::Draw() {
 			MainForm->Memo1->Lines->Add(s);
 			MainForm->Label2->Caption = s;
 			MainForm->Memo1->Lines->Add("");
+			MainForm->LineSeries4->Add(AcfParams.x_pcs);
+			MainForm->LineSeries5->Add(AcfParams.x_pcs);
 
 			break;
 		case 2:
-        	MainForm->Memo1->Lines->Add("");
+			MainForm->Memo1->Lines->Add("");
 			s= "Измерение "+IntToStr(num_rec+1)+" из "+IntToStr(AcfParams.n_rec);
 //			StatusRecForm->Label2->Caption = s;
 			MainForm->Memo1->Lines->Add(s);
@@ -319,12 +322,14 @@ void __fastcall TSeqThread::Draw() {
 				}
 
 			s = "Показатель полидисперсности " + FloatToStrF(AcfParams.PI, ffFixed,5,3);
-            MainForm->Memo1->Lines->Add(s);
-            MainForm->Label3->Caption = s;
-            s = "Средний диаметр частиц " + FloatToStrF(AcfParams.x_pcs, ffFixed, 5, 2)+" нм";
-            MainForm->Memo1->Lines->Add(s);
-            MainForm->Label2->Caption = s;
-            MainForm->Memo1->Lines->Add("");
+			MainForm->Memo1->Lines->Add(s);
+			MainForm->Label3->Caption = s;
+			s = "Средний диаметр частиц " + FloatToStrF(AcfParams.x_pcs, ffFixed, 5, 2)+" нм";
+			MainForm->Memo1->Lines->Add(s);
+			MainForm->Label2->Caption = s;
+			MainForm->Memo1->Lines->Add("");
+			MainForm->LineSeries4->Add(AcfParams.x_pcs);
+			MainForm->LineSeries5->Add(AcfParams.x_pcs);
 			break;
 		case 4: MainForm->Memo1->Lines->Add(s); break;
 
@@ -476,25 +481,29 @@ bool CalculateCumulants(double *acf_app){
 }
 
 bool __fastcall TSeqThread::Init(int n){
- 	n0 = n;
+	n0 = n;
 	Data = new WORD[n0];
 	sum1 = new __int64[n0];
 	sum2 = new __int64[n0];
-	step = 100;
+
 
 	N = 14;
 	M = 8;
 	Navt = M*N;
 	_m = new int[M*N];
 
-	double dt = 6.5e-3;
+	double dt = GetTime_Discr(DataParams.Discr_Time);
 
+	step = 500/dt;
+	dt*=1e-3;
+	/*
 	switch (DataParams.Discr_Time) {
 		case 0: dt=6.5e-3; break;
 		case 1: dt=10e-3; break;
 		case 2: dt=19.92e-3; break;
 		case 3: dt=49.8e-3; break;
 	}
+	*/
 
 	acf.Clear();
 	acf.Init(Navt, 1, mitDouble);
@@ -526,21 +535,26 @@ void __fastcall TSeqThread::Init(){
 	Data = new WORD[n0];
 	sum1 = new __int64[n0];
 	sum2 = new __int64[n0];
-	step = 100;
+
 
 	N = 14;
 	M = 8;
 	Navt = M*N;
 	_m = new int[M*N];
 
-	double dt = 6.5e-3;
+	double dt = GetTime_Discr(AcfParams.Time_discr);
 
+	step = 500/dt;
+
+	dt*=1e-3;
+	/*
 	switch (AcfParams.Time_discr) {
 		case 0: dt=6.5e-3; break;
 		case 1: dt=10e-3; break;
 		case 2: dt=19.92e-3; break;
 		case 3: dt=49.8e-3; break;
 	}
+    */
 
 	acf.Clear();
 	acf.Init(Navt, 1, mitDouble);
@@ -654,7 +668,7 @@ void __fastcall TSeqThread::SaveAcf(int ns, int nr){
 
 bool __fastcall TSeqThread::ChangeAngle()
 {
-	if (device.SetAngle(AcfParams.Initial_Angle +AcfParams.Angle_Shift*(num_seq+1)))
+	if (device.SetAngle((char)(AcfParams.Initial_Angle + num_seq + 1)))
 	/*(char)(AcfParams.Initial_Angle+num_seq+1)*/
 	{
 		Status status;
@@ -713,12 +727,18 @@ bool __fastcall TSeqThread::GetPhysicalSnapShot(){
 	DataParams.WaveLength = AcfParams.lambda;
 	DataParams.ScatAngle = ScatAngle;
 
-	double t;
+	double t = 0.0;
+	device.GetTemperature(t);
+
+	if (t)
+		DataParams.Temperature = t;
+	else
+    	DataParams.Temperature = 298.15;
 //	if (!device.GetTemperature(t))
 //		return false;
 
 
-	DataParams.Temperature = 298.15;
+
 	DataParams.Viscosity = FormulaPuazeilia(DataParams.Temperature);
 	DataParams.RefIndex = AcfParams.n;
 	DataParams.Discr_Time = AcfParams.Time_discr;

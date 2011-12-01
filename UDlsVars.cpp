@@ -459,9 +459,10 @@ bool OptionsFormExecute()
 
 	OptionsForm->ComboBox1->ItemIndex = AcfParams.Time_discr;
 	OptionsForm->CheckBox5->Checked = AcfParams.Multi_Angle;
-	OptionsForm->Edit9->Text = FloatToStr(AcfParams.Initial_Angle);
-	OptionsForm->Edit28->Text = FloatToStr(AcfParams.Angle_Shift);
-	OptionsForm->Edit29->Text = IntToStr(AcfParams.num_Angles);
+	OptionsForm->ComboBox3->ItemIndex = AcfParams.Initial_Angle;
+//	OptionsForm->Edit9->Text = FloatToStr(AcfParams.Initial_Angle);
+  //	OptionsForm->Edit28->Text = FloatToStr(AcfParams.Angle_Shift);
+	//OptionsForm->Edit29->Text = IntToStr(AcfParams.num_Angles);
 	OptionsForm->Edit30->Text = IntToStr(AcfParams.n_seq);
 	OptionsForm->Edit32->Text = IntToStr(AcfParams.seq_time);
 	OptionsForm->Edit31->Text = IntToStr(AcfParams.n_rec);
@@ -489,8 +490,9 @@ bool OptionsFormExecute()
 	OptionsForm->Edit36->Text = AcfParams.File_Name;
 
 	OptionsForm->Edit8->Text = FloatToStr(AcfParams.T);
-	OptionsForm->ComboBox2->ItemIndex = (AcfParams.Prism);
-	OptionsForm->Edit37->Text = IntToStr(AcfParams.Aperture);
+	OptionsForm->ComboBox2->ItemIndex = AcfParams.Prism;
+	OptionsForm->ComboBox4->ItemIndex = AcfParams.Aperture;
+//	OptionsForm->Edit37->Text = IntToStr(AcfParams.Aperture);
 	OptionsForm->Edit38->Text = IntToStr(AcfParams.Polar);
 
 
@@ -501,10 +503,11 @@ bool OptionsFormExecute()
 
 
 	AcfParams.Time_discr = OptionsForm->ComboBox1->ItemIndex;
-	AcfParams.Multi_Angle =  OptionsForm->CheckBox5->Checked;
-	AcfParams.Initial_Angle = CheckString(OptionsForm->Edit9->Text);
-	AcfParams.Angle_Shift = CheckString(OptionsForm->Edit28->Text);
-	AcfParams.num_Angles = OptionsForm->Edit29->Text.ToInt();
+//	AcfParams.Multi_Angle =  OptionsForm->CheckBox5->Checked;
+	AcfParams.Initial_Angle = OptionsForm->ComboBox3->ItemIndex; // CheckString(OptionsForm->Edit9->Text);
+
+//	AcfParams.Angle_Shift = CheckString(OptionsForm->Edit28->Text);
+//	AcfParams.num_Angles = OptionsForm->Edit29->Text.ToInt();
 	AcfParams.n_seq = OptionsForm->Edit30->Text.ToInt();
 	AcfParams.seq_time = OptionsForm->Edit32->Text.ToInt();
 	AcfParams.n_rec = OptionsForm->Edit31->Text.ToInt();
@@ -531,10 +534,9 @@ bool OptionsFormExecute()
 	AcfParams.cont_high_graph = CheckString(OptionsForm->Edit27->Text.t_str());
 	AcfParams.right_boundary = OptionsForm->CheckBox4->Checked;
 	AcfParams.File_Name = OptionsForm->Edit36->Text;
-
 	AcfParams.T = CheckString(OptionsForm->Edit8->Text.t_str());
 	AcfParams.Prism = OptionsForm->ComboBox2->ItemIndex;
-	AcfParams.Aperture = OptionsForm->Edit37->Text.ToInt();
+	AcfParams.Aperture = OptionsForm->ComboBox4->ItemIndex; //Edit37->Text.ToInt();
 	AcfParams.Polar = OptionsForm->Edit38->Text.ToInt();
 	
 	/*
@@ -718,6 +720,8 @@ void ProcessData(dls_mode mode, UnicodeString Name, int seq_num, int rec_num)
 			s = "Средний диаметр частиц " + FloatToStrF(AcfParams.x_pcs, ffFixed, 5, 2)+" нм";
 			MainForm->Label2->Caption = s;
 			MainForm->Memo1->Lines->Add(s);
+            MainForm->LineSeries4->Add(AcfParams.x_pcs);
+            MainForm->LineSeries5->Add(AcfParams.x_pcs);
 
 			delete [] acf_app;
         	break;
@@ -769,3 +773,14 @@ void OpenData(WORD *data, int &n, UnicodeString Name)
 	FileRead(f, (void *)&DataParams, sizeof(TDataParams));
 	FileClose(f);
 }
+
+double GetTime_Discr(int i)
+{
+	switch (i) {
+		case 0: return 5.0;
+		case 1: return 10.0;
+		case 2: return 20.0;
+		case 3: return 50.0;
+	}
+}
+

@@ -245,8 +245,8 @@ bool Device::SetFrequency(int index)
 	__command_data command_data;
 	InitCommandData(command_data,3,1);
 	command_data.WriteData[0] = 0x13;
-//	command_data.WriteData[1] = 0x0A;
-	command_data.WriteData[1] = 0x0B; // changed !!!! -------------------------------------------
+	command_data.WriteData[1] = 0x0A;
+//	command_data.WriteData[1] = 0x0B; // changed !!!! -------------------------------------------
 	command_data.WriteData[2] = index;
 	return ftd2xxDevice.Exec(command_data);
 }

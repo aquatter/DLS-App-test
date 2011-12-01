@@ -138,7 +138,6 @@ __published:	// IDE-managed Components
 	TToolButton *ToolButton1;
 	TEdit *Edit36;
 	TLabel *Label57;
-	TLabel *Label58;
 	TLabel *Label18;
 	TEdit *Edit8;
 	TLabel *Label59;
@@ -148,6 +147,9 @@ __published:	// IDE-managed Components
 	TLabel *Label62;
 	TLabel *Label61;
 	TEdit *Edit38;
+	TComboBox *ComboBox3;
+	TComboBox *ComboBox4;
+	TButton *Button7;
 	void __fastcall Button2Click(TObject *Sender);
 	void __fastcall Button1Click(TObject *Sender);
 	void __fastcall CheckBox1Click(TObject *Sender);
@@ -172,6 +174,7 @@ __published:	// IDE-managed Components
 	void __fastcall Button5Click(TObject *Sender);
 	void __fastcall Button6Click(TObject *Sender);
 	void __fastcall ToolButton1Click(TObject *Sender);
+	void __fastcall Button7Click(TObject *Sender);
 
 private:	// User declarations
 public:		// User declarations

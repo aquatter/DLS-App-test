@@ -14,6 +14,7 @@ protected:
 
 public:
 	UnicodeString s;
+	void *wait_event;
 	bool monitoring;
 	bool *error_;
 	void  __fastcall Draw();

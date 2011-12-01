@@ -13,6 +13,7 @@
 #include "MainFormUnit.h"
 #include "UGradForm.h"
 #include "ShlObj.h"
+#include "UTAdjustAngleAperForm.h"
 
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
@@ -68,17 +69,17 @@ void __fastcall TOptionsForm::Button1Click(TObject *Sender)
   if (AcfParams._time < t_block_mean)
   {
 	AcfParams.n_block=1;
-	AcfParams.n_mean=Floor(AcfParams._time/(AcfParams.t_block*1e6));
+	AcfParams.n_mean=Floor((double) (AcfParams._time/(AcfParams.t_block*1e6)));
 	if (AcfParams._time < AcfParams.t_block*1e6) {
 	  AcfParams.n_mean=1;
 	  AcfParams.t_block=AcfParams._time*1e-6;
 	}
-	AcfParams.n0=Floor(AcfParams.t_block*1e6/AcfParams.dt0);
+	AcfParams.n0=Floor((double)(AcfParams.t_block*1e6/AcfParams.dt0));
   }
   else
   {
-	AcfParams.n_block=Floor(AcfParams._time/t_block_mean);
-	AcfParams.n0=Floor(AcfParams.t_block*1e6/AcfParams.dt0);
+	AcfParams.n_block=Floor((double)(AcfParams._time/t_block_mean));
+	AcfParams.n0=Floor((double)(AcfParams.t_block*1e6/AcfParams.dt0));
   }
 
 
@@ -89,7 +90,7 @@ void __fastcall TOptionsForm::Button1Click(TObject *Sender)
   while (pow(AcfParams._m, AcfParams._s) < n_temp)
 	AcfParams._s++;
 
-  AcfParams._n_min=Floor(AcfParams.n0/pow(AcfParams._m,AcfParams._s-1));
+  AcfParams._n_min=Floor((double)(AcfParams.n0/pow(AcfParams._m,AcfParams._s-1)));
 
   // ------------ Количество отсчетов автокорреляционной функции ----------------
 //  AcfParams.n_avt=(AcfParams._p-AcfParams._p/AcfParams._m)*(AcfParams._s-1)+AcfParams.n_min-1;
@@ -378,6 +379,66 @@ void __fastcall TOptionsForm::ToolButton1Click(TObject *Sender)
 			ppMalloc->Free(buffer);
 		}
 	}
+}
+//---------------------------------------------------------------------------
+
+DWORD WINAPI MyThreadFunction( LPVOID lpParam )
+{
+	Sleep(5000);
+}
+	//void __fastcall (__closure *TThreadMethod)(void);
+
+
+void __fastcall TOptionsForm::Button7Click(TObject *Sender)
+{
+	AcfParams.Aperture = ComboBox4->ItemIndex;
+	int Aper = 150;
+	//if (!device.ReadData(24, Aper))
+	  //	return;
+	AcfParams.Initial_Angle = ComboBox3->ItemIndex;
+	int Angle = 180;
+	//if (!device.ReadData(AcfParams.Initial_Angle*2, Angle))
+	  //	return;
+
+	AdjustAngleAperForm->Edit1->Text = IntToStr(Angle);
+	AdjustAngleAperForm->Edit2->Text = IntToStr(Aper);
+	AdjustAngleAperForm->ComboBox3->ItemIndex = AcfParams.Initial_Angle;
+
+	void *wait_event = CreateEvent(NULL, true, false, NULL);
+
+	TThreadParams *t = new TThreadParams(true);
+	t->mode = 0;
+	t->wait_event = wait_event;
+	t->FreeOnTerminate = true;
+	t->Start();
+
+	WaitForSingleObject(wait_event, INFINITE);
+
+	CloseHandle(wait_event);
+
+	/*
+	PThreadData d = (PThreadData)HeapAlloc(GetProcessHeap(),  HEAP_ZERO_MEMORY, sizeof(ThreadData));
+
+	d->index = AcfParams.Initial_Angle;
+	d->value = Angle;
+
+	HANDLE h = CreateThread(NULL, 0, MyThreadFunction, d, 0, NULL);
+	WaitForSingleObject(h, INFINITE);
+	CloseHandle(h);
+	/*
+	d->index = 24;
+	d->value = Aper;
+
+	h = CreateThread(NULL, 0, MyThreadFunction, d, 0, NULL);
+	WaitForSingleObject(h, INFINITE);
+	CloseHandle(h);
+
+
+	HeapFree(GetProcessHeap(), 0, d);
+	d = NULL;
+	*/
+
+	AdjustAngleAperForm->ShowModal();
 }
 //---------------------------------------------------------------------------
 

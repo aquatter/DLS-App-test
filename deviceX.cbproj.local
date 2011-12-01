@@ -5,5 +5,8 @@
     <Transaction>2011.10.17 00:38:44.000.h,D:\Files\Delphi Files\dls\Device X\Unit1.h=D:\Files\Delphi Files\dls\Device X\UDeviceInitThread.h</Transaction>
     <Transaction>2011.10.26 22:21:19.211.cpp,D:\Files\Delphi Files\dls\Device X\Unit1.cpp=D:\Files\Delphi Files\dls\Device X\UProgectData.cpp</Transaction>
     <Transaction>2011.10.26 22:21:19.211.h,D:\Files\Delphi Files\dls\Device X\Unit1.h=D:\Files\Delphi Files\dls\Device X\UProgectData.h</Transaction>
+    <Transaction>2011.11.16 23:59:37.812.cpp,F:\Files\Delphi Files\dls\Device X\Unit1.cpp=F:\Files\Delphi Files\dls\Device X\UTAdjustAngleAperForm.cpp</Transaction>
+    <Transaction>2011.11.16 23:59:37.812.h,F:\Files\Delphi Files\dls\Device X\Unit1.h=F:\Files\Delphi Files\dls\Device X\UTAdjustAngleAperForm.h</Transaction>
+    <Transaction>2011.11.16 23:59:37.812.dfm,F:\Files\Delphi Files\dls\Device X\Unit1.dfm=F:\Files\Delphi Files\dls\Device X\UTAdjustAngleAperForm.dfm</Transaction>
   </Transactions>
 </BorlandProject>

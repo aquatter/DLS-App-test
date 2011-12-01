@@ -56,7 +56,7 @@ void __fastcall TInitDeviceThread::Execute()
    return;
   */
 
-
+  	num_blocks = 0;
 	if(!device.SetLength(test_num)){
         SetEvent(wait_event);
 		return;
@@ -110,8 +110,8 @@ void __fastcall TInitDeviceThread::Draw()
 
 int __fastcall TInitDeviceThread::ProcessInitialData()
 {
-	double t=0;
-
+	double t= GetTime_Discr(AcfParams.Time_discr);
+  /*
 	switch (AcfParams.Time_discr)
 	{
 		 case 0: t=6.5; break;
@@ -119,6 +119,8 @@ int __fastcall TInitDeviceThread::ProcessInitialData()
 		 case 2: t=19.92; break;
 		 case 3: t=49.8; break;
 	}
+
+	*/
 
 	double time = 0;
 	int n0 = test_num*BLOCK_DATA_NUM;

@@ -25,6 +25,7 @@
 #include "UTimerThread.h"
 #include "UDeviceInitThread.h"
 #include "UProgectData.h"
+#include "UTAdjustAngleAperForm.h"
 
 // ---------------------------------------------------------------------------
 #pragma package(smart_init)
@@ -182,9 +183,9 @@ bool __fastcall TMainForm::UpdateTemperature() {
 bool __fastcall TMainForm::UpdateIntensity() {
 	int value = 0;
 	bool rez = false;
+
 	rez = device.GetIntensity(value);
-	OptionsForm->Label58->Caption =
-		"Текущее значение интенсивности сигнала: " + IntToStr(value);
+	AdjustAngleAperForm->Label58->Caption =	"Интенсивность сигнала: " + IntToStr(value);
 
 	return rez;
 }
@@ -534,12 +535,12 @@ void __fastcall TMainForm::bbtnSaveClick(TObject *Sender) {
 // ---------------------------------------------------------------------------
 
 void __fastcall TMainForm::bbtnReconnectClick(TObject *Sender) {
-	StopMonitoring();
+	//StopMonitoring();
 	FTD2XX_Settings settings;
 	device.ftd2xxDevice.CloseDevice();
 	device.ftd2xxDevice.OpenDevice(0, settings);
 	device.ftd2xxDevice.SetUSBParameters(261120, 0);
-	StartMonitoring();
+	//StartMonitoring();
 }
 // ---------------------------------------------------------------------------
 
@@ -812,8 +813,10 @@ void __fastcall TMainForm::ToolButton4Click(TObject *Sender) {
 void __fastcall TMainForm::ToolButton2Click(TObject *Sender) {
 
 	OptionsForm->Button2->Caption = "OK";
+	StartMonitoring();
+
 	if (OptionsFormExecute()) {
-		StopMonitoring();
+        StopMonitoring();
 		bool error;
 		TDeviceInitThread *t = new TDeviceInitThread(true);
 		t->FreeOnTerminate = true;
@@ -821,6 +824,8 @@ void __fastcall TMainForm::ToolButton2Click(TObject *Sender) {
 		t->error_ = &error;
 		t->Start();
 	}
+
+    StopMonitoring();
 	return;
 
 	OptionsForm->CheckBox1->Checked = AcfParams.lfd;
@@ -1690,7 +1695,7 @@ void __fastcall TMainForm::Button8Click(TObject *Sender) {
 
 	// AcfParams.Rec_time = StrToInt(RecThreadStartForm->Edit1->Text);
 
-	StopMonitoring();
+ //	StopMonitoring();
 //	StatusRecForm->Show();
     ListView3->Clear();
 	// InitDeviceThread = new TInitDeviceThread(true);
@@ -1706,7 +1711,6 @@ void __fastcall TMainForm::Button8Click(TObject *Sender) {
 	TTimerThread *t = new TTimerThread(true);
 	t->FreeOnTerminate = true;
 	t->mode = from_device;
-
 	t->Start();
 
 	/*
@@ -1755,9 +1759,10 @@ void __fastcall TMainForm::Button8Click(TObject *Sender) {
 // ---------------------------------------------------------------------------
 void __fastcall TMainForm::FormResize(TObject *Sender) {
 	Panel4->Width = Width / 2;
-	Panel5->Height = (Height-ToolBar1->Height) /2;
-	Panel7->Width = Width / 2;
-	Memo1->Height = 100;
+	Panel5->Height = (Height-ToolBar1->Height) /3;
+	Panel7->Height = (Height-ToolBar1->Height) /3;
+	Panel10->Width = Width / 2;
+//	Memo1->Height = 100;
 }
 // ---------------------------------------------------------------------------
 
@@ -1855,4 +1860,13 @@ void __fastcall TMainForm::ListView3DblClick(TObject *Sender) {
 
 }
 // ---------------------------------------------------------------------------
+
+
+
+void __fastcall TMainForm::ToolButton9Click(TObject *Sender)
+{
+	LineSeries4->Clear();
+	LineSeries5->Clear();
+}
+//---------------------------------------------------------------------------
 

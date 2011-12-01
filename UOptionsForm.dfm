@@ -20,7 +20,7 @@ object OptionsForm: TOptionsForm
     Top = 0
     Width = 442
     Height = 553
-    ActivePage = TabSheet1
+    ActivePage = TabSheet3
     Align = alTop
     TabOrder = 0
     object TabSheet1: TTabSheet
@@ -77,6 +77,7 @@ object OptionsForm: TOptionsForm
         Width = 64
         Height = 13
         Caption = #1059#1075#1083#1086#1074#1086#1081' '#1096#1072#1075
+        Visible = False
       end
       object Label47: TLabel
         Left = 28
@@ -84,6 +85,7 @@ object OptionsForm: TOptionsForm
         Width = 135
         Height = 13
         Caption = #1063#1080#1089#1083#1086' '#1091#1075#1083#1086#1074#1099#1093' '#1087#1086#1083#1086#1078#1077#1085#1080#1081
+        Visible = False
       end
       object Label48: TLabel
         Left = 29
@@ -114,9 +116,9 @@ object OptionsForm: TOptionsForm
         Caption = #1044#1083#1080#1090#1077#1083#1100#1085#1086#1089#1090#1100' '#1086#1076#1085#1086#1075#1086' '#1080#1079#1084#1077#1088#1077#1085#1080#1103', '#1084#1089'.'
       end
       object Bevel1: TBevel
-        Left = 17
-        Top = 54
-        Width = 287
+        Left = 16
+        Top = 53
+        Width = 309
         Height = 134
       end
       object Bevel2: TBevel
@@ -236,8 +238,8 @@ object OptionsForm: TOptionsForm
         OnUpClick = CSpinButton2UpClick
       end
       object Edit9: TEdit
-        Left = 226
-        Top = 96
+        Left = 317
+        Top = 23
         Width = 58
         Height = 21
         Alignment = taRightJustify
@@ -292,12 +294,12 @@ object OptionsForm: TOptionsForm
         Style = csDropDownList
         ItemIndex = 0
         TabOrder = 5
-        Text = '6,5 '#1085#1089
+        Text = '5 '#1085#1089
         Items.Strings = (
-          '6,5 '#1085#1089
+          '5 '#1085#1089
           '10 '#1085#1089
-          '19,92 '#1085#1089
-          '49,80 '#1085#1089)
+          '20 '#1085#1089
+          '50 '#1085#1089)
       end
       object Button3: TButton
         Left = 28
@@ -400,11 +402,12 @@ object OptionsForm: TOptionsForm
       object Edit28: TEdit
         Left = 226
         Top = 128
-        Width = 58
+        Width = 57
         Height = 21
         Alignment = taRightJustify
         TabOrder = 14
         Text = '0'
+        Visible = False
       end
       object Edit29: TEdit
         Left = 225
@@ -414,6 +417,7 @@ object OptionsForm: TOptionsForm
         Alignment = taRightJustify
         TabOrder = 15
         Text = '0'
+        Visible = False
       end
       object Edit30: TEdit
         Left = 227
@@ -500,14 +504,34 @@ object OptionsForm: TOptionsForm
         Alignment = taRightJustify
         TabOrder = 23
       end
+      object ComboBox3: TComboBox
+        Left = 224
+        Top = 94
+        Width = 74
+        Height = 21
+        Style = csDropDownList
+        ItemIndex = 0
+        TabOrder = 24
+        Text = '0 '#1075#1088#1072#1076'.'
+        Items.Strings = (
+          '0 '#1075#1088#1072#1076'.'
+          '15 '#1075#1088#1072#1076'.'
+          '30 '#1075#1088#1072#1076'.'
+          '45 '#1075#1088#1072#1076'.'
+          '60 '#1075#1088#1072#1076'.'
+          '75 '#1075#1088#1072#1076'.'
+          '90 '#1075#1088#1072#1076'.'
+          '105 '#1075#1088#1072#1076'.'
+          '120 '#1075#1088#1072#1076'.'
+          '135 '#1075#1088#1072#1076'.'
+          '150 '#1075#1088#1072#1076'.'
+          '165 '#1075#1088#1072#1076'.'
+          '180 '#1075#1088#1072#1076'.')
+      end
     end
     object TabSheet2: TTabSheet
       Caption = #1056#1072#1089#1095#1077#1090' '#1088#1072#1089#1087#1088#1077#1076#1077#1083#1077#1085#1080#1103
       ImageIndex = 1
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 477
       object Label1: TLabel
         Left = 12
         Top = 27
@@ -795,7 +819,6 @@ object OptionsForm: TOptionsForm
         Align = alClient
         Caption = ' Contin '
         TabOrder = 8
-        ExplicitHeight = 333
         object Label36: TLabel
           Left = 95
           Top = 57
@@ -1006,7 +1029,7 @@ object OptionsForm: TOptionsForm
       end
       object Label22: TLabel
         Left = 17
-        Top = 349
+        Top = 338
         Width = 173
         Height = 13
         Caption = #1058#1077#1082#1091#1097#1077#1077' '#1079#1085#1072#1095#1077#1085#1080#1077' '#1090#1077#1084#1087#1077#1088#1072#1090#1091#1088#1099': '
@@ -1031,13 +1054,6 @@ object OptionsForm: TOptionsForm
         Width = 74
         Height = 13
         Caption = #1050#1086#1084#1084#1077#1085#1090#1072#1088#1080#1080': '
-      end
-      object Label58: TLabel
-        Left = 16
-        Top = 378
-        Width = 224
-        Height = 13
-        Caption = #1058#1077#1082#1091#1097#1077#1077' '#1079#1085#1072#1095#1077#1085#1080#1077' '#1080#1085#1090#1077#1085#1089#1080#1074#1085#1086#1089#1090#1080' '#1089#1080#1075#1085#1072#1083#1072': '
       end
       object Label18: TLabel
         Left = 16
@@ -1160,8 +1176,8 @@ object OptionsForm: TOptionsForm
         OnKeyPress = Edit8KeyPress
       end
       object Edit37: TEdit
-        Left = 240
-        Top = 276
+        Left = 349
+        Top = 180
         Width = 58
         Height = 21
         Alignment = taRightJustify
@@ -1191,6 +1207,31 @@ object OptionsForm: TOptionsForm
         TabOrder = 11
         Text = '0'
         OnKeyPress = Edit8KeyPress
+      end
+      object ComboBox4: TComboBox
+        Left = 240
+        Top = 276
+        Width = 57
+        Height = 21
+        Style = csDropDownList
+        ItemIndex = 0
+        TabOrder = 12
+        Text = '1'
+        Items.Strings = (
+          '1'
+          '2'
+          '3'
+          '4'
+          '5')
+      end
+      object Button7: TButton
+        Left = 15
+        Top = 361
+        Width = 188
+        Height = 25
+        Caption = #1053#1072#1089#1090#1088#1086#1081#1082#1072' '#1075#1086#1085#1080#1086#1084#1077#1090#1088#1072
+        TabOrder = 13
+        OnClick = Button7Click
       end
     end
   end

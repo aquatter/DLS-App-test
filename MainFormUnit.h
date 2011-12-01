@@ -115,28 +115,37 @@ __published:	// IDE-managed Components
 	TListView *ListView3;
 	TSplitter *Splitter2;
 	TPanel *Panel6;
-	TPanel *Panel7;
 	TSplitter *Splitter3;
-	TChart *Chart3;
-	TPanel *Panel1;
-	TAreaSeries *LineSeries1;
-	TLineSeries *Series6;
 	TSplitter *Splitter4;
 	TPanel *Panel8;
 	TLabel *Label2;
 	TLabel *Label3;
 	TButton *Button9;
 	TSplitter *Splitter5;
-	TPanel *Panel9;
-	TButton *Button2;
-	TSplitter *Splitter6;
 	TMemo *Memo1;
 	TToolBar *ToolBar2;
 	TToolButton *ToolButton7;
+	TImageList *ImageList4;
+	TPanel *Panel10;
+	TPanel *Panel7;
+	TSplitter *Splitter6;
+	TChart *Chart3;
+	TPanel *Panel1;
+	TAreaSeries *LineSeries1;
+	TLineSeries *Series6;
+	TPanel *Panel9;
+	TLabel *Label14;
+	TButton *Button2;
 	TToolBar *ToolBar3;
 	TToolButton *ToolButton8;
-	TImageList *ImageList4;
-	TLabel *Label14;
+	TSplitter *Splitter7;
+	TChart *Chart6;
+	TLineSeries *LineSeries4;
+	TLineSeries *LineSeries5;
+	TPanel *Panel11;
+	TSplitter *Splitter8;
+	TToolBar *ToolBar4;
+	TToolButton *ToolButton9;
 	void __fastcall Timer1Timer(TObject *Sender);
 	void __fastcall chckbxLFDClick(TObject *Sender);
 	void __fastcall chckbxFEUClick(TObject *Sender);
@@ -186,6 +195,7 @@ __published:	// IDE-managed Components
 	void __fastcall FormResize(TObject *Sender);
 	void __fastcall N6Click(TObject *Sender);
 	void __fastcall ListView3DblClick(TObject *Sender);
+	void __fastcall ToolButton9Click(TObject *Sender);
 
 
 

@@ -4,6 +4,7 @@
 #define UDLSContinThreadH
 //---------------------------------------------------------------------------
 #include <Classes.hpp>
+#include <vector>
 //---------------------------------------------------------------------------
 class TDLSContinThread : public TThread
 {
@@ -14,6 +15,8 @@ protected:
 public:
 	int nt;
 	double k;
+	void FindPeaks();
+	std::vector<double>peaks;
 	__fastcall TDLSContinThread(bool CreateSuspended);
 };
 extern TDLSContinThread *DLSContinThread;

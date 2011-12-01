@@ -47,7 +47,7 @@ void __fastcall TDeviceInitThread::Execute() {
 		error = true;
 		s += "Ошибка установки угла \n";
 	}
-	/*
+
 
 	do {
 		device.GetStatus(status);
@@ -60,17 +60,20 @@ void __fastcall TDeviceInitThread::Execute() {
 		s += "Ошибка включения фотодатчика \n";
 	}
 
+	/*
 	if (!device.PhotoOn(true)) {
 		error = true;
 		s += "Ошибка включения фотодатчика \n";
 	}
-	 */
+
+	*/
+
 	if (!device.SetFrequency(AcfParams.Time_discr)) {
 		error = true;
 		s += "Ошибка установки частоты \n";
 	}
 
-	/*
+
 	if (!device.SetPrism(AcfParams.Prism)) {
 		error = true;
 		s += "Ошибка установки призмы Глана \n";
@@ -103,17 +106,21 @@ void __fastcall TDeviceInitThread::Execute() {
 		WaitForSingleObject(q, 100);
 	}
 	while ((!status.bits.polar) && (!error));
-	 */
+
 
 	CloseHandle(q);
 
+	/*
 	if (error)
 		Synchronize(&Draw);
 
 	if (monitoring)
 		MainForm->StartMonitoring();
+	  */
+
 
 	*error_ = error;
+	SetEvent(wait_event);
 }
 
 
