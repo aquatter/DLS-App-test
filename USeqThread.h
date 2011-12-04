@@ -35,9 +35,11 @@ public:
 
 	TAquireMode mode;
 	TSeqThreadParams params_;
-    TDataParams DataParams_;
+	TDataParams DataParams_;
+	TProjectData *pd_;
 	TProjectData::TSeq *seq_;
 	TProjectData::TRec *rec_;
+	bool DoMean_;
 
 	void __fastcall CalculateACF();
 	void __fastcall SetParams(TSeqThreadParams params);
@@ -57,5 +59,6 @@ public:
 };
 
 bool CalculateCumulants(double *acf_app);
+bool CalculateCumulants(double *acf_app, TDataParams DataParams_);
 //---------------------------------------------------------------------------
 #endif

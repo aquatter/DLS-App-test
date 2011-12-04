@@ -31,6 +31,9 @@
 #include <XMLDoc.hpp>
 #include <xmldom.hpp>
 #include <XMLIntf.hpp>
+#include "UProgectData.h"
+#include "VirtualTrees.hpp"
+
 
 //#include  "UDlsVars.h"
 //---------------------------------------------------------------------------
@@ -112,7 +115,6 @@ __published:	// IDE-managed Components
 	TSplitter *Splitter1;
 	TXMLDocument *XMLDocument1;
 	TMenuItem *N6;
-	TListView *ListView3;
 	TSplitter *Splitter2;
 	TPanel *Panel6;
 	TSplitter *Splitter3;
@@ -237,11 +239,16 @@ private:	// User declarations
 	void __fastcall edtReadDataBlock_Init();
 
 public:		// User declarations
-
+	TVirtualStringTree *vt;
+    TProjectData *pd__;
+	void __fastcall VtGetText(TBaseVirtualTree *Sender, PVirtualNode Node,
+		  TColumnIndex Column, TVSTTextType TextType, UnicodeString &CellText);
+	void __fastcall VtDblClick(TObject *Sender);
 	void __fastcall edtFEU_Init();
 	void __fastcall off(bool b);
 	void __fastcall StartMonitoring();
 	__fastcall TMainForm(TComponent* Owner);
+	virtual __fastcall ~TMainForm() { delete vt; };
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TMainForm *MainForm;

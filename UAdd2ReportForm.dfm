@@ -53,7 +53,6 @@ object Add2ReportForm: TAdd2ReportForm
     Width = 145
     Height = 21
     Style = csDropDownList
-    ItemHeight = 13
     TabOrder = 2
   end
   object Button3: TButton

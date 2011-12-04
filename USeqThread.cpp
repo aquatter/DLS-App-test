@@ -70,12 +70,19 @@ void __fastcall TSeqThread::Execute() {
 				t->Free();
 
 				GetPhysicalSnapShot();
+                rec_->DataParams = DataParams;
 
 				if (AcfParams.DoAcf) {
 					CalculateACF();
 					CalculateCumulants(acf_app);
+					rec_->a0 = AcfParams.a0;
+					rec_->a1 = AcfParams.a1;
+					rec_->a2 = AcfParams.a2;
+					rec_->x_pcs = AcfParams.x_pcs;
+					rec_->pi = AcfParams.PI;
+
 					mm=1;
-			   		Synchronize(&Draw);
+					Synchronize(&Draw);
 					if (AcfParams.DoMean)
 						DoMean();
 					SaveAcf();
@@ -88,6 +95,16 @@ void __fastcall TSeqThread::Execute() {
 			if (AcfParams.DoMean){
 				num_rec = AcfParams.n_rec;
 				FinishMean();
+				CalculateCumulants(acf_app);
+				seq_->a0 = AcfParams.a0;
+				seq_->a1 = AcfParams.a1;
+				seq_->a2 = AcfParams.a2;
+				seq_->x_pcs = AcfParams.x_pcs;
+				seq_->pi = AcfParams.PI;
+
+				mm=3;
+                Synchronize(&Draw);
+
 				SaveAcf(false);
 			}
 
@@ -104,16 +121,17 @@ void __fastcall TSeqThread::Execute() {
 		{
 			bool init_ = false;
 			num_rec = 0;
-			for (size_t i=0; i < pd[num_seq].SizeOf(); i++) {
-				if (!pd[num_seq][i].process_)
+			for (size_t i=0; i < (*pd_)[num_seq].SizeOf(); i++) {
+				if (!(*pd_)[num_seq][i].process_)
 					continue;
+				DataParams_ = (*pd_)[num_seq][i].DataParams;
 				if (!init_)
 				{
-					if (FileExists(pd[num_seq][i].Data_))
+					if (FileExists((*pd_)[num_seq][i].Data_))
 						init_ = Init(OpenData(num_seq, i, true));
 					else
 					{
-						s = "Не удалось открыть файл: " + pd[num_seq][i].Data_;
+						s = "Не удалось открыть файл: " + (*pd_)[num_seq][i].Data_;
 						mm=4;
 						Synchronize(&Draw);
 						SetEvent(wait_event);
@@ -121,11 +139,11 @@ void __fastcall TSeqThread::Execute() {
 					}
 				}
 
-				if (FileExists(pd[num_seq][i].Data_))
+				if (FileExists((*pd_)[num_seq][i].Data_))
 					OpenData(num_seq, i, false);
 				else
 				{
-					s = "Не удалось открыть файл: " + pd[num_seq][i].Data_;
+					s = "Не удалось открыть файл: " + (*pd_)[num_seq][i].Data_;
 					mm=4;
 					Synchronize(&Draw);
 					SetEvent(wait_event);
@@ -133,20 +151,36 @@ void __fastcall TSeqThread::Execute() {
 				}
 
                 CalculateACF();
-				CalculateCumulants(acf_app);
+				CalculateCumulants(acf_app, DataParams_);
+				(*pd_)[num_seq][i].a0 = AcfParams.a0;
+				(*pd_)[num_seq][i].a1 = AcfParams.a1;
+				(*pd_)[num_seq][i].a2 = AcfParams.a2;
+				(*pd_)[num_seq][i].x_pcs = AcfParams.x_pcs;
+				(*pd_)[num_seq][i].pi = AcfParams.PI;
+                DataParams = DataParams_;
+
 				SaveAcf(num_seq, i);
-                mm=1;
+				mm=1;
 				Synchronize(&Draw);
 
-				if (AcfParams.DoMean){
+				if (DoMean_){
 					DoMean();
 				}
 				num_rec++;
 			}
 
-			if ((AcfParams.DoMean) && (num_rec != 0)){
+			if ((DoMean_) && (num_rec != 0)){
 				FinishMean();
+				CalculateCumulants(acf_app, DataParams_);
+                (*pd_)[num_seq].a0 = AcfParams.a0;
+                (*pd_)[num_seq].a1 = AcfParams.a1;
+                (*pd_)[num_seq].a2 = AcfParams.a2;
+                (*pd_)[num_seq].x_pcs = AcfParams.x_pcs;
+                (*pd_)[num_seq].pi = AcfParams.PI;
                 SaveAcf(num_seq, -1);
+
+				mm=3;
+				Synchronize(&Draw);
 			}
 
 			Clear();
@@ -206,7 +240,7 @@ void __fastcall TSeqThread::CalculateACF() {
 		ind2=0;
 		sum3_=0;
 
-		for (int k=0; k < d.size(); k++) {
+		for (size_t k=0; k < d.size(); k++) {
 
 			sum2_=0;
 
@@ -292,7 +326,7 @@ void __fastcall TSeqThread::Draw() {
 				MainForm->Series5->AddXY(acf_t.a[i], acf_app[i]);
 //				MainForm->Series1->AddXY(i, Data[i]);
 				}
-			MainForm->Memo1->Lines->Add("Температура "+FloatToStrF(DataParams.Temperature-273.15, ffFixed, 5, 2));
+			MainForm->Memo1->Lines->Add("Температура "+FloatToStrF(DataParams_.Temperature-273.15, ffFixed, 5, 2));
 			s = "Показатель полидисперсности " + FloatToStrF(AcfParams.PI, ffFixed,5,3);
 			MainForm->Memo1->Lines->Add(s);
 			MainForm->Label3->Caption = s;
@@ -337,6 +371,122 @@ void __fastcall TSeqThread::Draw() {
 	default:
 		;
 	}
+}
+
+bool CalculateCumulants(double *acf_app, TDataParams DataParams_){
+
+	int cnt, w, ind_left, ind_right;
+	double max_100, _max;
+	double mean = 0, left, right;
+
+	AcfParams.a0 = 0;
+	AcfParams.a1 = 0;
+	AcfParams.a2 = 0;
+
+
+	if (AcfParams.right_boundary) {
+
+		ind_left = 0;
+		while ((ind_left < acf_t.w) && (acf_t.a[ind_left] < AcfParams.cut))
+			ind_left++;
+
+		double thr = acf.a[ind_left] / 50;
+
+		ind_right = ind_left;
+		while ((ind_right < acf_t.w) && (acf.a[ind_right] >= thr))
+			ind_right++;
+
+		left = AcfParams.cut;
+		right = acf_t.a[ind_right];
+	}
+	else {
+		ind_left = 0;
+		while ((ind_left < acf_t.w) && (acf_t.a[ind_left] < AcfParams.cut))
+			ind_left++;
+
+		ind_right = ind_left;
+		while ((ind_right < acf_t.w) && (acf_t.a[ind_right] < AcfParams.cut_after))
+			ind_right++;
+
+		left = AcfParams.cut;
+		right = AcfParams.cut_after;
+	}
+
+	cnt = ind_right-ind_left;
+
+	w = acf.w;
+	
+	double *cum = new double[cnt];
+	double *cum_t = new double[cnt];
+	double *_w = new double[cnt];
+
+
+	for (int i = ind_left; i < ind_right; i++) {
+		if (acf.a[i] < 0) {
+			cum[i-ind_left] = 1e-3;
+		}
+		else {
+			cum[i-ind_left] = acf.a[i];
+		}
+
+		cum_t[i-ind_left] = acf_t.a[i];
+	}
+
+	mean = 0;
+	for (int i = 0; i < cnt; i++) {
+		mean += pow(cum[i], 2);
+	}
+	mean /= cnt;
+
+	for (int i = 0; i < cnt; i++) {
+		_w[i] = pow(cum[i], 2) / mean;
+		cum[i] = Ln(cum[i]) / 2;
+	}
+
+	HINSTANCE lib = LoadLibrary("dls.dll");
+	pDLSCumulants DLSCumulants = (pDLSCumulants)GetProcAddress(lib, "DLSCumulants");
+
+	DLSCumulants(cum, cum_t, _w, cnt, AcfParams.a0, AcfParams.a1, AcfParams.a2);
+
+	FreeLibrary(lib);
+
+	AcfParams.a1 *= 1e6;
+	AcfParams.a2 *= 1e12;
+	AcfParams.PI = fabs(2 * AcfParams.a2 / pow(AcfParams.a1, 2));
+
+
+	double q = 4*M_PI*DataParams_.RefIndex*sin(DataParams_.ScatAngle/2*M_PI/180)/(DataParams_.WaveLength*1e-9);
+
+	AcfParams.x_pcs = AcfParams.Kb*DataParams_.Temperature*pow(q,2)/(3*M_PI*DataParams_.Viscosity*AcfParams.a1)*1e9;
+
+	for (int i = ind_left; i < ind_right; i++) {
+			cum_t[i-ind_left]*=1e-6;
+			acf_app[i] = exp(2*(AcfParams.a0 - AcfParams.a1*cum_t[i-ind_left] + AcfParams.a2*cum_t[i-ind_left]*cum_t[i-ind_left]));
+	}
+
+	double min_ = MaxInt;
+	int tmp_ind;
+	for (int i = ind_left; i < ind_right; i++) {
+		if (min_ > acf_app[i]) {
+			min_ = acf_app[i];
+			tmp_ind = i;
+		}
+	}
+	ind_right = tmp_ind+1;
+
+
+	for (int i=0; i < ind_left; i++)
+		acf_app[i] = acf_app[ind_left];
+
+	for (int i=ind_right; i < w; i++)
+    	acf_app[i] = acf_app[ind_right-1];
+
+
+	delete [] _w;
+	delete [] cum;
+	delete [] cum_t;
+
+	return true;
 }
 
 bool CalculateCumulants(double *acf_app){
@@ -492,9 +642,9 @@ bool __fastcall TSeqThread::Init(int n){
 	Navt = M*N;
 	_m = new int[M*N];
 
-	double dt = GetTime_Discr(DataParams.Discr_Time);
+	double dt = GetTime_Discr(DataParams_.Discr_Time);
 
-	step = 500/dt;
+	step = 100; //500/dt;
 	dt*=1e-3;
 	/*
 	switch (DataParams.Discr_Time) {
@@ -601,10 +751,12 @@ void __fastcall TSeqThread::FinishMean(){
    for (int i=0; i < Navt; i++)
 	 acf.a[i] = acf_mean[i]/num_rec;
 
+  /*
    CalculateCumulants(acf_app);
 
    mm=3;
    Synchronize(&Draw);
+   */
 }
 
 void __fastcall TSeqThread::SaveData(){
@@ -658,12 +810,18 @@ void __fastcall TSeqThread::SaveAcf(int ns, int nr){
 	else
 		sprintf(buff, "_%.3d", ns+1);
 
-	s = pd.Path + "\\" + pd.Name + buff+".tdf";
-	SaveAcf2Tdf(s);
+	s = pd_->Path + "\\" + pd_->Name + buff+".tdf";
+	SaveAcf2Tdf(s, DataParams_);
 
 	s = "Сохранение АКФ: "+s;
     mm=4;
-    Synchronize(&Draw);
+	Synchronize(&Draw);
+
+	if (nr == -1)
+		(*pd_)[ns].Mean_Acf_ = s;
+	else
+    	(*pd_)[ns][nr].Acf_ = s;
+
 }
 
 bool __fastcall TSeqThread::ChangeAngle()
@@ -697,7 +855,7 @@ int __fastcall TSeqThread::OpenData(int n_seq, int n_rec, bool GetCnt)
 	char buff[50];
     sprintf(buff, "_%.3d_%.3d", n_seq+1, n_rec+1);
 //	UnicodeString s = params_.Save_Dir + "\\" + params_.File_Name + buff+".idata";
-	s = pd[n_seq][n_rec].Data_;
+	s = (*pd_)[n_seq][n_rec].Data_;
 
 	int f = FileOpen(s, fmOpenRead);
 	int n = 0;
@@ -705,19 +863,21 @@ int __fastcall TSeqThread::OpenData(int n_seq, int n_rec, bool GetCnt)
 
 	if (!GetCnt) {
 		FileRead(f, (void *) Data, n*sizeof(WORD));
-		FileRead(f, (void *)&DataParams, sizeof(TDataParams));
+	  //	FileRead(f, (void *)&DataParams, sizeof(TDataParams));
 
         s = "Открытие  данных: "+s;
 		mm=4;
 		Synchronize(&Draw);
 
 	}
+	/*
 	else
 	{
 		FileSeek(f, (int)(n*sizeof(WORD)+sizeof(int)), 0);
 		FileRead(f, (void *)&DataParams, sizeof(TDataParams));
 	}
 
+	*/
 	FileClose(f);
 
 	return n;

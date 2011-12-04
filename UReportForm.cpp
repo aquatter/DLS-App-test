@@ -20,11 +20,44 @@ TReportForm *ReportForm;
 __fastcall TReportForm::TReportForm(TComponent* Owner)
 	: TForm(Owner)
 {
-}
-//---------------------------------------------------------------------------
-void __fastcall TReportForm::FormCreate(TObject *Sender)
-{
-   VirtualStringTree1->NodeDataSize=sizeof(TReportData);
+	VirtualStringTree1 = new TVirtualStringTree(this);
+	VirtualStringTree1->Parent = ReportForm;
+	VirtualStringTree1->Align = alClient;
+	VirtualStringTree1->Header->Style = hsFlatButtons;
+	VirtualStringTree1->Header->Options << hoVisible << hoColumnResize << hoAutoSpring;
+	VirtualStringTree1->TreeOptions->PaintOptions <<  toShowHorzGridLines <<  toShowVertGridLines << toFullVertGridLines << toShowButtons;
+	VirtualStringTree1->TreeOptions->SelectionOptions <<  toFullRowSelect << toLevelSelectConstraint << toMultiSelect;
+	VirtualStringTree1->TreeOptions->AnimationOptions << toAnimatedToggle << toAdvancedAnimatedToggle;
+	VirtualStringTree1->NodeDataSize=sizeof(TReportData);
+	TVirtualTreeColumn *col = VirtualStringTree1->Header->Columns->Add();
+	col->Width = 163;
+	col->Position = 0;
+	col->Text = "Наименование";
+	col->Options << coVisible << coAllowFocus << coAutoSpring << coEnabled << coResizable << coAutoSpring << coSmartResize << coAllowFocus;
+	col = VirtualStringTree1->Header->Columns->Add();
+	col->Width = 83;
+	col->Position = 1;
+	col->Text = "Диаметр, нм.";
+	col->Options << coVisible << coAllowFocus << coAutoSpring << coEnabled << coResizable << coAutoSpring << coSmartResize << coAllowFocus;
+	col = VirtualStringTree1->Header->Columns->Add();
+	col->Width = 83;
+	col->Position = 2;
+	col->Text = "ППД";
+	col->Options << coVisible << coAllowFocus << coAutoSpring << coEnabled << coResizable << coAutoSpring << coSmartResize << coAllowFocus;
+	col = VirtualStringTree1->Header->Columns->Add();
+	col->Width = 83;
+	col->Position = 3;
+	col->Text = "Угол, град.";
+	col->Options << coVisible << coAllowFocus << coAutoSpring << coEnabled << coResizable << coAutoSpring << coSmartResize << coAllowFocus;
+	col = VirtualStringTree1->Header->Columns->Add();
+	col->Width = 78;
+	col->Position = 4;
+	col->Text = "СКО, нм.";
+	col->Options << coVisible << coAllowFocus << coAutoSpring << coEnabled << coResizable << coAutoSpring << coSmartResize << coAllowFocus;
+	VirtualStringTree1->OnGetText = VirtualStringTree1GetText;
+	VirtualStringTree1->OnChecked = VirtualStringTree1Checked;
+	VirtualStringTree1->DefaultText = "";
+
 }
 //---------------------------------------------------------------------------
 
@@ -48,7 +81,7 @@ void __fastcall TReportForm::VirtualStringTree1GetText(TBaseVirtualTree *Sender,
 				  case 0: CellText=t->Name; break;
 				  case 1: CellText=FloatToStrF(t->pcs, ffFixed, 5, 2); break;
 				  case 2: CellText=FloatToStrF(t->pi, ffFixed, 5, 2); break;
-				  case 3: CellText=FloatToStr(t->angle); break;
+				  case 3: CellText=FloatToStrF(t->angle, ffFixed, 5, 2); break;
 				}
 				break;
 	 }

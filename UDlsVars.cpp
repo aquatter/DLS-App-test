@@ -12,6 +12,7 @@
 #include "USeqThread.h"
 #include "UTimerThread.h"
 
+
 //---------------------------------------------------------------------------
 
 #pragma package(smart_init)
@@ -187,6 +188,31 @@ void SaveAcf2Tdf(UnicodeString s)
   delete f;
 }
 
+void SaveAcf2Tdf(UnicodeString s, TDataParams DataParams_)
+{
+  s = ChangeFileExt(s, ".tdf");
+  char buff[50];
+  TIniFile *f = new TIniFile(s);
+  DecimalSeparator='.';
+//  wchar_t(".");
+  try
+  {
+	f->WriteFloat("PCSPHYSPAR", "WAVELENGTH", DataParams_.WaveLength);
+	f->WriteFloat("PCSPHYSPAR", "VISCOSITY", FormulaPuazeilia(DataParams_.Temperature)*1e3);
+	f->WriteFloat("PCSPHYSPAR", "SCATANGLE", DataParams_.ScatAngle);
+	f->WriteFloat("PCSPHYSPAR", "TEMPERATURE", DataParams_.Temperature);
+	f->WriteFloat("PCSPHYSPAR", "REFRINDEX", DataParams_.RefIndex);
+	for (int i=0; i < acf.w; i++) {
+	  sprintf(buff, " %e %e", acf_t.a[i]*1e-6, acf.a[i]+1);
+	  f->WriteString("PCSDATA2", IntToStr(i+1), buff);
+	}
+  } catch (...)
+  {
+	delete f;
+  }
+  delete f;
+}
+
 void OpenTdf(UnicodeString s)
 {
   TIniFile *f = new TIniFile(s);
@@ -215,8 +241,8 @@ void OpenTdf(UnicodeString s)
 	acf.Init(count, 1, mitDouble);
 	acf_t.Init(count, 1, mitDouble);
 
-	for (int i=0; i < count; i++) {
-	  str=f->ReadString("PCSDATA2", IntToStr(i+1), "0 0");
+	for (size_t i=0; i < count; i++) {
+	  str=f->ReadString("PCSDATA2", IntToStr((int)i+1), "0 0");
 	  str1=str.SubString(1, str.Pos(" ")-1);
 	  str2=str.SubString(str.Pos(" ")+1, str.Length());
 	  acf_t.a[i]=str1.ToDouble()*1e6;
@@ -316,7 +342,7 @@ void SaveAcf2Crv(UnicodeString s)
 	if(iFileHandle == -1) Abort();
 	points = new __point[count];
 
-	for (int i=0; i < count; i++) {
+	for (size_t i=0; i < count; i++) {
 		points[i].wave=acf_t.a[i];
 		points[i].value=acf.a[i];
 	}
@@ -571,34 +597,89 @@ TAcfParams::TAcfParams() {
 bool OpenProject(UnicodeString Name, TProjectData &pd)
 {
 
-	MainForm->ListView3->Clear();
+	//MainForm->ListView3->Clear();
 	UnicodeString Path = ExtractFileDir(Name) + "\\";
 	pd.Path  = Path;
 	pd.Name = ChangeFileExt(ExtractFileName(Name), "");
 
 	_di_IXMLNode root, seq_node, rec_node;
-	TListItem *item;
+	//TListItem *item;
 
 	MainForm->XMLDocument1->LoadFromFile(Name);
 	root = MainForm->XMLDocument1->ChildNodes->Nodes["Dynamic_Light_Scattering_XML_Document"];
 	int n = root->ChildNodes->Count;
-    AcfParams.n_seq = n-3;
+	//AcfParams.n_seq = n-3;
 
-
+	/*
 	item = MainForm->ListView3->Items->Add();
 	for (int k = 0; k < 10; k++)
 		item->SubItems->Add("");
 
 	item->Caption = root->ChildNodes->Nodes["Date"]->Text;
 	item->SubItems->Strings[0] = root->ChildNodes->Nodes["Name"]->Text;
-    item->Data = 0;
+	item->Data = 0;
+
+	*/
+
+	pd.Date = root->ChildNodes->Nodes["Date"]->Text;
+	pd.Name_Spec = root->ChildNodes->Nodes["Name"]->Text;
+	pd.Name_Sol = root->ChildNodes->Nodes["Solution"]->Text;
 
 	seq_node = root->ChildNodes->Nodes["Series"];
 	AcfParams.n_rec = seq_node->ChildNodes->Count-1;
+    seq_node = root->ChildNodes->First();
 
-	for (int i=0; i < n-3; i++) {
-		TProjectData::TSeq &seq_ = pd.Add();
+	for (int i=0; i < n; i++) {
+		if (seq_node->GetNodeName() == "Series")
+		{
+			TProjectData::TSeq &seq_ = pd.Add();
+			rec_node = seq_node->ChildNodes->First();
+			int m = seq_node->ChildNodes->Count;
+			for (int j=0; j < m-1; j++) {
+				if (rec_node->GetNodeName() == "Measurement") {
+					TProjectData::TRec &rec_ = seq_.Add();
+					UnicodeString _name  = rec_node->ChildNodes->Nodes["ACF"]->Text;
+					UnicodeString _name_data  = rec_node->ChildNodes->Nodes["Data"]->Text;
+					if (FileExists(Path+_name_data))
+						ExtractDataParams(Path+_name_data, &rec_.DataParams);
+					else
+						ShowMessage("Файл не найден: \n"+Path+_name_data);
 
+					rec_.Acf_ = Path+_name;
+					rec_.Data_ = Path+_name_data;
+
+					UnicodeString s = rec_node->ChildNodes->Nodes["a0"]->Text;
+					if (s != "") rec_.a0 = CheckString(s);
+					s = rec_node->ChildNodes->Nodes["a1"]->Text;
+					if (s != "") rec_.a1 = CheckString(s);
+					s = rec_node->ChildNodes->Nodes["a2"]->Text;
+					if (s != "") rec_.a2 = CheckString(s);
+					s = rec_node->ChildNodes->Nodes["x_pcs"]->Text;
+					if (s != "") rec_.x_pcs = CheckString(s);
+					s = rec_node->ChildNodes->Nodes["pi"]->Text;
+					if (s != "") rec_.pi = CheckString(s);
+
+				}
+				rec_node = rec_node->NextSibling();
+			}
+
+			UnicodeString _name  = seq_node->ChildNodes->Nodes["Mean_ACF"]->Text;
+            seq_.Mean_Acf_ = Path+_name;
+            UnicodeString s = seq_node->ChildNodes->Nodes["a0"]->Text;
+            if (s != "") seq_.a0 = CheckString(s);
+			s = seq_node->ChildNodes->Nodes["a1"]->Text;
+            if (s != "") seq_.a1 = CheckString(s);
+			s = seq_node->ChildNodes->Nodes["a2"]->Text;
+            if (s != "") seq_.a2 = CheckString(s);
+			s = seq_node->ChildNodes->Nodes["x_pcs"]->Text;
+            if (s != "") seq_.x_pcs = CheckString(s);
+            s = seq_node->ChildNodes->Nodes["pi"]->Text;
+            if (s != "") seq_.pi = CheckString(s);
+		}
+		seq_node = seq_node->NextSibling();
+	}
+
+		/*
 		int m = seq_node->ChildNodes->Count;
 		rec_node = seq_node->ChildNodes->Nodes["Measurement"];
 
@@ -606,6 +687,7 @@ bool OpenProject(UnicodeString Name, TProjectData &pd)
 
 			TProjectData::TRec &rec_ = seq_.Add();
 
+			/*
 			item = MainForm->ListView3->Items->Add();
 			for (int k = 0; k < 10; k++)
 				item->SubItems->Add("");
@@ -613,60 +695,102 @@ bool OpenProject(UnicodeString Name, TProjectData &pd)
 
 			item->SubItems->Strings[1] = IntToStr(i+1);
 			item->SubItems->Strings[2] = IntToStr(j+1);
+			*/
 
-			UnicodeString _name  = rec_node->ChildNodes->Nodes["ACF"]->Text;
+		//	UnicodeString _name  = rec_node->ChildNodes->Nodes["ACF"]->Text;
 
+			/*
 			if (FileExists(Path+_name))
 				item->SubItems->Strings[3] = "рассчитана";
 			else
 				item->SubItems->Strings[3] = "не рассчитана";
+			*/
 
 
-			UnicodeString _name_data  = rec_node->ChildNodes->Nodes["Data"]->Text;
+		//	UnicodeString _name_data  = rec_node->ChildNodes->Nodes["Data"]->Text;
 
-			TDataParams params;
+			//TDataParams params;
+			/*
 			if (FileExists(Path+_name_data))
-			{
-				ExtractDataParams(Path+_name_data, &params);
+			//{
+				ExtractDataParams(Path+_name_data, &rec_.DataParams);
+
+
+				/*
 				item->SubItems->Strings[4] = FloatToStrF(params.ScatAngle, ffFixed, 5, 2);
 				item->SubItems->Strings[5] = FloatToStrF(params.Temperature, ffFixed, 5, 2);
+				*/
+
+			 /*
 			}
 			else
 				ShowMessage("Файл не найден: \n"+Path+_name_data);
 
-
+			/*
 			item->SubItems->Strings[6] = Path+_name_data;
 			item->SubItems->Strings[7] = Path+_name;
+			*/
+			   /*
 			rec_.Acf_ = Path+_name;
 			rec_.Data_ = Path+_name_data;
 
-			item->Data = (void *) new TPoint(i, j);
+			UnicodeString s = rec_node->ChildNodes->Nodes["a0"]->Text;
+			if (s != "") rec_.a0 = CheckString(s);
+			s = rec_node->ChildNodes->Nodes["a1"]->Text;
+			if (s != "") rec_.a1 = CheckString(s);
+			s = rec_node->ChildNodes->Nodes["a2"]->Text;
+			if (s != "") rec_.a2 = CheckString(s);
+			s = rec_node->ChildNodes->Nodes["x_pcs"]->Text;
+			if (s != "") rec_.x_pcs = CheckString(s);
+			s = rec_node->ChildNodes->Nodes["pi"]->Text;
+			if (s != "") rec_.pi = CheckString(s);
+
+
+			//item->Data = (void *) new TPoint(i, j);
 //			MainForm->Memo1->Lines->Add(IntToStr((int)&rec_) + " "+IntToStr((int)rec_.num_rec));
 			rec_node = rec_node->NextSibling();
 		}
 
 		UnicodeString _name  = seq_node->ChildNodes->Nodes["Mean_ACF"]->Text;
-
-        item = MainForm->ListView3->Items->Add();
+		/*
+		item = MainForm->ListView3->Items->Add();
 		for (int k = 0; k < 10; k++)
 			item->SubItems->Add("");
 
 		item->SubItems->Strings[0] = "Усредненная АКФ";
 		item->SubItems->Strings[1] = IntToStr(i+1);
-        item->Data = (void *) new TPoint(i, -1);
+		item->Data = (void *) new TPoint(i, -1);
+		*/
+				 /*
 		seq_.Mean_Acf_ = Path+_name;
+		UnicodeString s = seq_node->ChildNodes->Nodes["a0"]->Text;
+		if (s != "") seq_.a0 = CheckString(s);
+		s = rec_node->ChildNodes->Nodes["a1"]->Text;
+		if (s != "") seq_.a1 = CheckString(s);
+		s = rec_node->ChildNodes->Nodes["a2"]->Text;
+		if (s != "") seq_.a2 = CheckString(s);
+		s = rec_node->ChildNodes->Nodes["x_pcs"]->Text;
+		if (s != "") seq_.x_pcs = CheckString(s);
+		s = rec_node->ChildNodes->Nodes["pi"]->Text;
+		if (s != "") seq_.pi = CheckString(s);
 
-        if (FileExists(Path+_name))
+		/*
+		if (FileExists(Path+_name))
 			item->SubItems->Strings[3] = "рассчитана";
 		else
 			item->SubItems->Strings[3] = "не рассчитана";
+		*/
 
-		seq_node = seq_node->NextSibling();
-	}
+	   //	seq_node = seq_node->NextSibling();
+
 
 
 	MainForm->XMLDocument1->XML->Clear();
 	MainForm->XMLDocument1->Active = false;
+
+	UpdateVt(MainForm->vt);
+//	AddToVt(pd, MainForm->vt);
+	return true;
 }
 
 
@@ -679,6 +803,53 @@ void ExtractDataParams(UnicodeString Name, TDataParams *params){
 	FileRead(f, (void *)params, sizeof(TDataParams));
 	FileClose(f);
 }
+
+void ProcessData(TProjectData::TVtPD *d)
+{
+
+	switch (d->State) {
+		case TProjectData::pdRecord:
+		{
+			UnicodeString s =  (*d->pd)[d->seq_num][d->rec_num].Acf_;
+			if (FileExists(s))
+				ProcessData(acf_, s, d->seq_num, d->rec_num);
+			else
+			{
+				d->pd->Disable_All();
+				d->pd->Enable_Rec(d->seq_num, d->rec_num);
+				TTimerThread *t = new  TTimerThread(true);
+				t->FreeOnTerminate = true;
+				t->pd_ = d->pd;
+				t->DoMean_ = false;
+				t->mode = from_hdd;
+				t->Start();
+			}
+		}
+		break;
+		case TProjectData::pdMean:
+		{
+			UnicodeString s =  (*d->pd)[d->seq_num].Mean_Acf_;
+			if (FileExists(s))
+				ProcessData(acf_, s, d->seq_num, -1);
+			else
+			{
+				d->pd->Disable_All();
+				d->pd->Enable_Seq(d->seq_num);
+                TTimerThread *t = new  TTimerThread(true);
+				t->FreeOnTerminate = true;
+				t->pd_ = d->pd;
+				t->DoMean_ = true;
+				t->mode = from_hdd;
+				t->Start();
+			}
+
+		}
+		break;
+
+	}
+
+}
+
 
 void ProcessData(dls_mode mode, UnicodeString Name, int seq_num, int rec_num)
 {
@@ -777,10 +948,83 @@ void OpenData(WORD *data, int &n, UnicodeString Name)
 double GetTime_Discr(int i)
 {
 	switch (i) {
-		case 0: return 5.0;
+		case 0: return 6.5;
 		case 1: return 10.0;
 		case 2: return 20.0;
 		case 3: return 50.0;
 	}
+    return 0.0;
 }
+
+void AddToVt( TProjectData &pd_ , TVirtualStringTree *vt )
+{
+	TVirtualNode *t = vt->AddChild(NULL);
+	TProjectData::TVtPD *d;
+	if (t) {
+		t->States << vsExpanded;
+		d = (TProjectData::TVtPD *)vt->GetNodeData(t);
+		if (d)
+		{
+			d->Name = pd_.Name_Spec + " ("+ pd_.Date +")";
+			d->State = TProjectData::pdHeader;
+			d->pd = &pd_;
+		}
+
+
+		for (size_t i=0; i < pd_.SizeOf(); i++) {
+			TVirtualNode *seq_ = vt->AddChild(t);
+			if (seq_) {
+				seq_->States << vsExpanded;
+				d = (TProjectData::TVtPD *)vt->GetNodeData(seq_);
+				if (d) {
+					d->Name = "Серия " + IntToStr((int)i+1);
+					d->State = TProjectData::pdSerie;
+					d->seq_num = i;
+					d->pd = &pd_;
+				}
+
+				for (size_t j=0; j < pd_[i].SizeOf(); j++) {
+					TVirtualNode *rec_ = vt->AddChild(seq_);
+					if (rec_) {
+						rec_->States << vsExpanded;
+						d = (TProjectData::TVtPD *)vt->GetNodeData(rec_);
+						if (d) {
+							d->Name = "Измерение " + IntToStr((int)j+1);
+							d->State = TProjectData::pdRecord;
+							d->ScatAngle = pd_[i][j].DataParams.ScatAngle;
+							d->Temperature = pd_[i][j].DataParams.Temperature;
+							d->x_pcs = pd_[i][j].x_pcs;
+							d->pi = pd_[i][j].pi;
+							d->rec_num = j;
+							d->seq_num = i;
+							d->pd = &pd_;
+						}
+					}
+				}
+
+				TVirtualNode *rec_ = vt->AddChild(seq_);
+				if (rec_) {
+					d = (TProjectData::TVtPD *)vt->GetNodeData(rec_);
+					d->Name = "Средняя АКФ ";
+					d->seq_num = i;
+					d->State = TProjectData::pdMean;
+					d->x_pcs = pd_[i].x_pcs;
+					d->pi = pd_[i].pi;
+
+					d->pd = &pd_;
+				}
+			}
+		}
+	}
+}
+
+void UpdateVt( TVirtualStringTree *vt )
+{
+	vt->Clear();
+	for (size_t i=0; i < pd_vector.size(); i++)
+		AddToVt(pd_vector[i], vt);
+}
+
+
+
 

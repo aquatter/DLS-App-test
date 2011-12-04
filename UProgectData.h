@@ -7,34 +7,61 @@
 #include <vector>
 
 
+struct TDataParams {
+	float WaveLength;
+	float Viscosity;
+	float ScatAngle;
+	float Temperature;
+	float RefIndex;
+	char Discr_Time;
+};
+
 
 class TProjectData
 {
 
    public:
 
-   class TSeqRec
-   {
-		public:
-		UnicodeString virtual GetAcf() {}
-		void virtual GetNums(size_t &nr, size_t &ns) {}
-   };
+   typedef enum{pdHeader,  pdSerie, pdRecord, pdMean} TVtPDState;
+   typedef 	struct
+			{
+				UnicodeString Name;
+				double ScatAngle;
+				double Temperature;
+				bool ACF;
+				int rec_num;
+				int seq_num;
+				double x_pcs;
+				double pi;
+				TVtPDState State;
+				TProjectData *pd;
+			} TVtPD;
 
 
-
-   class TRec: public TSeqRec
+   class TRec
 	{
     	public:
 		bool process_;
 		UnicodeString Data_;
 		UnicodeString Acf_;
 		size_t num_seq, num_rec;
+		TDataParams DataParams;
+		double a0;
+		double a1;
+		double a2;
+		double pi;
+		double x_pcs;
 
 		TRec()
 		{
 			process_ = false;
 			Data_ = "";
 			Acf_ = "";
+			a0=0;
+			a1=0;
+			a2=0;
+			pi=0;
+			x_pcs=0;
 		}
 
 		UnicodeString GetAcf()
@@ -57,13 +84,19 @@ class TProjectData
 
 
 	typedef std::vector<TRec> TReqVect;
-	class TSeq: public TSeqRec
+
+	class TSeq
 	{
 		public:
 		bool process_;
 		UnicodeString Mean_Acf_;
 		TReqVect rec_;
-        size_t num_seq, num_rec;
+		size_t num_seq, num_rec;
+        double a0;
+        double a1;
+        double a2;
+        double pi;
+        double x_pcs;
 
         size_t SizeOf()
         {
@@ -103,6 +136,11 @@ class TProjectData
 		}
 		TSeq()
 		{
+        	a0=0;
+            a1=0;
+            a2=0;
+            pi=0;
+            x_pcs=0;
 			process_ = false;
 			Mean_Acf_ = "";
         }
@@ -118,7 +156,9 @@ class TProjectData
 	TSeqVect seq_;
 	UnicodeString Name;
 	UnicodeString Path;
-
+	UnicodeString Name_Spec;
+	UnicodeString Name_Sol;
+	UnicodeString Date;
 	size_t SizeOf()
 	{
         return seq_.size();
@@ -192,5 +232,6 @@ class TProjectData
 };
 
 extern TProjectData pd;
+extern std::vector<TProjectData> pd_vector;
 //---------------------------------------------------------------------------
 #endif

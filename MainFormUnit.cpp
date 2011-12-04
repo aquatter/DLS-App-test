@@ -24,7 +24,6 @@
 #include "UStatusRecForm.h"
 #include "UTimerThread.h"
 #include "UDeviceInitThread.h"
-#include "UProgectData.h"
 #include "UTAdjustAngleAperForm.h"
 
 // ---------------------------------------------------------------------------
@@ -44,6 +43,47 @@ TMainForm *MainForm;
 // ---------------------------------------------------------------------------
 __fastcall TMainForm::TMainForm(TComponent* Owner) : TForm(Owner) {
 	bTimerExecuting = false;
+
+    vt = new TVirtualStringTree(this);
+	vt->Parent = Panel5;
+	vt->Align = alClient;
+	vt->Header->Style = hsFlatButtons;
+	vt->Header->Options << hoVisible << hoColumnResize << hoAutoSpring;
+	vt->TreeOptions->PaintOptions <<  toShowHorzGridLines <<  toShowVertGridLines << toFullVertGridLines << toShowButtons;
+	vt->TreeOptions->SelectionOptions <<  toFullRowSelect << toLevelSelectConstraint;
+	vt->TreeOptions->AnimationOptions << toAnimatedToggle << toAdvancedAnimatedToggle;
+	vt->NodeDataSize=sizeof(TProjectData::TVtPD);
+	vt->DefaultText = "";
+    vt->BorderStyle = bsNone;
+	TVirtualTreeColumn *col = vt->Header->Columns->Add();
+	col->Width = 120;
+	col->Position = 0;
+	col->Text = "Наименование";
+	col->Options << coVisible << coAllowFocus << coAutoSpring << coEnabled << coResizable << coAutoSpring << coSmartResize << coAllowFocus;
+	col = vt->Header->Columns->Add();
+	col->Position = 1;
+	col->Width = 40;
+	col->Text = "Угол";
+	col->Options << coVisible << coAllowFocus << coAutoSpring << coEnabled << coResizable << coAutoSpring << coSmartResize << coAllowFocus;
+	col = vt->Header->Columns->Add();
+	col->Position = 2;
+	col->Width = 40;
+	col->Text = "Температура";
+	col->Options << coVisible << coAllowFocus << coAutoSpring << coEnabled << coResizable << coAutoSpring << coSmartResize << coAllowFocus;
+	col = vt->Header->Columns->Add();
+	col->Position = 3;
+	col->Width = 40;
+	col->Text = "Диаметр";
+	col->Options << coVisible << coAllowFocus << coAutoSpring << coEnabled << coResizable << coAutoSpring << coSmartResize << coAllowFocus;
+	col = vt->Header->Columns->Add();
+	col->Position = 4;
+	col->Width = 40;
+	col->Text = "ППД";
+	col->Options << coVisible << coAllowFocus << coAutoSpring << coEnabled << coResizable << coAutoSpring << coSmartResize << coAllowFocus;
+
+	vt->OnGetText = VtGetText;
+
+	vt->OnDblClick = VtDblClick;
 	// OptionsForm->Edit7->Text = IntToStr(device.deviceSettings.Amplification);
 	// OptionsForm->Edit8->Text = FloatToStr(device.deviceSettings.Temperature);
 	// OptionsForm->Edit9->Text = FloatToStr(device.deviceSettings.Angle);
@@ -88,7 +128,7 @@ bool __fastcall TMainForm::ReadDataBlocks(int num) {
 	WORD* Data = device.GetData(dwReadNumData);
 	if (!Data)
 		return false;
-	if (dwReadNumData != num) {
+	if ((int)dwReadNumData != num) {
 		delete[]Data;
 		return false;
 	}
@@ -345,7 +385,7 @@ void __fastcall TMainForm::SetAngle(double value) {
 		return;
 	}
 	device.deviceSettings.Angle = value;
-	OptionsForm->Edit9->Text = FloatToStr(value);
+	//OptionsForm->Edit9->Text = FloatToStr(value);
 }
 
 void __fastcall TMainForm::ChangeReadDataBlock(bool bIncrease) {
@@ -854,7 +894,7 @@ void __fastcall TMainForm::ToolButton2Click(TObject *Sender) {
 	OptionsForm->Edit4->Text = IntToStr(AcfParams.Gauss_w);
 	OptionsForm->Edit10->Text = FloatToStr(AcfParams.cut);
 	OptionsForm->Edit20->Text = IntToStr(AcfParams.cut_after);
-	OptionsForm->Edit21->Text = IntToStr(AcfParams._vybr);
+	//OptionsForm->Edit21->Text = IntToStr(AcfParams._vybr); ---------------- VYBROSY!!! ---------------------------
 	OptionsForm->Edit22->Text = IntToStr(AcfParams.ns);
 	OptionsForm->Edit23->Text = FloatToStr(AcfParams.alpha);
 	OptionsForm->Edit24->Text = FloatToStr(AcfParams.cont_low);
@@ -893,7 +933,7 @@ void __fastcall TMainForm::ToolButton2Click(TObject *Sender) {
 	AcfParams.t_block = OptionsForm->Edit6->Text.ToInt();
 	AcfParams.cut = CheckString(OptionsForm->Edit10->Text.t_str());
 	AcfParams.cut_after = OptionsForm->Edit20->Text.ToInt();
-	AcfParams._vybr = OptionsForm->Edit21->Text.ToInt();
+//	AcfParams._vybr = OptionsForm->Edit21->Text.ToInt(); -----------------------------VYBROSY - ----------------
 	AcfParams.ns = CheckString(OptionsForm->Edit22->Text.t_str());
 	AcfParams.alpha = CheckString(OptionsForm->Edit23->Text.t_str());
 	AcfParams.cont_low = CheckString(OptionsForm->Edit24->Text.t_str());
@@ -969,7 +1009,7 @@ void __fastcall TMainForm::N4Click(TObject *Sender) {
 		acf.Init(count, 1, mitDouble);
 		acf_t.Init(count, 1, mitDouble);
 
-		for (int i = 0; i < count; i++) {
+		for (size_t i = 0; i < count; i++) {
 			acf.a[i] = points[i].value;
 			acf_t.a[i] = points[i].wave;
 		}
@@ -978,7 +1018,7 @@ void __fastcall TMainForm::N4Click(TObject *Sender) {
 
 		LineSeries3->Clear();
 
-		for (int i = 0; i < count; i++) {
+		for (size_t i = 0; i < count; i++) {
 			LineSeries3->AddXY(acf_t.a[i], acf.a[i]);
 		}
 		PageControl1->ActivePageIndex = 2;
@@ -1419,7 +1459,7 @@ void __fastcall TMainForm::Button3Click(TObject *Sender) {
 	acfThread = new TAcfThread(true);
 	acfThread->FreeOnTerminate = true;
 	acfThread->Priority = tpHigher;
-	acfThread->Resume();
+	acfThread->Start();
 
 	Button6->Visible = true;
 	Button3->Enabled = false;
@@ -1482,7 +1522,7 @@ void __fastcall TMainForm::Button4Click(TObject *Sender) {
 	// for (int i=0; i < DLSFFTThread->n0; i++) {
 	// DLSFFTThread->d[i]=sin(2*M_PI*i*100/DLSFFTThread->n0);
 	// }
-	DLSFFTThread->Resume();
+	DLSFFTThread->Start();
 
 }
 // ---------------------------------------------------------------------------
@@ -1539,8 +1579,11 @@ void __fastcall TMainForm::FormClose(TObject *Sender, TCloseAction &Action) {
 	CloseHandle(CaptureDone);
 	CloseHandle(AcfDone);
 
-	UnicodeString s = pd.Path + "dls("+Now().FormatString("dd_MM_YYYY_hh_mm_ss")+").log";
-	Memo1->Lines->SaveToFile(s);
+	if (Memo1->Lines->Count)
+	{
+		UnicodeString s = pd.Path + "dls("+Now().FormatString("dd_MM_YYYY_hh_mm_ss")+").log";
+		Memo1->Lines->SaveToFile(s);
+	}
 }
 // ---------------------------------------------------------------------------
 
@@ -1576,7 +1619,7 @@ void __fastcall TMainForm::Button7Click(TObject *Sender) {
 
 	pmAcfThread = new TpmAcfThread(true);
 	pmAcfThread->FreeOnTerminate = true;
-	pmAcfThread->Resume();
+	pmAcfThread->Start();
 
 	// Button6->Visible=true;
 	// Button3->Enabled=false;
@@ -1584,13 +1627,67 @@ void __fastcall TMainForm::Button7Click(TObject *Sender) {
 // ---------------------------------------------------------------------------
 
 void __fastcall TMainForm::Button9Click(TObject *Sender) {
+
+    TVirtualNode *t = ReportForm->VirtualStringTree1->RootNode->FirstChild;
+    TReportData *data;
+	bool new_ = true;
+	UnicodeString name = pd__->Name_Spec;
+
+	for (size_t i = 0; i < ReportForm->VirtualStringTree1->RootNodeCount; i++)
+		if (t) {
+			data = (TReportData*)ReportForm->VirtualStringTree1->GetNodeData(t);
+			if (data)
+				if (data->Name == name)
+				{
+					new_ = false;
+					break;
+				}
+			t = t->NextSibling;
+		}
+
+	if (new_) {
+    	t = ReportForm->VirtualStringTree1->AddChild(NULL);
+		if (t) {
+			t->States << vsExpanded;
+			data = (TReportData*)ReportForm->VirtualStringTree1->GetNodeData(t);
+			if (data) {
+				data->Name = name;
+				data->pcs = 0;
+				data->pi = 0;
+				data->rms = 0;
+			}
+		}
+	}
+
+    t = ReportForm->VirtualStringTree1->AddChild(t);
+    if (t) {
+    	data = (TReportData*)ReportForm->VirtualStringTree1->GetNodeData(t);
+    	t->States << vsExpanded;
+    	if (data) {
+    		data->Name = IntToStr((int)t->Index + 1);
+    		data->pcs = AcfParams.x_pcs;
+    		data->pi = AcfParams.PI;
+    		data->angle = DataParams.ScatAngle;
+    		data->a1 = AcfParams.a1;
+    		data->a2 = AcfParams.a2;
+    		data->t = DataParams.Temperature;
+    	}
+    	t->CheckType = ctCheckBox;
+    	t->CheckState = csCheckedNormal;
+	}
+
+	ReportForm->RecalculateReport();
+	ReportForm->Show();
+
+    return;
+
+
+
+
 	Add2ReportForm->ComboBox1->Items->Clear();
 	Add2ReportForm->ComboBox1->ItemIndex = -1;
 
-	TVirtualNode *t = ReportForm->VirtualStringTree1->RootNode->FirstChild;
-	TReportData *data;
-
-	for (int i = 0; i < ReportForm->VirtualStringTree1->RootNodeCount; i++) {
+	for (size_t i = 0; i < ReportForm->VirtualStringTree1->RootNodeCount; i++) {
 		if (!(t == NULL)) {
 			data = (TReportData*)ReportForm->VirtualStringTree1->GetNodeData(t);
 			if (!(data == NULL)) {
@@ -1611,6 +1708,7 @@ void __fastcall TMainForm::Button9Click(TObject *Sender) {
 
 	if (Add2ReportForm->add_new) {
 		t = ReportForm->VirtualStringTree1->AddChild(NULL);
+		t->States << vsExpanded;
 		if (!(t == NULL)) {
 			data = (TReportData*)ReportForm->VirtualStringTree1->GetNodeData(t);
 			if (!(data == NULL)) {
@@ -1628,10 +1726,10 @@ void __fastcall TMainForm::Button9Click(TObject *Sender) {
 				data->Name = IntToStr((int)t->Index + 1);
 				data->pcs = AcfParams.x_pcs;
 				data->pi = AcfParams.PI;
-				data->angle = device.deviceSettings.Angle;
+				data->angle = DataParams.ScatAngle;
 				data->a1 = AcfParams.a1;
 				data->a2 = AcfParams.a2;
-				data->t = AcfParams.T;
+				data->t = DataParams.Temperature;
 			}
 			t->CheckType = ctCheckBox;
 			t->CheckState = csCheckedNormal;
@@ -1647,16 +1745,15 @@ void __fastcall TMainForm::Button9Click(TObject *Sender) {
 		if (!(t == NULL)) {
 			t = ReportForm->VirtualStringTree1->AddChild(t);
 			if (!(t == NULL)) {
-				data = (TReportData*)ReportForm->VirtualStringTree1->GetNodeData
-					(t);
+				data = (TReportData*)ReportForm->VirtualStringTree1->GetNodeData(t);
 				if (!(data == NULL)) {
 					data->Name = IntToStr((int)t->Index + 1);
 					data->pcs = AcfParams.x_pcs;
 					data->pi = AcfParams.PI;
-					data->angle = device.deviceSettings.Angle;
+					data->angle = DataParams.ScatAngle;
 					data->a1 = AcfParams.a1;
 					data->a2 = AcfParams.a2;
-					data->t = AcfParams.T;
+					data->t = DataParams.Temperature;
 				}
 				t->CheckType = ctCheckBox;
 				t->CheckState = csCheckedNormal;
@@ -1674,7 +1771,7 @@ void __fastcall TMainForm::ToolButton6Click(TObject *Sender) {
 	AutoProgressForm->Show();
 	AutoMeasureThread = new TAutoMeasureThread(true);
 	AutoMeasureThread->FreeOnTerminate = true;
-	AutoMeasureThread->Resume();
+	AutoMeasureThread->Start();
 }
 // ---------------------------------------------------------------------------
 
@@ -1689,15 +1786,24 @@ void __fastcall TMainForm::off(bool b) {
 void __fastcall TMainForm::Button8Click(TObject *Sender) {
 	OptionsForm->Button2->Caption = "Запуск";
 
-	if (!OptionsFormExecute()) {
+	if (!OptionsFormExecute())
 		return;
-	}
+
+
+	UnicodeString s = AcfParams.Save_Dir +"\\" +AcfParams.File_Name + ".dls";
+
+	if (FileExists(s))
+		if ((MessageDlg("Файл " + s + "\nуже существует и будет перезаписан. Продолжить?", mtWarning, TMsgDlgButtons() << mbOK << mbCancel, 0, mbCancel)+1) == mbCancel)
+			return;
+
+
+
 
 	// AcfParams.Rec_time = StrToInt(RecThreadStartForm->Edit1->Text);
 
  //	StopMonitoring();
 //	StatusRecForm->Show();
-    ListView3->Clear();
+ //   ListView3->Clear();
 	// InitDeviceThread = new TInitDeviceThread(true);
 	// InitDeviceThread->Resume();
 	//
@@ -1707,10 +1813,14 @@ void __fastcall TMainForm::Button8Click(TObject *Sender) {
 
 
 
-	pd.Clear();
+  //	pd.Clear();
+	int n = pd_vector.size();
+	pd_vector.push_back(TProjectData());
+
 	TTimerThread *t = new TTimerThread(true);
 	t->FreeOnTerminate = true;
 	t->mode = from_device;
+	t->pd_ = &pd_vector[n];
 	t->Start();
 
 	/*
@@ -1773,18 +1883,18 @@ void __fastcall TMainForm::N6Click(TObject *Sender) {
 	if (!OpenDialog1->Execute())
 		return;
 
-    pd.Clear();
-	OpenProject(OpenDialog1->FileName, pd);
 
 
+	int n = pd_vector.size();
 
-
+	pd_vector.push_back(TProjectData());
+	OpenProject(OpenDialog1->FileName, pd_vector[n]);
 }
 // ---------------------------------------------------------------------------
 
 void __fastcall TMainForm::ListView3DblClick(TObject *Sender) {
-	TListItem *item = ListView3->Selected;
-
+//	TListItem *item = ListView3->Selected;
+	/*
 	if (item) {
 		if (item->Data != 0) {
 			TPoint *p = (TPoint *)item->Data;
@@ -1806,16 +1916,16 @@ void __fastcall TMainForm::ListView3DblClick(TObject *Sender) {
 //			int *k = (int *)item->Data;
 //			rec_->Acf_
 //			Memo1->Lines->Add(rec_->Acf_);
-			Memo1->Lines->Add(IntToStr((int)p->x)+" "+IntToStr((int)p->y));
+		 //	Memo1->Lines->Add(IntToStr((int)p->x)+" "+IntToStr((int)p->y));
 //			Memo1->Lines->Add(IntToStr(k[0]));
-			return;
-			TProjectData::TSeqRec *sr = (TProjectData::TSeqRec *)item->Data;
+		   //	return;
+			//TProjectData::TSeqRec *sr = (TProjectData::TSeqRec *)item->Data;
 //			UnicodeString acf_path;
 
-			acf_path = sr->GetAcf();
-			size_t seq = 0;
-			size_t rec = 0;
-			sr->GetNums(rec, seq);
+	  //		acf_path = sr->GetAcf();
+			//size_t seq = 0;
+		//	size_t rec = 0;
+		  //	sr->GetNums(rec, seq);
 			//ProcessData(acf_, acf_path, seq, rec);
 
 
@@ -1835,7 +1945,7 @@ void __fastcall TMainForm::ListView3DblClick(TObject *Sender) {
 				ProcessData(acf_, acf_path, seq, rec);
 			}
 		}
-         */
+		 */
 
 
 		/*
@@ -1856,7 +1966,7 @@ void __fastcall TMainForm::ListView3DblClick(TObject *Sender) {
 			}
 		}
 		*/
-	}
+
 
 }
 // ---------------------------------------------------------------------------
@@ -1869,4 +1979,53 @@ void __fastcall TMainForm::ToolButton9Click(TObject *Sender)
 	LineSeries5->Clear();
 }
 //---------------------------------------------------------------------------
+
+
+void __fastcall TMainForm::VtGetText(TBaseVirtualTree *Sender, PVirtualNode Node,
+	  TColumnIndex Column, TVSTTextType TextType, UnicodeString &CellText)
+{
+	TProjectData::TVtPD *d = (TProjectData::TVtPD *)Sender->GetNodeData(Node);
+	if (d) {
+		switch (d->State) {
+			case TProjectData::pdRecord:
+				switch (Column) {
+					case 0: CellText = d->Name; break;
+					case 1: CellText = FloatToStrF(d->ScatAngle, ffFixed, 5, 2); break;
+					case 2: CellText = FloatToStrF(d->Temperature, ffFixed, 5, 2); break;
+					case 3: CellText = FloatToStrF(d->x_pcs, ffFixed, 5, 2); break;
+					case 4: CellText = FloatToStrF(d->pi, ffFixed, 5, 3); break;
+				}
+				break;
+			case TProjectData::pdMean:
+                switch (Column) {
+                	case 0: CellText = d->Name; break;
+					case 3: CellText = FloatToStrF(d->x_pcs, ffFixed, 5, 2); break;
+                	case 4: CellText = FloatToStrF(d->pi, ffFixed, 5, 3); break;
+                }
+                break;
+			default :
+				if (Column == 0)
+					CellText = d->Name;
+		}
+	}
+
+}
+
+void __fastcall TMainForm::VtDblClick(TObject *Sender)
+{
+	TVirtualNode *t = vt->GetFirstSelected(false);
+
+	if (t) {
+		TProjectData::TVtPD *d = (TProjectData::TVtPD *)vt->GetNodeData(t);
+		if (d)
+		{
+            pd__ = d->pd;
+			ProcessData(d);
+		}
+	}
+}
+
+
+
+
 

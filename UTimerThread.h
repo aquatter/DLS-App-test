@@ -17,8 +17,10 @@ protected:
 
 	UnicodeString s;
 public:
+    TProjectData *pd_;
 	TSeqThreadParams params_;
 	TAquireMode mode;
+	bool DoMean_;
 
 	__fastcall TTimerThread(bool CreateSuspended);
 	void  __fastcall SaveProject();

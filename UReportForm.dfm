@@ -12,7 +12,6 @@ object ReportForm: TReportForm
   Font.Style = []
   OldCreateOrder = False
   Position = poDesigned
-  OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
   object Panel1: TPanel
@@ -42,63 +41,6 @@ object ReportForm: TReportForm
       OnClick = Button2Click
     end
   end
-  object VirtualStringTree1: TVirtualStringTree
-    Left = 0
-    Top = 56
-    Width = 496
-    Height = 275
-    Align = alClient
-    CheckImageKind = ckDarkCheck
-    Header.AutoSizeIndex = 0
-    Header.DefaultHeight = 17
-    Header.Font.Charset = DEFAULT_CHARSET
-    Header.Font.Color = clWindowText
-    Header.Font.Height = -11
-    Header.Font.Name = 'Tahoma'
-    Header.Font.Style = []
-    Header.Options = [hoColumnResize, hoDrag, hoShowSortGlyphs, hoVisible, hoAutoSpring]
-    Header.Style = hsFlatButtons
-    TabOrder = 1
-    TreeOptions.AnimationOptions = [toAnimatedToggle, toAdvancedAnimatedToggle]
-    TreeOptions.MiscOptions = [toAcceptOLEDrop, toCheckSupport, toFullRepaintOnResize, toInitOnSave, toToggleOnDblClick, toWheelPanning, toEditOnClick]
-    TreeOptions.PaintOptions = [toShowButtons, toShowDropmark, toShowHorzGridLines, toShowRoot, toShowVertGridLines, toThemeAware, toUseBlendedImages, toFullVertGridLines]
-    TreeOptions.SelectionOptions = [toFullRowSelect, toLevelSelectConstraint, toMultiSelect]
-    OnChecked = VirtualStringTree1Checked
-    OnChecking = VirtualStringTree1Checking
-    OnGetText = VirtualStringTree1GetText
-    Columns = <
-      item
-        Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAutoSpring, coSmartResize, coAllowFocus]
-        Position = 0
-        Width = 163
-        WideText = #1053#1072#1080#1084#1077#1085#1086#1074#1072#1085#1080#1077
-      end
-      item
-        Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAutoSpring, coSmartResize, coAllowFocus]
-        Position = 1
-        Width = 83
-        WideText = #1044#1080#1072#1084#1077#1090#1088', '#1085#1084'.'
-      end
-      item
-        Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAutoSpring, coSmartResize, coAllowFocus]
-        Position = 2
-        Width = 83
-        WideText = #1055#1055#1044
-      end
-      item
-        Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAutoSpring, coSmartResize, coAllowFocus]
-        Position = 3
-        Width = 83
-        WideText = #1059#1075#1086#1083', '#1075#1088#1072#1076'.'
-      end
-      item
-        Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAutoSpring, coSmartResize, coAllowFocus]
-        Position = 4
-        Width = 78
-        WideText = #1057#1050#1054', '#1085#1084'.'
-      end>
-    WideDefaultText = ''
-  end
   object ToolBar1: TToolBar
     Left = 0
     Top = 0
@@ -109,7 +51,7 @@ object ReportForm: TReportForm
     Caption = 'ToolBar1'
     Images = ImageList1
     ShowCaptions = True
-    TabOrder = 2
+    TabOrder = 1
     object ToolButton1: TToolButton
       Left = 0
       Top = 0
@@ -149,8 +91,8 @@ object ReportForm: TReportForm
   object ImageList1: TImageList
     Height = 32
     Width = 32
-    Left = 239
-    Top = 246
+    Left = 359
+    Top = 222
     Bitmap = {
       494C010105000700040020002000FFFFFFFFFF00FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000800000004000000001002000000000000080

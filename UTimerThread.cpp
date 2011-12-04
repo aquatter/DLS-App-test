@@ -63,9 +63,9 @@ void __fastcall TTimerThread::Draw() {
     	break;
 	case 5:
 	{
-		UnicodeString q = pd.Path + pd.Name + ".dls";
-		pd.Clear();
-		OpenProject(q, pd);
+		UnicodeString q = pd_->Path + pd_->Name + ".dls";
+		pd_->Clear();
+		OpenProject(q, *pd_);
 	}
 	break;
 
@@ -79,8 +79,10 @@ void __fastcall TTimerThread::Execute() {
 	switch (mode) {
 		case from_device:
 		{
-			pd.Name = AcfParams.File_Name;
-			pd.Path = AcfParams.Save_Dir+"\\";
+			pd_->Name = AcfParams.File_Name;
+			pd_->Path = AcfParams.Save_Dir+"\\";
+			pd_->Name_Sol = AcfParams.Name_Sol;
+			pd_->Name_Spec = AcfParams.Name_Spec;
 
 			mm = 0;
 			Synchronize(&Draw);
@@ -175,7 +177,8 @@ void __fastcall TTimerThread::Execute() {
 				Seq->num_blocks = num_blocks;
 				Seq->num_seq = num_seq;
 				Seq->mode = mode;
-				Seq->seq_ = &pd.Add();
+				Seq->seq_ = &pd_->Add();
+				Seq->pd_ = pd_;
 				Seq->wait_event = wait_event;
 
 				Seq->Start();
@@ -190,9 +193,6 @@ void __fastcall TTimerThread::Execute() {
 			mm = 4;
 			Synchronize(&Draw);
 
-
-
-
 		    CloseHandle(wait_event);
 			CloseHandle(q);
             mm=5;
@@ -202,23 +202,28 @@ void __fastcall TTimerThread::Execute() {
 		case from_hdd:
 		{
         	void *wait_event = CreateEventA(NULL, 1, 0, NULL);
-			for (size_t i=0; i < pd.SizeOf(); i++) {
-            	ResetEvent(wait_event);
-				if (!pd[i].process_)
+			for (size_t i=0; i < pd_->SizeOf(); i++) {
+				ResetEvent(wait_event);
+				if (!(*pd_)[i].process_)
 					continue;
 				TSeqThread *Seq = new TSeqThread(true);
 				Seq->mode = mode;
 				Seq->num_seq = i;
+				Seq->pd_ = pd_;
 				Seq->wait_event = wait_event;
-
+                Seq->DoMean_ = DoMean_;
 				Seq->Start();
-				Sleep(10);
+				//Sleep(10);
 				WaitForSingleObject(wait_event, 10000);
 				Seq->Free();
 			}
 
-			mm=5;
+			mm=4;
 			Synchronize(&Draw);
+			mm=5;
+            Synchronize(&Draw);
+
+
 			CloseHandle(wait_event);
 			break;
 		}
@@ -233,20 +238,31 @@ void __fastcall TTimerThread::SaveProject() {
 
 	MainForm->XMLDocument1->Active = true;
 
-	root = MainForm->XMLDocument1->AddChild
-		("Dynamic_Light_Scattering_XML_Document");
+	root = MainForm->XMLDocument1->AddChild("Dynamic_Light_Scattering_XML_Document");
 	root->AddChild("Date")->Text = Today().DateString();
-	root->AddChild("Name")->Text = AcfParams.Name_Spec;
-	root->AddChild("Solution")->Text = AcfParams.Name_Sol;
+	root->AddChild("Name")->Text = pd_->Name_Spec;
+	root->AddChild("Solution")->Text = pd_->Name_Sol;
 
-	for (size_t i=0; i < pd.SizeOf(); i++) {
+	for (size_t i=0; i < (*pd_).SizeOf(); i++) {
 		seq_node = root->AddChild("Series");
-		for (size_t j=0; j < pd[i].SizeOf(); j++) {
+		for (size_t j=0; j < (*pd_)[i].SizeOf(); j++) {
 			rec_node = seq_node->AddChild("Measurement");
-			rec_node->AddChild("Data")->Text = ExtractFileName(pd[i][j].Data_);
-			rec_node->AddChild("ACF")->Text = ExtractFileName(pd[i][j].Acf_);
+			rec_node->AddChild("Data")->Text = ExtractFileName((*pd_)[i][j].Data_);
+			rec_node->AddChild("ACF")->Text = ExtractFileName((*pd_)[i][j].Acf_);
+			rec_node->AddChild("a0")->Text = FloatToStr((*pd_)[i][j].a0);
+			rec_node->AddChild("a1")->Text = FloatToStr((*pd_)[i][j].a1);
+			rec_node->AddChild("a2")->Text = FloatToStr((*pd_)[i][j].a2);
+			rec_node->AddChild("x_pcs")->Text = FloatToStr((*pd_)[i][j].x_pcs);
+			rec_node->AddChild("pi")->Text = FloatToStr((*pd_)[i][j].pi);
+
 		}
-        seq_node->AddChild("Mean_ACF")->Text = ExtractFileName(pd[i].Mean_Acf_);
+		seq_node->AddChild("Mean_ACF")->Text = ExtractFileName((*pd_)[i].Mean_Acf_);
+		seq_node->AddChild("a0")->Text = FloatToStr((*pd_)[i].a0);
+		seq_node->AddChild("a1")->Text = FloatToStr((*pd_)[i].a1);
+		seq_node->AddChild("a2")->Text = FloatToStr((*pd_)[i].a2);
+		seq_node->AddChild("x_pcs")->Text = FloatToStr((*pd_)[i].x_pcs);
+		seq_node->AddChild("pi")->Text = FloatToStr((*pd_)[i].pi);
+
 	}
 	/*
 	for (int i=0; i < AcfParams.n_seq; i++) {
@@ -276,7 +292,7 @@ void __fastcall TTimerThread::SaveProject() {
 	}
 	*/
 //	s=AcfParams.Save_Dir+"\\"+AcfParams.File_Name+".dls";
-    s = pd.Path+pd.Name+".dls";
+	s = pd_->Path+pd_->Name+".dls";
 	MainForm->XMLDocument1->SaveToFile(s);
 
 	MainForm->XMLDocument1->XML->Clear();

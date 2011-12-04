@@ -26,3 +26,4 @@ void __fastcall TAdd2ReportForm::Button3Click(TObject *Sender)
    add_new=true;
 }
 //---------------------------------------------------------------------------
+

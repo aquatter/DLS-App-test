@@ -42,7 +42,6 @@ __published:	// IDE-managed Components
 	TCSpinButton *CSpinButton1;
 	TCSpinButton *CSpinButton2;
 	TLabel *Label19;
-	TEdit *Edit9;
 	TLabel *Label20;
 	TLabel *Label21;
 	TEdit *Edit11;
@@ -87,7 +86,6 @@ __published:	// IDE-managed Components
 	TLabel *Label34;
 	TCheckBox *CheckBox1;
 	TLabel *Label35;
-	TEdit *Edit21;
 	TLabel *Label36;
 	TLabel *Label37;
 	TEdit *Edit22;
@@ -120,8 +118,6 @@ __published:	// IDE-managed Components
 	TEdit *Edit32;
 	TLabel *Label51;
 	TEdit *Edit33;
-	TBevel *Bevel1;
-	TBevel *Bevel2;
 	TLabel *Label22;
 	TCheckBox *CheckBox6;
 	TCheckBox *CheckBox7;
@@ -129,8 +125,6 @@ __published:	// IDE-managed Components
 	TEdit *Edit34;
 	TLabel *Label53;
 	TEdit *Edit35;
-	TMemo *Memo1;
-	TLabel *Label54;
 	TLabel *Label55;
 	TLabel *Label56;
 	TPanel *Panel1;
@@ -142,7 +136,6 @@ __published:	// IDE-managed Components
 	TEdit *Edit8;
 	TLabel *Label59;
 	TLabel *Label60;
-	TEdit *Edit37;
 	TComboBox *ComboBox2;
 	TLabel *Label62;
 	TLabel *Label61;
@@ -150,6 +143,7 @@ __published:	// IDE-managed Components
 	TComboBox *ComboBox3;
 	TComboBox *ComboBox4;
 	TButton *Button7;
+	TEdit *Edit9;
 	void __fastcall Button2Click(TObject *Sender);
 	void __fastcall Button1Click(TObject *Sender);
 	void __fastcall CheckBox1Click(TObject *Sender);

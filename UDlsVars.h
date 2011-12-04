@@ -7,6 +7,7 @@
 #include <vector>
 #include "Device.h"
 #include "UProgectData.h"
+#include "VirtualTrees.hpp"
 
 using namespace std;
 
@@ -106,14 +107,6 @@ struct TAcfParams {
 	TAcfParams();
 };
 
-struct TDataParams {
-	float WaveLength;
-	float Viscosity;
-	float ScatAngle;
-	float Temperature;
-	float RefIndex;
-	char Discr_Time;
-};
 
 
 struct TReportData {
@@ -154,6 +147,7 @@ void ProcessAcfData(WORD * p, int n0, double t);
 void SaveAcf2Txt(UnicodeString s);
 void SaveAcf2Crv(UnicodeString s);
 void SaveAcf2Tdf(UnicodeString s);
+void SaveAcf2Tdf(UnicodeString s, TDataParams DataParams_);
 void OpenTdf(UnicodeString s);
 double CheckString(UnicodeString s);
 void CreateCrv(double*p, double*t, int w, UnicodeString s);
@@ -165,54 +159,17 @@ bool OptionsFormExecute();
 bool OpenProject(UnicodeString Name, TProjectData &pd);
 void ExtractDataParams(UnicodeString Name, TDataParams *params);
 void ProcessData(dls_mode mode, UnicodeString Name, int seq_num, int rec_num);
+void ProcessData(TProjectData::TVtPD *d);
 void OpenData(WORD *data, int &n, UnicodeString Name);
 double GetTime_Discr(int i);
-
-
+void AddToVt( TProjectData &pd_ , TVirtualStringTree *vt );
+void UpdateVt( TVirtualStringTree *vt );
 
 typedef struct ThreadData
 {
 	char index;
 	int value;
 } *PThreadData;
-
-DWORD WINAPI SetThreadParams(LPVOID lpParam)
-{
- //	PThreadData d = (PThreadData)lpParam;
-    Sleep(1000);
-
-	/*
-	if (d->index <= 22) {
-		device.WriteData(d->index, d->value);
-		void *q = CreateEvent(NULL, true, false, NULL);
-		Status status;
-		status.byte = 0;
-		device.SetAngle(d->index);
-		do {
-			WaitForSingleObject(q, 100);
-			device.GetStatus(status);
-		}
-		while (status.bits.goniometer);
-		CloseHandle(q);
-	}
-
-	if (d->index == 24) {
-		device.WriteData(d->index, d->value);
-		void *q = CreateEvent(NULL, true, false, NULL);
-		Status status;
-		status.byte = 0;
-		device.SetAperture(d->index);
-		do {
-			WaitForSingleObject(q, 100);
-			device.GetStatus(status);
-		}
-		while (status.bits.aperture);
-		CloseHandle(q);
-	}
-	*/
-}
-
-
 
 
 class TThreadParams: public TThread
