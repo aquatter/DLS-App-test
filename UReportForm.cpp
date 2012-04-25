@@ -186,7 +186,7 @@ void __fastcall TReportForm::RecalculateReport()
    double mean_pi, mean_pcs, rms_pcs;
 
 
-   for (int i=0; i < VirtualStringTree1->RootNodeCount; i++) {
+   for (size_t i=0; i < VirtualStringTree1->RootNodeCount; i++) {
 	 if (!(t_root == NULL)) {
 	  data_root=(TReportData *)ReportForm->VirtualStringTree1->GetNodeData(t_root);
 	  t_child=t_root->FirstChild;
@@ -313,7 +313,7 @@ void __fastcall TReportForm::ToolButton3Click(TObject *Sender)
 //	cell=table.OleFunction("Cell", 1, 1);
 //	range=cell.OlePropertyGet("Range");
 //	range.OlePropertySet("Text", "Fuck");
-	for (int i=0; i < VirtualStringTree1->RootNodeCount; i++) {
+	for (size_t i=0; i < VirtualStringTree1->RootNodeCount; i++) {
 	  if (!(t_root == NULL)) {
 		data_root=(TReportData *)ReportForm->VirtualStringTree1->GetNodeData(t_root);
 		if (!(data_root == NULL)) {
@@ -370,7 +370,7 @@ void __fastcall TReportForm::ToolButton3Click(TObject *Sender)
 		if (!(i == (VirtualStringTree1->RootNodeCount-1))) {
 		  WordApp.OlePropertyGet("Selection").OleFunction("MoveRight", 12);
 		  WordApp.OlePropertyGet("Selection").OlePropertyGet("Font").OlePropertySet("Bold", false);
-	      WordApp.OlePropertyGet("Selection").OlePropertyGet("ParagraphFormat").OlePropertySet("Alignment", 1);
+		  WordApp.OlePropertyGet("Selection").OlePropertyGet("ParagraphFormat").OlePropertySet("Alignment", 1);
 		}
 	  }
 	  t_root=t_root->NextSibling;

@@ -861,8 +861,13 @@ void ProcessData(dls_mode mode, UnicodeString Name, int seq_num, int rec_num)
 			CalculateCumulants(acf_app);
 			MainForm->LineSeries3->Clear();
 			MainForm->Series5->Clear();
-			for (int i=0; i < AcfParams.n_avt; i++) {
-				MainForm->LineSeries3->AddXY(acf_t.a[i], acf.a[i]);
+			for (int i=0; i < AcfParams.n_avt; i++)
+			{
+				if ((acf.a[i] >= 0.0f) && (acf.a[i] <= 1.0f) )
+					MainForm->LineSeries3->AddXY(acf_t.a[i], acf.a[i]);
+				else
+					MainForm->LineSeries3->AddNullXY(acf_t.a[i], 0.0f);
+
 				MainForm->Series5->AddXY(acf_t.a[i], acf_app[i]);
 			}
 
@@ -948,7 +953,7 @@ void OpenData(WORD *data, int &n, UnicodeString Name)
 double GetTime_Discr(int i)
 {
 	switch (i) {
-		case 0: return 6.5;
+		case 0: return 5.0;
 		case 1: return 10.0;
 		case 2: return 20.0;
 		case 3: return 50.0;
@@ -995,6 +1000,7 @@ void AddToVt( TProjectData &pd_ , TVirtualStringTree *vt )
 							d->Temperature = pd_[i][j].DataParams.Temperature;
 							d->x_pcs = pd_[i][j].x_pcs;
 							d->pi = pd_[i][j].pi;
+							d->gamma = pd_[i][j].a1;
 							d->rec_num = j;
 							d->seq_num = i;
 							d->pd = &pd_;
@@ -1010,6 +1016,7 @@ void AddToVt( TProjectData &pd_ , TVirtualStringTree *vt )
 					d->State = TProjectData::pdMean;
 					d->x_pcs = pd_[i].x_pcs;
 					d->pi = pd_[i].pi;
+					d->gamma = pd_[i].a1;
 
 					d->pd = &pd_;
 				}

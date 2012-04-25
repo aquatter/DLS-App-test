@@ -66,8 +66,10 @@ void __fastcall TTimerThread::Draw() {
 		UnicodeString q = pd_->Path + pd_->Name + ".dls";
 		pd_->Clear();
 		OpenProject(q, *pd_);
+		MainForm->off(true);
 	}
 	break;
+	case 6: MainForm->off(false); break;
 
 	default: ;
 	}
@@ -76,6 +78,7 @@ void __fastcall TTimerThread::Draw() {
 
 void __fastcall TTimerThread::Execute() {
 
+	Sync(6);
 	switch (mode) {
 		case from_device:
 		{
@@ -84,14 +87,8 @@ void __fastcall TTimerThread::Execute() {
 			pd_->Name_Sol = AcfParams.Name_Sol;
 			pd_->Name_Spec = AcfParams.Name_Spec;
 
-			mm = 0;
-			Synchronize(&Draw);
-
-			mm = 1;
-			s="Инициализация устройства...";
-			Synchronize(&Draw);
-
-
+			Sync(0);
+			Sync(1, "Инициализация устройства...");
 
 			void *q = CreateEventA(NULL, 1, 0, NULL);
 			void *wait_event = CreateEventA(NULL, 1, 0, NULL);
@@ -105,8 +102,7 @@ void __fastcall TTimerThread::Execute() {
 
 			Sleep(10);
 			if (WaitForSingleObject(wait_event, 20000) == WAIT_TIMEOUT) {
-				s = "Ошибка инициализации устройства";
-				Synchronize(&Draw);
+				Sync(1, "Ошибка инициализации устройства");
 				InitDevice->Free();
 				//mm = 2;
 				//Synchronize(&Draw);
@@ -114,10 +110,8 @@ void __fastcall TTimerThread::Execute() {
 			}
 
 			if (error) {
-				s = "Ошибка инициализации устройства:";
-				Synchronize(&Draw);
-				s = InitDevice->s;
-				Synchronize(&Draw);
+				Sync(1, "Ошибка инициализации устройства: ");
+				Sync(1, InitDevice->s);
 
 				InitDevice->Free();
 				//mm = 2;
@@ -135,9 +129,7 @@ void __fastcall TTimerThread::Execute() {
 			Init->Start();
 			Sleep(10);
 			if (WaitForSingleObject(wait_event, 10000) == WAIT_TIMEOUT) {
-
-				s = "Ошибка инициализации устройства";
-				Synchronize(&Draw);
+				Sync(1, "Ошибка инициализации устройства");
 
 				Init->Free();
 			   //	mm = 2;
@@ -149,29 +141,19 @@ void __fastcall TTimerThread::Execute() {
 			Init->Free();
 
 			if (num_blocks == 0) {
-            	s = "Ошибка инициализации устройства";
-				Synchronize(&Draw);
+				Sync(1, "Ошибка инициализации устройства");
 				return;
 			}
 
 
-			mm = 2;
-			Synchronize(&Draw);
-
-			mm = 1;
-			s="Количество блоков: " + IntToStr(num_blocks);
-			Synchronize(&Draw);
-
-
+			Sync(2);
+			Sync(1, "Количество блоков: " + IntToStr(num_blocks));
 
 			for (int i = 0; i < AcfParams.n_seq; i++) {
 				ResetEvent(wait_event);
 				num_seq = i;
-				mm = 1;
-				s = "";
-				Synchronize(&Draw);
-				s = "Серия " + IntToStr(i+1) + " из " + IntToStr(AcfParams.n_seq);
-				Synchronize(&Draw);
+				Sync(1);
+				Sync(1, "Серия " + IntToStr(i+1) + " из " + IntToStr(AcfParams.n_seq));
 
 				TSeqThread *Seq = new TSeqThread(true);
 				Seq->num_blocks = num_blocks;
@@ -190,13 +172,10 @@ void __fastcall TTimerThread::Execute() {
 				Seq->Free();
 			}
 
-			mm = 4;
-			Synchronize(&Draw);
-
-		    CloseHandle(wait_event);
+			CloseHandle(wait_event);
 			CloseHandle(q);
-            mm=5;
-            Synchronize(&Draw);
+			Sync(4);
+			Sync(5);
 			break;
 		}
 		case from_hdd:
@@ -218,12 +197,8 @@ void __fastcall TTimerThread::Execute() {
 				Seq->Free();
 			}
 
-			mm=4;
-			Synchronize(&Draw);
-			mm=5;
-            Synchronize(&Draw);
-
-
+			Sync(4);
+			Sync(5);
 			CloseHandle(wait_event);
 			break;
 		}

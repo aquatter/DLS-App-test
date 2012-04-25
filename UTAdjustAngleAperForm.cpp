@@ -5,6 +5,7 @@
 
 #include "UTAdjustAngleAperForm.h"
 #include "UDlsVars.h"
+#include "MainFormUnit.h"
 
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
@@ -74,8 +75,8 @@ void __fastcall TAdjustAngleAperForm::ComboBox3Change(TObject *Sender)
 {
 	AcfParams.Initial_Angle = ComboBox3->ItemIndex;
 	int Angle = 0;
-//	if (!device.ReadData(AcfParams.Initial_Angle*2, Angle))
-//		return;
+	if (!device.ReadData(AcfParams.Initial_Angle*2, Angle))
+		return;
 
 	Edit1->Text = IntToStr(Angle);
 
@@ -101,13 +102,22 @@ void __fastcall TAdjustAngleAperForm::Edit2KeyPress(TObject *Sender, wchar_t &Ke
 
 void __fastcall TAdjustAngleAperForm::off()
 {
-    for (int i=0; i < ControlCount; i++)
+	MainForm->StopMonitoring();
+	for (int i=0; i < ControlCount; i++)
 		Controls[i]->Enabled = false;
 }
 
 void __fastcall TAdjustAngleAperForm::on()
 {
+	MainForm->StartMonitoring();
     for (int i=0; i < ControlCount; i++)
 		Controls[i]->Enabled = true;
+	Show();
 }
+
+void __fastcall TAdjustAngleAperForm::Button1Click(TObject *Sender)
+{
+	Close();
+}
+//---------------------------------------------------------------------------
 

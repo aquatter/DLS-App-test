@@ -16,6 +16,8 @@ USEFORM("UStatusRecForm.cpp", StatusRecForm);
 USEFORM("UAddGradForm.cpp", AddGradForm);
 USEFORM("UGraphApproxForm.cpp", GraphApproxForm);
 USEFORM("UTAdjustAngleAperForm.cpp", AdjustAngleAperForm);
+USEFORM("UTestRecForm.cpp", TestRecForm);
+#include "MainFormUnit.h"
 //---------------------------------------------------------------------------
 WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int)
 {
@@ -36,11 +38,13 @@ WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int)
 		Application->CreateForm(__classid(TRecThreadStartForm), &RecThreadStartForm);
 		Application->CreateForm(__classid(TStatusRecForm), &StatusRecForm);
 		Application->CreateForm(__classid(TAdjustAngleAperForm), &AdjustAngleAperForm);
+		Application->CreateForm(__classid(TTestRecForm), &TestRecForm);
 		Application->Run();
 	}
 	catch (Exception &exception)
 	{
-		Application->ShowException(&exception);
+		//Application->ShowException(&exception);
+		MainForm->Memo1->Lines->Add(exception.Message);
 	}
 	catch (...)
 	{

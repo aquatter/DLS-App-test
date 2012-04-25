@@ -11,6 +11,7 @@ object AdjustAngleAperForm: TAdjustAngleAperForm
   Font.Height = -11
   Font.Name = 'Tahoma'
   Font.Style = []
+  FormStyle = fsStayOnTop
   OldCreateOrder = False
   Position = poOwnerFormCenter
   PixelsPerInch = 96
@@ -51,13 +52,14 @@ object AdjustAngleAperForm: TAdjustAngleAperForm
     Caption = #1057#1084#1077#1097#1077#1085#1080#1077' '#1064#1044
   end
   object Button1: TButton
-    Left = 168
+    Left = 170
     Top = 176
-    Width = 75
+    Width = 86
     Height = 25
     Caption = 'OK'
     ModalResult = 1
     TabOrder = 0
+    OnClick = Button1Click
   end
   object ComboBox3: TComboBox
     Left = 128

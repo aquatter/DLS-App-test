@@ -8,5 +8,8 @@
     <Transaction>2011.11.16 23:59:37.812.cpp,F:\Files\Delphi Files\dls\Device X\Unit1.cpp=F:\Files\Delphi Files\dls\Device X\UTAdjustAngleAperForm.cpp</Transaction>
     <Transaction>2011.11.16 23:59:37.812.h,F:\Files\Delphi Files\dls\Device X\Unit1.h=F:\Files\Delphi Files\dls\Device X\UTAdjustAngleAperForm.h</Transaction>
     <Transaction>2011.11.16 23:59:37.812.dfm,F:\Files\Delphi Files\dls\Device X\Unit1.dfm=F:\Files\Delphi Files\dls\Device X\UTAdjustAngleAperForm.dfm</Transaction>
+    <Transaction>2011.12.10 19:49:02.937.cpp,F:\Files\Delphi Files\dls\Device X\Unit1.cpp=F:\Files\Delphi Files\dls\Device X\UTestRecForm.cpp</Transaction>
+    <Transaction>2011.12.10 19:49:02.937.h,F:\Files\Delphi Files\dls\Device X\Unit1.h=F:\Files\Delphi Files\dls\Device X\UTestRecForm.h</Transaction>
+    <Transaction>2011.12.10 19:49:02.937.dfm,F:\Files\Delphi Files\dls\Device X\Unit1.dfm=F:\Files\Delphi Files\dls\Device X\UTestRecForm.dfm</Transaction>
   </Transactions>
 </BorlandProject>

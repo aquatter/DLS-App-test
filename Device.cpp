@@ -100,7 +100,7 @@ WORD* Device::GetData(DWORD& dwReadBlockNumData)
    //	FileClose(f);
 
 
-	for(int i=0;i<dwReadBlockNumData*BLOCK_DATA_NUM;i++)
+	for(size_t i=0;i < dwReadBlockNumData*BLOCK_DATA_NUM; i++)
 	{
 		int index = 2*i+1;
 		Data[i] = command_data.ReadData[index] + command_data.ReadData[index+1]*256;
@@ -199,7 +199,7 @@ bool Device::PhotoOn(bool value)
 	InitCommandData(command_data,3,1);
 	command_data.WriteData[0] =0x13;
 	command_data.WriteData[1] =0x09;
-	command_data.WriteData[2] =value;
+	command_data.WriteData[2] =1;
 	return ftd2xxDevice.Exec(command_data);
 }
 

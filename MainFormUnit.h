@@ -148,6 +148,8 @@ __published:	// IDE-managed Components
 	TSplitter *Splitter8;
 	TToolBar *ToolBar4;
 	TToolButton *ToolButton9;
+	TImageList *ImageList5;
+	TToolButton *ToolButton10;
 	void __fastcall Timer1Timer(TObject *Sender);
 	void __fastcall chckbxLFDClick(TObject *Sender);
 	void __fastcall chckbxFEUClick(TObject *Sender);
@@ -198,6 +200,7 @@ __published:	// IDE-managed Components
 	void __fastcall N6Click(TObject *Sender);
 	void __fastcall ListView3DblClick(TObject *Sender);
 	void __fastcall ToolButton9Click(TObject *Sender);
+	void __fastcall ToolButton10Click(TObject *Sender);
 
 
 
@@ -208,7 +211,7 @@ private:	// User declarations
 	bool bTimerExecuting;
 
 	MeasuresData measuresData;
-	void __fastcall StopMonitoring();
+
 
 
 	bool __fastcall ReadDataEx();
@@ -247,6 +250,7 @@ public:		// User declarations
 	void __fastcall edtFEU_Init();
 	void __fastcall off(bool b);
 	void __fastcall StartMonitoring();
+	void __fastcall StopMonitoring();
 	__fastcall TMainForm(TComponent* Owner);
 	virtual __fastcall ~TMainForm() { delete vt; };
 };

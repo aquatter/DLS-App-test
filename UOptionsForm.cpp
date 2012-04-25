@@ -382,39 +382,42 @@ void __fastcall TOptionsForm::ToolButton1Click(TObject *Sender)
 }
 //---------------------------------------------------------------------------
 
-DWORD WINAPI MyThreadFunction( LPVOID lpParam )
-{
-	Sleep(5000);
-}
+//DWORD WINAPI MyThreadFunction( LPVOID lpParam )
+//{
+//	Sleep(5000);
+//}
 	//void __fastcall (__closure *TThreadMethod)(void);
 
 
 void __fastcall TOptionsForm::Button7Click(TObject *Sender)
 {
 	AcfParams.Aperture = ComboBox4->ItemIndex;
-	int Aper = 150;
-	//if (!device.ReadData(24, Aper))
-	  //	return;
+	int Aper = 0;
+	if (!device.ReadData(24, Aper))
+		return;
 	AcfParams.Initial_Angle = ComboBox3->ItemIndex;
-	int Angle = 180;
-	//if (!device.ReadData(AcfParams.Initial_Angle*2, Angle))
-	  //	return;
+	int Angle = 0;
+	if (!device.ReadData(AcfParams.Initial_Angle*2, Angle))
+		return;
 
 	AdjustAngleAperForm->Edit1->Text = IntToStr(Angle);
 	AdjustAngleAperForm->Edit2->Text = IntToStr(Aper);
 	AdjustAngleAperForm->ComboBox3->ItemIndex = AcfParams.Initial_Angle;
 
-	void *wait_event = CreateEvent(NULL, true, false, NULL);
+    MainForm->StopMonitoring();
 
+   //	void *wait_event = CreateEvent(NULL, true, false, NULL);
+
+	AdjustAngleAperForm->off();
 	TThreadParams *t = new TThreadParams(true);
 	t->mode = 0;
-	t->wait_event = wait_event;
 	t->FreeOnTerminate = true;
+	t->Draw = AdjustAngleAperForm->on;
 	t->Start();
 
-	WaitForSingleObject(wait_event, INFINITE);
+	//WaitForSingleObject(wait_event, INFINITE);
 
-	CloseHandle(wait_event);
+	//CloseHandle(wait_event);
 
 	/*
 	PThreadData d = (PThreadData)HeapAlloc(GetProcessHeap(),  HEAP_ZERO_MEMORY, sizeof(ThreadData));
@@ -438,7 +441,7 @@ void __fastcall TOptionsForm::Button7Click(TObject *Sender)
 	d = NULL;
 	*/
 
-	AdjustAngleAperForm->ShowModal();
+	//AdjustAngleAperForm->ShowModal();
 }
 //---------------------------------------------------------------------------
 

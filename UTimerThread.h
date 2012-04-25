@@ -24,6 +24,12 @@ public:
 
 	__fastcall TTimerThread(bool CreateSuspended);
 	void  __fastcall SaveProject();
+	void __fastcall Sync(int mm_, UnicodeString s_ = "")
+	{
+		mm = mm_;
+		s = s_;
+        Synchronize(&Draw);
+    }
 };
 //---------------------------------------------------------------------------
 #endif

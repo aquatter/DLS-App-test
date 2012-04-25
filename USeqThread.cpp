@@ -45,17 +45,14 @@ void __fastcall TSeqThread::Execute() {
 			else
 				ScatAngle = AcfParams.Initial_Angle*15;
 
-			mm=4;
-			s= "Угол рассеяния: " + FloatToStr(ScatAngle);
-			Synchronize(&Draw);
+			Sync(4, "Угол рассеяния: " + FloatToStr(ScatAngle));
 
             void *RecEvent = CreateEventA(NULL, 1, 0, NULL);
 
 			for (int i = 0; i < AcfParams.n_rec; i++) {
             	ResetEvent(RecEvent);
-				mm=2;
 				num_rec = i;
-				Synchronize(&Draw);
+				Sync(2);
 				rec_ = &seq_->Add();
 
 				TAcquireThread *t = new TAcquireThread(true);
@@ -81,8 +78,7 @@ void __fastcall TSeqThread::Execute() {
 					rec_->x_pcs = AcfParams.x_pcs;
 					rec_->pi = AcfParams.PI;
 
-					mm=1;
-					Synchronize(&Draw);
+					Sync(1);
 					if (AcfParams.DoMean)
 						DoMean();
 					SaveAcf();
@@ -102,9 +98,7 @@ void __fastcall TSeqThread::Execute() {
 				seq_->x_pcs = AcfParams.x_pcs;
 				seq_->pi = AcfParams.PI;
 
-				mm=3;
-                Synchronize(&Draw);
-
+				Sync(3);
 				SaveAcf(false);
 			}
 
@@ -131,9 +125,7 @@ void __fastcall TSeqThread::Execute() {
 						init_ = Init(OpenData(num_seq, i, true));
 					else
 					{
-						s = "Не удалось открыть файл: " + (*pd_)[num_seq][i].Data_;
-						mm=4;
-						Synchronize(&Draw);
+						Sync(4,"Не удалось открыть файл: " + (*pd_)[num_seq][i].Data_);
 						SetEvent(wait_event);
 						return;
 					}
@@ -143,9 +135,7 @@ void __fastcall TSeqThread::Execute() {
 					OpenData(num_seq, i, false);
 				else
 				{
-					s = "Не удалось открыть файл: " + (*pd_)[num_seq][i].Data_;
-					mm=4;
-					Synchronize(&Draw);
+					Sync(4, "Не удалось открыть файл: " + (*pd_)[num_seq][i].Data_);
 					SetEvent(wait_event);
                     return;
 				}
@@ -160,8 +150,7 @@ void __fastcall TSeqThread::Execute() {
                 DataParams = DataParams_;
 
 				SaveAcf(num_seq, i);
-				mm=1;
-				Synchronize(&Draw);
+				Sync(1);
 
 				if (DoMean_){
 					DoMean();
@@ -179,8 +168,7 @@ void __fastcall TSeqThread::Execute() {
                 (*pd_)[num_seq].pi = AcfParams.PI;
                 SaveAcf(num_seq, -1);
 
-				mm=3;
-				Synchronize(&Draw);
+				Sync(3);
 			}
 
 			Clear();
@@ -321,11 +309,16 @@ void __fastcall TSeqThread::Draw() {
 			MainForm->LineSeries3->Clear();
 			MainForm->Series5->Clear();
 //			MainForm->Series1->Clear();
-			for (int i=0; i < acf.w; i++) {
-				MainForm->LineSeries3->AddXY(acf_t.a[i], acf.a[i]);
+			for (int i=0; i < acf.w; i++) 
+			{
+				if ((acf.a[i] >= 0.0f) && (acf.a[i] <= 1.0f)) 
+					MainForm->LineSeries3->AddXY(acf_t.a[i], acf.a[i]);
+				else
+					MainForm->LineSeries3->AddNullXY(acf_t.a[i], 0.0f);
+
 				MainForm->Series5->AddXY(acf_t.a[i], acf_app[i]);
 //				MainForm->Series1->AddXY(i, Data[i]);
-				}
+			}
 			MainForm->Memo1->Lines->Add("Температура "+FloatToStrF(DataParams_.Temperature-273.15, ffFixed, 5, 2));
 			s = "Показатель полидисперсности " + FloatToStrF(AcfParams.PI, ffFixed,5,3);
 			MainForm->Memo1->Lines->Add(s);
@@ -421,15 +414,21 @@ bool CalculateCumulants(double *acf_app, TDataParams DataParams_){
 	double *_w = new double[cnt];
 
 
-	for (int i = ind_left; i < ind_right; i++) {
-		if (acf.a[i] < 0) {
-			cum[i-ind_left] = 1e-3;
-		}
-		else {
-			cum[i-ind_left] = acf.a[i];
-		}
-
+	for (int i = ind_left; i < ind_right; i++)
+	{
 		cum_t[i-ind_left] = acf_t.a[i];
+
+		if (acf.a[i] < 0.0)
+		{
+			cum[i-ind_left] = 1e-3;
+			continue;
+		}
+		if (acf.a[i] > 1.0)
+		{
+			cum[i-ind_left] = 1.0;
+			continue;
+		}
+		cum[i-ind_left] = acf.a[i];
 	}
 
 	mean = 0;
@@ -563,14 +562,20 @@ bool CalculateCumulants(double *acf_app){
 
 
 	for (int i = ind_left; i < ind_right; i++) {
-		if (acf.a[i] < 0) {
+		cum_t[i-ind_left] = acf_t.a[i];
+
+		if (acf.a[i] < 0.0)
+		{
 			cum[i-ind_left] = 1e-3;
+			continue;
 		}
-		else {
-			cum[i-ind_left] = acf.a[i];
+		if (acf.a[i] > 1.0)
+		{
+			cum[i-ind_left] = 1.0;;
+            continue;
 		}
 
-		cum_t[i-ind_left] = acf_t.a[i];
+		cum[i-ind_left] = acf.a[i];
 	}
 
 	mean = 0;
@@ -644,7 +649,7 @@ bool __fastcall TSeqThread::Init(int n){
 
 	double dt = GetTime_Discr(DataParams_.Discr_Time);
 
-	step = 100; //500/dt;
+	step = 500/dt;
 	dt*=1e-3;
 	/*
 	switch (DataParams.Discr_Time) {

@@ -33,6 +33,7 @@ class TProjectData
 				int seq_num;
 				double x_pcs;
 				double pi;
+				double gamma;
 				TVtPDState State;
 				TProjectData *pd;
 			} TVtPD;

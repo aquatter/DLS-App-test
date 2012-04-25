@@ -30,6 +30,7 @@ __published:	// IDE-managed Components
 	void __fastcall ComboBox3Change(TObject *Sender);
 	void __fastcall Edit1KeyPress(TObject *Sender, wchar_t &Key);
 	void __fastcall Edit2KeyPress(TObject *Sender, wchar_t &Key);
+	void __fastcall Button1Click(TObject *Sender);
 private:	// User declarations
 public:		// User declarations
 	void __fastcall ApplyChangeAngle();

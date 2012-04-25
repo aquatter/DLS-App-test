@@ -58,160 +58,166 @@
 			<TASM_Debugging>None</TASM_Debugging>
 		</PropertyGroup>
 		<ItemGroup>
-			<CppCompile Include="measures_data.cpp">
-				<DependentOn>measures_data.h</DependentOn>
-				<BuildOrder>6</BuildOrder>
+			<CppCompile Include="UReportForm.cpp">
+				<Form>ReportForm</Form>
+				<DependentOn>UReportForm.h</DependentOn>
+				<BuildOrder>18</BuildOrder>
 			</CppCompile>
-			<CppCompile Include="UpmAcfThread.cpp">
-				<DependentOn>UpmAcfThread.h</DependentOn>
-				<BuildOrder>15</BuildOrder>
+			<LibFiles Include="fftw3-3.lib">
+				<IgnorePath>true</IgnorePath>
+				<BuildOrder>12</BuildOrder>
+			</LibFiles>
+			<CppCompile Include="UAutoMeasureThread.cpp">
+				<DependentOn>UAutoMeasureThread.h</DependentOn>
+				<BuildOrder>21</BuildOrder>
 			</CppCompile>
-			<CppCompile Include="UAcfThread.cpp">
-				<DependentOn>UAcfThread.h</DependentOn>
-				<BuildOrder>8</BuildOrder>
-			</CppCompile>
-			<CppCompile Include="UDlsVars.cpp">
-				<DependentOn>UDlsVars.h</DependentOn>
-				<BuildOrder>10</BuildOrder>
-			</CppCompile>
-			<CppCompile Include="UGradForm.cpp">
-				<Form>GradForm</Form>
-				<DependentOn>UGradForm.h</DependentOn>
-				<BuildOrder>16</BuildOrder>
-			</CppCompile>
-			<CppCompile Include="DevicesConnectSources\ftd2xx_utils.cpp">
-				<DependentOn>DevicesConnectSources\ftd2xx_utils.h</DependentOn>
-				<BuildOrder>6</BuildOrder>
-			</CppCompile>
-			<CppCompile Include="UReportEditForm.cpp">
-				<Form>ReportEditForm</Form>
-				<DependentOn>UReportEditForm.h</DependentOn>
-				<BuildOrder>20</BuildOrder>
-			</CppCompile>
-			<CppCompile Include="MainFormUnit.cpp">
-				<Form>MainForm</Form>
-				<DependentOn>MainFormUnit.h</DependentOn>
-				<BuildOrder>2</BuildOrder>
-			</CppCompile>
-			<CppCompile Include="UAddGradForm.cpp">
-				<Form>AddGradForm</Form>
-				<DependentOn>UAddGradForm.h</DependentOn>
-				<BuildOrder>17</BuildOrder>
-			</CppCompile>
-			<CppCompile Include="UStatusRecForm.cpp">
-				<Form>StatusRecForm</Form>
-				<DependentOn>UStatusRecForm.h</DependentOn>
-				<BuildOrder>26</BuildOrder>
-			</CppCompile>
-			<CppCompile Include="UTAdjustAngleAperForm.cpp">
-				<Form>AdjustAngleAperForm</Form>
-				<DependentOn>UTAdjustAngleAperForm.h</DependentOn>
-				<BuildOrder>32</BuildOrder>
-			</CppCompile>
-			<CppCompile Include="UGraphApproxForm.cpp">
-				<Form>GraphApproxForm</Form>
-				<DependentOn>UGraphApproxForm.h</DependentOn>
-				<BuildOrder>23</BuildOrder>
-			</CppCompile>
-			<CppCompile Include="UMyInfernalType.cpp">
-				<DependentOn>UMyInfernalType.h</DependentOn>
-				<BuildOrder>9</BuildOrder>
-			</CppCompile>
-			<CppCompile Include="Device.cpp">
-				<DependentOn>Device.h</DependentOn>
-				<BuildOrder>5</BuildOrder>
-			</CppCompile>
-			<CppCompile Include="UTimerThread.cpp">
-				<DependentOn>UTimerThread.h</DependentOn>
-				<BuildOrder>28</BuildOrder>
-			</CppCompile>
-			<ResFiles Include="deviceX.res">
-				<BuildOrder>1</BuildOrder>
-			</ResFiles>
-			<CppCompile Include="deviceX.cpp">
-				<BuildOrder>0</BuildOrder>
-			</CppCompile>
-			<CppCompile Include="UDLSFFTThread.cpp">
-				<DependentOn>UDLSFFTThread.h</DependentOn>
-				<BuildOrder>13</BuildOrder>
+			<CppCompile Include="UDLSContinThread.cpp">
+				<DependentOn>UDLSContinThread.h</DependentOn>
+				<BuildOrder>12</BuildOrder>
 			</CppCompile>
 			<CppCompile Include="UOptionsForm.cpp">
 				<Form>OptionsForm</Form>
 				<DependentOn>UOptionsForm.h</DependentOn>
 				<BuildOrder>7</BuildOrder>
 			</CppCompile>
-			<CppCompile Include="DevicesConnectSources\DevicesCommonHeader.cpp">
-				<DependentOn>DevicesConnectSources\DevicesCommonHeader.h</DependentOn>
-				<BuildOrder>5</BuildOrder>
+			<CppCompile Include="UDLSFFTThread.cpp">
+				<DependentOn>UDLSFFTThread.h</DependentOn>
+				<BuildOrder>13</BuildOrder>
 			</CppCompile>
 			<CppCompile Include="UDlsINIFile.cpp">
 				<DependentOn>UDlsINIFile.h</DependentOn>
 				<BuildOrder>14</BuildOrder>
 			</CppCompile>
-			<LibFiles Include="fftw3-3.lib">
-				<IgnorePath>true</IgnorePath>
-				<BuildOrder>12</BuildOrder>
-			</LibFiles>
-			<CppCompile Include="UReportForm.cpp">
-				<Form>ReportForm</Form>
-				<DependentOn>UReportForm.h</DependentOn>
-				<BuildOrder>18</BuildOrder>
+			<CppCompile Include="DevicesConnectSources\DevicesCommonHeader.cpp">
+				<DependentOn>DevicesConnectSources\DevicesCommonHeader.h</DependentOn>
+				<BuildOrder>5</BuildOrder>
 			</CppCompile>
-			<CppCompile Include="UDLSContinThread.cpp">
-				<DependentOn>UDLSContinThread.h</DependentOn>
-				<BuildOrder>12</BuildOrder>
+			<CppCompile Include="USeqThread.cpp">
+				<DependentOn>USeqThread.h</DependentOn>
+				<BuildOrder>29</BuildOrder>
 			</CppCompile>
-			<CppCompile Include="UAutoMeasureThread.cpp">
-				<DependentOn>UAutoMeasureThread.h</DependentOn>
-				<BuildOrder>21</BuildOrder>
+			<CppCompile Include="UInitDeviceThread.cpp">
+				<DependentOn>UInitDeviceThread.h</DependentOn>
+				<BuildOrder>27</BuildOrder>
 			</CppCompile>
-			<CppCompile Include="UAutoProgressForm.cpp">
-				<Form>AutoProgressForm</Form>
-				<DependentOn>UAutoProgressForm.h</DependentOn>
-				<BuildOrder>22</BuildOrder>
+			<CppCompile Include="UProgectData.cpp">
+				<DependentOn>UProgectData.h</DependentOn>
+				<BuildOrder>31</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="UDeviceInitThread.cpp">
+				<DependentOn>UDeviceInitThread.h</DependentOn>
+				<BuildOrder>30</BuildOrder>
 			</CppCompile>
 			<CppCompile Include="UAdd2ReportForm.cpp">
 				<Form>Add2ReportForm</Form>
 				<DependentOn>UAdd2ReportForm.h</DependentOn>
 				<BuildOrder>19</BuildOrder>
 			</CppCompile>
-			<CppCompile Include="UAcquireThread.cpp">
-				<DependentOn>UAcquireThread.h</DependentOn>
-				<BuildOrder>24</BuildOrder>
+			<CppCompile Include="UAutoProgressForm.cpp">
+				<Form>AutoProgressForm</Form>
+				<DependentOn>UAutoProgressForm.h</DependentOn>
+				<BuildOrder>22</BuildOrder>
 			</CppCompile>
 			<CppCompile Include="URecThreadStartForm.cpp">
 				<Form>RecThreadStartForm</Form>
 				<DependentOn>URecThreadStartForm.h</DependentOn>
 				<BuildOrder>25</BuildOrder>
 			</CppCompile>
-			<CppCompile Include="UInitDeviceThread.cpp">
-				<DependentOn>UInitDeviceThread.h</DependentOn>
-				<BuildOrder>27</BuildOrder>
+			<CppCompile Include="UAcquireThread.cpp">
+				<DependentOn>UAcquireThread.h</DependentOn>
+				<BuildOrder>24</BuildOrder>
 			</CppCompile>
-			<CppCompile Include="USeqThread.cpp">
-				<DependentOn>USeqThread.h</DependentOn>
-				<BuildOrder>29</BuildOrder>
+			<CppCompile Include="deviceX.cpp">
+				<BuildOrder>0</BuildOrder>
 			</CppCompile>
-			<CppCompile Include="UDeviceInitThread.cpp">
-				<DependentOn>UDeviceInitThread.h</DependentOn>
-				<BuildOrder>30</BuildOrder>
+			<CppCompile Include="DevicesConnectSources\ftd2xx_utils.cpp">
+				<DependentOn>DevicesConnectSources\ftd2xx_utils.h</DependentOn>
+				<BuildOrder>6</BuildOrder>
 			</CppCompile>
-			<CppCompile Include="UProgectData.cpp">
-				<DependentOn>UProgectData.h</DependentOn>
-				<BuildOrder>31</BuildOrder>
+			<CppCompile Include="UGradForm.cpp">
+				<Form>GradForm</Form>
+				<DependentOn>UGradForm.h</DependentOn>
+				<BuildOrder>16</BuildOrder>
 			</CppCompile>
-			<FormResources Include="UGradForm.dfm"/>
-			<FormResources Include="UReportEditForm.dfm"/>
-			<FormResources Include="MainFormUnit.dfm"/>
-			<FormResources Include="UAddGradForm.dfm"/>
-			<FormResources Include="UStatusRecForm.dfm"/>
-			<FormResources Include="UTAdjustAngleAperForm.dfm"/>
-			<FormResources Include="UGraphApproxForm.dfm"/>
-			<FormResources Include="UOptionsForm.dfm"/>
+			<CppCompile Include="MainFormUnit.cpp">
+				<Form>MainForm</Form>
+				<DependentOn>MainFormUnit.h</DependentOn>
+				<BuildOrder>2</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="UReportEditForm.cpp">
+				<Form>ReportEditForm</Form>
+				<DependentOn>UReportEditForm.h</DependentOn>
+				<BuildOrder>20</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="UpmAcfThread.cpp">
+				<DependentOn>UpmAcfThread.h</DependentOn>
+				<BuildOrder>15</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="measures_data.cpp">
+				<DependentOn>measures_data.h</DependentOn>
+				<BuildOrder>6</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="UDlsVars.cpp">
+				<DependentOn>UDlsVars.h</DependentOn>
+				<BuildOrder>10</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="UAcfThread.cpp">
+				<DependentOn>UAcfThread.h</DependentOn>
+				<BuildOrder>8</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="Device.cpp">
+				<DependentOn>Device.h</DependentOn>
+				<BuildOrder>5</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="UMyInfernalType.cpp">
+				<DependentOn>UMyInfernalType.h</DependentOn>
+				<BuildOrder>9</BuildOrder>
+			</CppCompile>
+			<ResFiles Include="deviceX.res">
+				<BuildOrder>1</BuildOrder>
+			</ResFiles>
+			<CppCompile Include="UTimerThread.cpp">
+				<DependentOn>UTimerThread.h</DependentOn>
+				<BuildOrder>28</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="UStatusRecForm.cpp">
+				<Form>StatusRecForm</Form>
+				<DependentOn>UStatusRecForm.h</DependentOn>
+				<BuildOrder>26</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="UAddGradForm.cpp">
+				<Form>AddGradForm</Form>
+				<DependentOn>UAddGradForm.h</DependentOn>
+				<BuildOrder>17</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="UGraphApproxForm.cpp">
+				<Form>GraphApproxForm</Form>
+				<DependentOn>UGraphApproxForm.h</DependentOn>
+				<BuildOrder>23</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="UTAdjustAngleAperForm.cpp">
+				<Form>AdjustAngleAperForm</Form>
+				<DependentOn>UTAdjustAngleAperForm.h</DependentOn>
+				<BuildOrder>32</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="UTestRecForm.cpp">
+				<Form>TestRecForm</Form>
+				<DependentOn>UTestRecForm.h</DependentOn>
+				<BuildOrder>33</BuildOrder>
+			</CppCompile>
 			<FormResources Include="UReportForm.dfm"/>
-			<FormResources Include="UAutoProgressForm.dfm"/>
+			<FormResources Include="UOptionsForm.dfm"/>
 			<FormResources Include="UAdd2ReportForm.dfm"/>
+			<FormResources Include="UAutoProgressForm.dfm"/>
 			<FormResources Include="URecThreadStartForm.dfm"/>
+			<FormResources Include="UGradForm.dfm"/>
+			<FormResources Include="MainFormUnit.dfm"/>
+			<FormResources Include="UReportEditForm.dfm"/>
+			<FormResources Include="UStatusRecForm.dfm"/>
+			<FormResources Include="UAddGradForm.dfm"/>
+			<FormResources Include="UGraphApproxForm.dfm"/>
+			<FormResources Include="UTAdjustAngleAperForm.dfm"/>
+			<FormResources Include="UTestRecForm.dfm"/>
 			<BuildConfiguration Include="Base">
 				<Key>Base</Key>
 			</BuildConfiguration>

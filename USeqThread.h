@@ -56,6 +56,12 @@ public:
 	bool __fastcall ChangeAngle();
 	bool __fastcall GetPhysicalSnapShot();
 	__fastcall TSeqThread(bool CreateSuspended);
+	void __fastcall Sync(int mm_, UnicodeString s_ = "")
+	{
+		mm = mm_;
+		s = s_;
+		Synchronize(&Draw);
+	}
 };
 
 bool CalculateCumulants(double *acf_app);

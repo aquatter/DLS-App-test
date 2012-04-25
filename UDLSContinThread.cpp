@@ -82,8 +82,8 @@ void __fastcall TDLSContinThread::Draw() {
 	}
 
 	MainForm->Memo1->Lines->Add("");
-	for (int i = 0; i < peaks.size(); i++) {
-		MainForm->Memo1->Lines->Add("Максимум "+ IntToStr(i+1)+": " + FloatToStrF(peaks[i], ffFixed, 7, 3) + " нм.");
+	for (size_t i = 0; i < peaks.size(); i++) {
+		MainForm->Memo1->Lines->Add("Максимум "+ IntToStr((int)i+1)+": " + FloatToStrF(peaks[i], ffFixed, 7, 3) + " нм.");
 	}
 
 

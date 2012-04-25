@@ -8,6 +8,8 @@
 #include "Device.h"
 #include "UProgectData.h"
 #include "VirtualTrees.hpp"
+#include "UTAdjustAngleAperForm.h"
+#include "MainFormUnit.h"
 
 using namespace std;
 
@@ -177,12 +179,6 @@ class TThreadParams: public TThread
 protected:
 	void __fastcall Execute()
 	{
-		Sleep(1000);
-		if (Draw) {
-        	Synchronize(Draw);
-		}
-
-		/*
 		switch (mode) {
 			case 0: {
 				void *q = CreateEvent(NULL, true, false, NULL);
@@ -193,7 +189,7 @@ protected:
 					WaitForSingleObject(q, 100);
 					device.GetStatus(status);
 				}
-				while (status.bits.goniometer);
+				while (!status.bits.goniometer);
 
 				status.byte = 0;
 				device.SetAperture(AcfParams.Aperture);
@@ -201,39 +197,42 @@ protected:
 					WaitForSingleObject(q, 100);
 					device.GetStatus(status);
 				}
-				while (status.bits.aperture);
+				while (!status.bits.aperture);
 				CloseHandle(q);
+				break;
 			}
 			case 1: {
 				device.WriteData(AcfParams.Initial_Angle*2, value);
 				void *q = CreateEvent(NULL, true, false, NULL);
 				Status status;
 				status.byte = 0;
-				device.SetAngle(AcfParams.Initial_Angle);
+				//device.SetAngle(AcfParams.Initial_Angle);
 				do {
 					WaitForSingleObject(q, 100);
 					device.GetStatus(status);
 				}
-				while (status.bits.goniometer);
+				while (!status.bits.goniometer);
 				CloseHandle(q);
+				break;
 			}
 			case 2: {
-            	device.WriteData(24, value);
-                void *q = CreateEvent(NULL, true, false, NULL);
-                Status status;
-                status.byte = 0;
-                device.SetAperture(AcfParams.Aperture);
-                do {
-                	WaitForSingleObject(q, 100);
-                	device.GetStatus(status);
-                }
-                while (status.bits.aperture);
-                CloseHandle(q);
+				device.WriteData(24, value);
+				void *q = CreateEvent(NULL, true, false, NULL);
+				Status status;
+				status.byte = 0;
+				//device.SetAperture(AcfParams.Aperture);
+				do {
+					WaitForSingleObject(q, 100);
+					device.GetStatus(status);
+				}
+				while (!status.bits.aperture);
+				CloseHandle(q);
+				break;
 			}
 
 		}
 
-        */
+
 		/*
 		if (d->index <= 22) {
 			device.WriteData(d->index, d->value);
@@ -262,10 +261,12 @@ protected:
 			while (status.bits.aperture);
 			CloseHandle(q);
 		}
-        */
+		*/
 
 		SetEvent(wait_event);
 
+		if (Draw)
+        	Synchronize(Draw);
 
 
 	}
@@ -274,10 +275,23 @@ public:
 
 	//char index;
 	int value;
-	TThreadMethod Draw;
+	int mm;
 	int mode;
 	void *wait_event;
-	__fastcall TThreadParams(bool CreateSuspended) : TThread(CreateSuspended) {};
+	TThreadMethod Draw;
+	/*
+	void __fastcall Draw2()
+	{
+		switch (mm) {
+			case 0:
+				MainForm->StartMonitoring();
+				AdjustAngleAperForm->Show();
+			break;
+
+		}
+	}
+	*/
+	__fastcall TThreadParams(bool CreateSuspended) : TThread(CreateSuspended), mm(-1), Draw(NULL) { };
 };
 
 

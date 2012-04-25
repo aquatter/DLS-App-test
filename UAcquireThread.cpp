@@ -107,6 +107,8 @@ void __fastcall TAcquireThread::Execute() {
 			} }
 		while (!status.bits.data);
 
+		Sleep(100);
+
 		if (!device.GetData(blocksSize, pData)){
 			SetEvent(WaitEvent);
 			return;
@@ -141,6 +143,8 @@ void __fastcall TAcquireThread::Execute() {
 			return;
 		}}
 	while (!status.bits.data);
+
+	Sleep(100);
 
 	if (!device.GetData(modValue, pData)) {
      	SetEvent(WaitEvent);

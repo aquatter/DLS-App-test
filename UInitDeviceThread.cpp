@@ -80,6 +80,8 @@ void __fastcall TInitDeviceThread::Execute()
 	}
 	while(!status.bits.data);
 
+	Sleep(100);
+
 	Data = device.GetData(test_num);
 
 	if(!Data) {

@@ -6,8 +6,8 @@
 #include "MainFormUnit.h"
 #include <math.h>
 #include <stdio.h>
-#include <UOptionsForm.h>
-#include  "UDlsVars.h"
+#include "UOptionsForm.h"
+#include "UDlsVars.h"
 #include "UAcfThread.h"
 #include "UpmAcfThread.h"
 #include "system.hpp"
@@ -25,6 +25,7 @@
 #include "UTimerThread.h"
 #include "UDeviceInitThread.h"
 #include "UTAdjustAngleAperForm.h"
+#include "UTestRecForm.h"
 
 // ---------------------------------------------------------------------------
 #pragma package(smart_init)
@@ -80,6 +81,11 @@ __fastcall TMainForm::TMainForm(TComponent* Owner) : TForm(Owner) {
 	col->Width = 40;
 	col->Text = "ÏÏÄ";
 	col->Options << coVisible << coAllowFocus << coAutoSpring << coEnabled << coResizable << coAutoSpring << coSmartResize << coAllowFocus;
+    col = vt->Header->Columns->Add();
+	col->Position = 5;
+	col->Width = 40;
+	col->Text = "Ãàììà";
+    col->Options << coVisible << coAllowFocus << coAutoSpring << coEnabled << coResizable << coAutoSpring << coSmartResize << coAllowFocus;
 
 	vt->OnGetText = VtGetText;
 
@@ -1779,6 +1785,10 @@ void __fastcall TMainForm::off(bool b) {
 	for (int i = 0; i < ToolBar1->ButtonCount; i++) {
 		ToolBar1->Buttons[i]->Enabled = b;
 	}
+	ToolButton7->Enabled = b;
+	ToolButton8->Enabled = b;
+	ToolButton9->Enabled = b;
+
 	// PageControl1->Enabled=b;
 	// ToolBar1->Enabled=b;
 };
@@ -1994,13 +2004,15 @@ void __fastcall TMainForm::VtGetText(TBaseVirtualTree *Sender, PVirtualNode Node
 					case 2: CellText = FloatToStrF(d->Temperature, ffFixed, 5, 2); break;
 					case 3: CellText = FloatToStrF(d->x_pcs, ffFixed, 5, 2); break;
 					case 4: CellText = FloatToStrF(d->pi, ffFixed, 5, 3); break;
+					case 5: CellText = FloatToStrF(d->gamma, ffFixed, 5, 3); break;
 				}
 				break;
 			case TProjectData::pdMean:
                 switch (Column) {
                 	case 0: CellText = d->Name; break;
 					case 3: CellText = FloatToStrF(d->x_pcs, ffFixed, 5, 2); break;
-                	case 4: CellText = FloatToStrF(d->pi, ffFixed, 5, 3); break;
+					case 4: CellText = FloatToStrF(d->pi, ffFixed, 5, 3); break;
+					case 5: CellText = FloatToStrF(d->gamma, ffFixed, 5, 3); break;
                 }
                 break;
 			default :
@@ -2028,4 +2040,10 @@ void __fastcall TMainForm::VtDblClick(TObject *Sender)
 
 
 
+
+void __fastcall TMainForm::ToolButton10Click(TObject *Sender)
+{
+	TestRecForm->Show();
+}
+//---------------------------------------------------------------------------
 
