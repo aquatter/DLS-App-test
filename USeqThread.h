@@ -34,12 +34,13 @@ public:
     void *wait_event;
 
 	TAquireMode mode;
-	TSeqThreadParams params_;
+//	TSeqThreadParams params_;
 	TDataParams DataParams_;
 	TProjectData *pd_;
 	TProjectData::TSeq *seq_;
 	TProjectData::TRec *rec_;
 	bool DoMean_;
+	float mean_temp;
 
 	void __fastcall CalculateACF();
 	void __fastcall SetParams(TSeqThreadParams params);

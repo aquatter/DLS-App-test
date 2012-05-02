@@ -34,6 +34,7 @@
 #include "UProgectData.h"
 #include "VirtualTrees.hpp"
 
+#define WM_OPEN_FILE WM_USER + 1
 
 //#include  "UDlsVars.h"
 //---------------------------------------------------------------------------
@@ -240,6 +241,7 @@ private:	// User declarations
 	void __fastcall edtTemperature_Init();
 	void __fastcall edtAngle_Init();
 	void __fastcall edtReadDataBlock_Init();
+	void file_open_msg(TWMCopyData &msg);
 
 public:		// User declarations
 	TVirtualStringTree *vt;
@@ -253,6 +255,13 @@ public:		// User declarations
 	void __fastcall StopMonitoring();
 	__fastcall TMainForm(TComponent* Owner);
 	virtual __fastcall ~TMainForm() { delete vt; };
+
+protected:
+
+   BEGIN_MESSAGE_MAP
+   MESSAGE_HANDLER(WM_COPYDATA, TWMCopyData, file_open_msg)
+   END_MESSAGE_MAP(TForm)
+
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TMainForm *MainForm;

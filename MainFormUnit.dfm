@@ -101,6 +101,7 @@ object MainForm: TMainForm
       DropdownMenu = PopupMenu1
       ImageIndex = 1
       Visible = False
+      OnClick = ToolButton3Click
     end
     object ToolButton5: TToolButton
       Left = 399
@@ -768,11 +769,25 @@ object MainForm: TMainForm
         BottomAxis.LabelsExponent = True
         BottomAxis.Logarithmic = True
         BottomAxis.Title.Caption = #1042#1088#1077#1084#1103', '#1084#1082#1089
+        DepthAxis.Automatic = False
+        DepthAxis.AutomaticMaximum = False
+        DepthAxis.AutomaticMinimum = False
+        DepthAxis.Maximum = 0.500000000000000000
+        DepthAxis.Minimum = -0.500000000000000000
+        DepthTopAxis.Automatic = False
+        DepthTopAxis.AutomaticMaximum = False
+        DepthTopAxis.AutomaticMinimum = False
+        DepthTopAxis.Maximum = 0.500000000000000000
+        DepthTopAxis.Minimum = -0.500000000000000000
         Frame.Visible = False
         LeftAxis.Automatic = False
         LeftAxis.AutomaticMaximum = False
         LeftAxis.AutomaticMinimum = False
-        LeftAxis.Maximum = 1.000000000000000000
+        LeftAxis.Maximum = 1.100000000000000000
+        LeftAxis.Minimum = -0.099999999999999980
+        RightAxis.Automatic = False
+        RightAxis.AutomaticMaximum = False
+        RightAxis.AutomaticMinimum = False
         View3D = False
         Zoom.Pen.Color = clBlack
         Align = alClient

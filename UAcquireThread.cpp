@@ -318,19 +318,19 @@ int __fastcall TAcquireThread::ProcessInitialData() {
 void __fastcall TAcquireThread::Draw() {
 	switch(mm) {
 	case 0:
-		StatusRecForm->Label1->Caption = s;
-		StatusRecForm->Label2->Caption = s1;
+//		StatusRecForm->Label1->Caption = s;
+//		StatusRecForm->Label2->Caption = s1;
 		break;
 	case 1:
 		StatusRecForm->Close();
 		MainForm->StartMonitoring();
 		break;
 	case 2:
-		StatusRecForm->Label2->Caption = "Количество блоков " + IntToStr
-			(num_blocks);
+//		StatusRecForm->Label2->Caption = "Количество блоков " + IntToStr
+//			(num_blocks);
 		break;
 	case 3:
-		StatusRecForm->ProgressBar1->Position = pos;
+//		StatusRecForm->ProgressBar1->Position = pos;
 		break;
 	case 4:
 		TFormatSettings FormatSettings;

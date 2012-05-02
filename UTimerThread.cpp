@@ -32,6 +32,8 @@ __fastcall TTimerThread::TTimerThread(bool CreateSuspended) : TThread
 (CreateSuspended) {
 }
 
+#define THREAD_TIMEOUT 10000
+
 // ---------------------------------------------------------------------------
 void __fastcall TTimerThread::Draw() {
 	switch(mm) {
@@ -70,6 +72,8 @@ void __fastcall TTimerThread::Draw() {
 	}
 	break;
 	case 6: MainForm->off(false); break;
+	case 7: StatusRecForm->Show(); break;
+	case 8: StatusRecForm->Close(); break;
 
 	default: ;
 	}
@@ -101,7 +105,7 @@ void __fastcall TTimerThread::Execute() {
 			InitDevice->Start();
 
 			Sleep(10);
-			if (WaitForSingleObject(wait_event, 20000) == WAIT_TIMEOUT) {
+			if (WaitForSingleObject(wait_event, 2*THREAD_TIMEOUT) == WAIT_TIMEOUT) {
 				Sync(1, "Ошибка инициализации устройства");
 				InitDevice->Free();
 				//mm = 2;
@@ -128,7 +132,7 @@ void __fastcall TTimerThread::Execute() {
 			Init->wait_event = wait_event;
 			Init->Start();
 			Sleep(10);
-			if (WaitForSingleObject(wait_event, 10000) == WAIT_TIMEOUT) {
+			if (WaitForSingleObject(wait_event, THREAD_TIMEOUT) == WAIT_TIMEOUT) {
 				Sync(1, "Ошибка инициализации устройства");
 
 				Init->Free();
@@ -167,7 +171,7 @@ void __fastcall TTimerThread::Execute() {
 				Sleep(10);
 
 				WaitForSingleObject(q, AcfParams.seq_time);
-				WaitForSingleObject(wait_event, 10000);
+				WaitForSingleObject(wait_event, THREAD_TIMEOUT);
 
 				Seq->Free();
 			}
@@ -175,12 +179,23 @@ void __fastcall TTimerThread::Execute() {
 			CloseHandle(wait_event);
 			CloseHandle(q);
 			Sync(4);
-			Sync(5);
-			break;
+
+			if (!AcfParams.DoAcf)
+			{
+				DoMean_ = AcfParams.DoMean;
+                mode = from_hdd;
+				pd_->Enable_All();
+			}
+			else
+			{
+				Sync(5);
+				break;
+			}
 		}
 		case from_hdd:
 		{
-        	void *wait_event = CreateEventA(NULL, 1, 0, NULL);
+			Sync(7);
+			void *wait_event = CreateEventA(NULL, 1, 0, NULL);
 			for (size_t i=0; i < pd_->SizeOf(); i++) {
 				ResetEvent(wait_event);
 				if (!(*pd_)[i].process_)
@@ -190,16 +205,17 @@ void __fastcall TTimerThread::Execute() {
 				Seq->num_seq = i;
 				Seq->pd_ = pd_;
 				Seq->wait_event = wait_event;
-                Seq->DoMean_ = DoMean_;
+				Seq->DoMean_ = DoMean_;
 				Seq->Start();
 				//Sleep(10);
-				WaitForSingleObject(wait_event, 10000);
+				WaitForSingleObject(wait_event, THREAD_TIMEOUT);
 				Seq->Free();
 			}
 
 			Sync(4);
 			Sync(5);
 			CloseHandle(wait_event);
+			Sync(8);
 			break;
 		}
 	}

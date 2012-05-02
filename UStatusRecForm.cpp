@@ -14,3 +14,4 @@ __fastcall TStatusRecForm::TStatusRecForm(TComponent* Owner)
 {
 }
 //---------------------------------------------------------------------------
+

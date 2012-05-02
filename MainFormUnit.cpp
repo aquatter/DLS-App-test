@@ -90,6 +90,8 @@ __fastcall TMainForm::TMainForm(TComponent* Owner) : TForm(Owner) {
 	vt->OnGetText = VtGetText;
 
 	vt->OnDblClick = VtDblClick;
+
+
 	// OptionsForm->Edit7->Text = IntToStr(device.deviceSettings.Amplification);
 	// OptionsForm->Edit8->Text = FloatToStr(device.deviceSettings.Temperature);
 	// OptionsForm->Edit9->Text = FloatToStr(device.deviceSettings.Angle);
@@ -955,7 +957,7 @@ void __fastcall TMainForm::ToolButton2Click(TObject *Sender) {
 void __fastcall TMainForm::ToolButton3Click(TObject *Sender) {
 	SaveDialog1->Filter =
 		"Текстовые файлы|*.txt|Crv-файлы|*.crv|Формат DynaLS|*.tdf";
-	SaveDialog1->InitialDir = ExtractFileDir(Application->ExeName);
+	//SaveDialog1->InitialDir = ExtractFileDir(Application->ExeName);
 	if (!SaveDialog1->Execute())
 		return;
 
@@ -1601,10 +1603,22 @@ void __fastcall TMainForm::FormCreate(TObject *Sender) {
 
 	CaptureDone = CreateEventA(NULL, true, false, NULL);
 	AcfDone = CreateEventA(NULL, true, false, NULL);
-	// ListView3->GroupView = true;
 
-	// ShowScrollBar(ListView1->Handle, sbHorizontal, 0);
-	// ShowScrollBar(ListView1->Handle, sbHorizontal, 0);
+//    OpenDialog1->InitialDir = ExtractFileDir(Application->ExeName);
+//	SaveDialog1->InitialDir = ExtractFileDir(Application->ExeName);
+
+	RegisterExt();
+
+	if (ParamCount() > 0) {
+		UnicodeString str = ParamStr(1);
+
+		if (FileExists(str))
+		{
+			int n = pd_vector.size();
+			pd_vector.push_back(TProjectData());
+			OpenProject(str, pd_vector[n]);
+		}
+	}
 
 }
 // ---------------------------------------------------------------------------
@@ -1794,6 +1808,7 @@ void __fastcall TMainForm::off(bool b) {
 };
 
 void __fastcall TMainForm::Button8Click(TObject *Sender) {
+
 	OptionsForm->Button2->Caption = "Запуск";
 
 	if (!OptionsFormExecute())
@@ -1803,7 +1818,7 @@ void __fastcall TMainForm::Button8Click(TObject *Sender) {
 	UnicodeString s = AcfParams.Save_Dir +"\\" +AcfParams.File_Name + ".dls";
 
 	if (FileExists(s))
-		if ((MessageDlg("Файл " + s + "\nуже существует и будет перезаписан. Продолжить?", mtWarning, TMsgDlgButtons() << mbOK << mbCancel, 0, mbCancel)+1) == mbCancel)
+		if ((MessageDlg("Файл " + s + "\n существует и будет перезаписан. Продолжить?", mtWarning, TMsgDlgButtons() << mbOK << mbCancel, 0, mbCancel)+1) == mbCancel)
 			return;
 
 
@@ -1887,7 +1902,7 @@ void __fastcall TMainForm::FormResize(TObject *Sender) {
 // ---------------------------------------------------------------------------
 
 void __fastcall TMainForm::N6Click(TObject *Sender) {
-	OpenDialog1->InitialDir = ExtractFileDir(Application->ExeName);
+	//OpenDialog1->InitialDir = ExtractFileDir(Application->ExeName);
 	OpenDialog1->Filter = "dls files|*.dls";
 
 	if (!OpenDialog1->Execute())
@@ -2046,4 +2061,19 @@ void __fastcall TMainForm::ToolButton10Click(TObject *Sender)
 	TestRecForm->Show();
 }
 //---------------------------------------------------------------------------
+void TMainForm::file_open_msg(TWMCopyData &msg)
+{
+	UnicodeString str((char *)msg.CopyDataStruct->lpData);
+
+    if (FileExists(str))
+    {
+    	int n = pd_vector.size();
+    	pd_vector.push_back(TProjectData());
+    	OpenProject(str, pd_vector[n]);
+	}
+
+	WindowState = wsMaximized;
+    BringToFront();
+}
+
 

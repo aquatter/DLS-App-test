@@ -20,7 +20,7 @@ object OptionsForm: TOptionsForm
     Top = 0
     Width = 397
     Height = 465
-    ActivePage = TabSheet3
+    ActivePage = TabSheet1
     Align = alTop
     TabOrder = 0
     object TabSheet1: TTabSheet

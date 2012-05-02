@@ -3,6 +3,7 @@
 #include <vcl.h>
 #pragma hdrstop
 #include <tchar.h>
+#include <windows.h>
 //---------------------------------------------------------------------------
 USEFORM("UReportForm.cpp", ReportForm);
 USEFORM("UOptionsForm.cpp", OptionsForm);
@@ -19,8 +20,38 @@ USEFORM("UTAdjustAngleAperForm.cpp", AdjustAngleAperForm);
 USEFORM("UTestRecForm.cpp", TestRecForm);
 #include "MainFormUnit.h"
 //---------------------------------------------------------------------------
+
+
+
 WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int)
 {
+
+	HWND h = FindWindowA(UnicodeString("TMainForm").t_str(), UnicodeString("Прибор динамического рассеяния").t_str());
+	if (h)
+	{
+		if (ParamCount() > 0)
+		{
+			UnicodeString str = ParamStr(1);
+			if (FileExists(str))
+			{
+				/*
+				char *buff = new char[str.Length()+1];
+				strcpy(buff, str.t_str());
+                */
+                TCopyDataStruct data;
+                data.dwData = 0;
+                data.cbData = str.Length()+1;
+                data.lpData = str.t_str();
+
+                SendMessageA(h, WM_COPYDATA, 0, LPARAM(&data));
+			}
+		}
+
+		ShowWindow(h, SW_MAXIMIZE);
+        BringWindowToTop(h);
+		return 0;
+	}
+
 	try
 	{
 		Application->Initialize();

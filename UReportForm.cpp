@@ -303,7 +303,7 @@ void __fastcall TReportForm::ToolButton3Click(TObject *Sender)
 	WordApp.OlePropertyGet("Selection").OleFunction("goto", 0xFFFFFFFF, EmptyParam, EmptyParam, "date");
 	WordApp.OlePropertyGet("Selection").OleProcedure("TypeText", dtReport.FormatString("dd.mm.yyyy").t_str());
 	WordApp.OlePropertyGet("Selection").OleFunction("goto", 0xFFFFFFFF, EmptyParam, EmptyParam, "img");
-	MainForm->Chart2->CopyToClipboardMetafile(true);
+	MainForm->Chart5->CopyToClipboardMetafile(true);
 	WordApp.OlePropertyGet("Selection").OleFunction("Paste");
 
 

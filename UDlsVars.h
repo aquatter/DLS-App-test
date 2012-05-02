@@ -166,6 +166,8 @@ void OpenData(WORD *data, int &n, UnicodeString Name);
 double GetTime_Discr(int i);
 void AddToVt( TProjectData &pd_ , TVirtualStringTree *vt );
 void UpdateVt( TVirtualStringTree *vt );
+void RegisterExt();
+
 
 typedef struct ThreadData
 {

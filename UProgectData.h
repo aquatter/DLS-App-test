@@ -53,8 +53,9 @@ class TProjectData
 		double pi;
 		double x_pcs;
 
-		TRec()
+		TRec(): process_(false), Data_(""), Acf_(""), a0(0.0), a1(0.0), a2(0.0), pi(0.0), x_pcs(0.0)
 		{
+		/*
 			process_ = false;
 			Data_ = "";
 			Acf_ = "";
@@ -63,6 +64,7 @@ class TProjectData
 			a2=0;
 			pi=0;
 			x_pcs=0;
+			*/
 		}
 
 		UnicodeString GetAcf()

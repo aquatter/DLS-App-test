@@ -8,13 +8,14 @@
 #include <StdCtrls.hpp>
 #include <Forms.hpp>
 #include <ComCtrls.hpp>
+#include <ExtCtrls.hpp>
+#include <Graphics.hpp>
 //---------------------------------------------------------------------------
 class TStatusRecForm : public TForm
 {
 __published:	// IDE-managed Components
 	TLabel *Label1;
-	TLabel *Label2;
-	TProgressBar *ProgressBar1;
+	TImage *Image1;
 private:	// User declarations
 public:		// User declarations
 	__fastcall TStatusRecForm(TComponent* Owner);

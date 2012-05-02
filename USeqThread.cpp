@@ -39,11 +39,12 @@ void __fastcall TSeqThread::Execute() {
 		case from_device:
 		{
 			Init();
+            mean_temp = 0.0f;
 
 			if (AcfParams.Multi_Angle)
-				ScatAngle = (AcfParams.Initial_Angle + num_seq)*15;
+				ScatAngle = (AcfParams.Initial_Angle + num_seq)*15.0;
 			else
-				ScatAngle = AcfParams.Initial_Angle*15;
+				ScatAngle = AcfParams.Initial_Angle*15.0;
 
 			Sync(4, "Угол рассеяния: " + FloatToStr(ScatAngle));
 
@@ -67,7 +68,8 @@ void __fastcall TSeqThread::Execute() {
 				t->Free();
 
 				GetPhysicalSnapShot();
-                rec_->DataParams = DataParams;
+				rec_->DataParams = DataParams;
+//				DataParams_ = DataParams;
 
 				if (AcfParams.DoAcf) {
 					CalculateACF();
@@ -80,7 +82,10 @@ void __fastcall TSeqThread::Execute() {
 
 					Sync(1);
 					if (AcfParams.DoMean)
+					{
+                     	mean_temp += DataParams.Temperature;
 						DoMean();
+					}
 					SaveAcf();
 				}
 				SaveData();
@@ -91,6 +96,9 @@ void __fastcall TSeqThread::Execute() {
 			if (AcfParams.DoMean){
 				num_rec = AcfParams.n_rec;
 				FinishMean();
+				DataParams.Temperature = mean_temp;
+				DataParams.Viscosity = FormulaPuazeilia(mean_temp);
+
 				CalculateCumulants(acf_app);
 				seq_->a0 = AcfParams.a0;
 				seq_->a1 = AcfParams.a1;
@@ -115,6 +123,7 @@ void __fastcall TSeqThread::Execute() {
 		{
 			bool init_ = false;
 			num_rec = 0;
+			mean_temp = 0.0f;
 			for (size_t i=0; i < (*pd_)[num_seq].SizeOf(); i++) {
 				if (!(*pd_)[num_seq][i].process_)
 					continue;
@@ -147,12 +156,13 @@ void __fastcall TSeqThread::Execute() {
 				(*pd_)[num_seq][i].a2 = AcfParams.a2;
 				(*pd_)[num_seq][i].x_pcs = AcfParams.x_pcs;
 				(*pd_)[num_seq][i].pi = AcfParams.PI;
-                DataParams = DataParams_;
+				DataParams = DataParams_;
 
 				SaveAcf(num_seq, i);
 				Sync(1);
 
 				if (DoMean_){
+					mean_temp += DataParams_.Temperature;
 					DoMean();
 				}
 				num_rec++;
@@ -160,6 +170,8 @@ void __fastcall TSeqThread::Execute() {
 
 			if ((DoMean_) && (num_rec != 0)){
 				FinishMean();
+				DataParams_.Temperature = mean_temp;
+				DataParams_.Viscosity = FormulaPuazeilia(mean_temp);
 				CalculateCumulants(acf_app, DataParams_);
                 (*pd_)[num_seq].a0 = AcfParams.a0;
                 (*pd_)[num_seq].a1 = AcfParams.a1;
@@ -184,6 +196,62 @@ void __fastcall TSeqThread::CalculateACF() {
 
 	int sum1_ = 0, tr;
 	int ind1 = 0, ind2 = 0;
+
+
+	/*
+    std::vector<int> temp_data;
+    temp_data.reserve(n0);
+
+	{
+		double mean_time = 0.0;
+
+		for (int i=0; i < n0; ++i)
+			mean_time +=  (double)Data[i];
+
+		mean_time /= (double)n0;
+		mean_time *= 0.1;
+
+		int sum_tmp = 0;
+
+		for (int i=0; i < n0; ++i)
+		{
+			if (sum_tmp)
+			{
+				temp_data.push_back(sum_tmp + Data[i]);
+				sum_tmp = 0;
+				continue;
+			}
+
+			if (Data[i] <= mean_time) {
+				sum_tmp = Data[i];
+				continue;
+			}
+
+			temp_data.push_back(Data[i]);
+
+		   /*
+		   sum_tmp += Data[i];
+
+		   if ((double)sum_tmp >= mean_time)
+		   {
+				temp_data.push_back(sum_tmp);
+				sum_tmp = 0;
+		   }
+		   */
+	/*
+		}
+
+//		n0 = (int)temp_data.size();
+
+//		delete [] Data;
+//		Data = new
+
+
+//		temp_data.clear();
+	}
+
+      */
+
 
 	tr = step;
 	sum1_ = Data[0];
@@ -319,7 +387,7 @@ void __fastcall TSeqThread::Draw() {
 				MainForm->Series5->AddXY(acf_t.a[i], acf_app[i]);
 //				MainForm->Series1->AddXY(i, Data[i]);
 			}
-			MainForm->Memo1->Lines->Add("Температура "+FloatToStrF(DataParams_.Temperature-273.15, ffFixed, 5, 2));
+			MainForm->Memo1->Lines->Add("Температура "+FloatToStrF(DataParams.Temperature-273.15, ffFixed, 5, 2));
 			s = "Показатель полидисперсности " + FloatToStrF(AcfParams.PI, ffFixed,5,3);
 			MainForm->Memo1->Lines->Add(s);
 			MainForm->Label3->Caption = s;
@@ -343,10 +411,15 @@ void __fastcall TSeqThread::Draw() {
 			MainForm->Memo1->Lines->Add("Усредненная АКФ:");
 			MainForm->LineSeries3->Clear();
 			MainForm->Series5->Clear();
-			for (int i=0; i < acf.w; i++) {
-				MainForm->LineSeries3->AddXY(acf_t.a[i], acf.a[i]);
+			for (int i=0; i < acf.w; i++)
+			{
+				if ((acf.a[i] >= 0.0f) && (acf.a[i] <= 1.0f))
+					MainForm->LineSeries3->AddXY(acf_t.a[i], acf.a[i]);
+				else
+					MainForm->LineSeries3->AddNullXY(acf_t.a[i], 0.0f);
+
 				MainForm->Series5->AddXY(acf_t.a[i], acf_app[i]);
-				}
+			}
 
 			s = "Показатель полидисперсности " + FloatToStrF(AcfParams.PI, ffFixed,5,3);
 			MainForm->Memo1->Lines->Add(s);
@@ -635,7 +708,8 @@ bool CalculateCumulants(double *acf_app){
 	return true;
 }
 
-bool __fastcall TSeqThread::Init(int n){
+bool __fastcall TSeqThread::Init(int n) //from_hdd
+{
 	n0 = n;
 	Data = new WORD[n0];
 	sum1 = new __int64[n0];
@@ -651,14 +725,6 @@ bool __fastcall TSeqThread::Init(int n){
 
 	step = 500/dt;
 	dt*=1e-3;
-	/*
-	switch (DataParams.Discr_Time) {
-		case 0: dt=6.5e-3; break;
-		case 1: dt=10e-3; break;
-		case 2: dt=19.92e-3; break;
-		case 3: dt=49.8e-3; break;
-	}
-	*/
 
 	acf.Clear();
 	acf.Init(Navt, 1, mitDouble);
@@ -676,7 +742,7 @@ bool __fastcall TSeqThread::Init(int n){
 		}
 	}
 
-	if (AcfParams.DoMean){
+	if (DoMean_){
 		acf_mean = new double[Navt];
 		memset(acf_mean, 0, Navt*sizeof(double));
 	}
@@ -684,7 +750,8 @@ bool __fastcall TSeqThread::Init(int n){
 	return true;
 }
 
-void __fastcall TSeqThread::Init(){
+void __fastcall TSeqThread::Init() // from_device
+{
 
 	n0 = num_blocks * BLOCK_DATA_NUM;
 	Data = new WORD[n0];
@@ -702,14 +769,6 @@ void __fastcall TSeqThread::Init(){
 	step = 500/dt;
 
 	dt*=1e-3;
-	/*
-	switch (AcfParams.Time_discr) {
-		case 0: dt=6.5e-3; break;
-		case 1: dt=10e-3; break;
-		case 2: dt=19.92e-3; break;
-		case 3: dt=49.8e-3; break;
-	}
-    */
 
 	acf.Clear();
 	acf.Init(Navt, 1, mitDouble);
@@ -740,7 +799,7 @@ void __fastcall TSeqThread::Clear(){
 	delete [] sum2;
 	delete [] _m;
 	delete [] acf_app;
-	if (AcfParams.DoMean || params_.DoMean)
+	if (AcfParams.DoMean || DoMean_)
     	delete [] acf_mean;
 }
 
@@ -754,7 +813,9 @@ void __fastcall TSeqThread::DoMean(){
 void __fastcall TSeqThread::FinishMean(){
 
    for (int i=0; i < Navt; i++)
-	 acf.a[i] = acf_mean[i]/num_rec;
+	 acf.a[i] = acf_mean[i]/(float)num_rec;
+
+   mean_temp /= (float)num_rec;
 
   /*
    CalculateCumulants(acf_app);
@@ -831,7 +892,13 @@ void __fastcall TSeqThread::SaveAcf(int ns, int nr){
 
 bool __fastcall TSeqThread::ChangeAngle()
 {
-	if (device.SetAngle((char)(AcfParams.Initial_Angle + num_seq + 1)))
+
+	char angle_ = (char)(AcfParams.Initial_Angle + num_seq + 1);
+
+	if (angle_ > 10)
+		return false;
+
+	if (device.SetAngle(angle_))
 	/*(char)(AcfParams.Initial_Angle+num_seq+1)*/
 	{
 		Status status;
@@ -851,7 +918,7 @@ bool __fastcall TSeqThread::ChangeAngle()
 
 void __fastcall TSeqThread::SetParams(TSeqThreadParams params)
 {
-    params_ = params;
+//    params_ = params;
 }
 
 

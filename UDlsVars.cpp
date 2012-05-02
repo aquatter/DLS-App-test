@@ -11,6 +11,7 @@
 #include "UOptionsForm.h"
 #include "USeqThread.h"
 #include "UTimerThread.h"
+#include <Registry.hpp>
 
 
 //---------------------------------------------------------------------------
@@ -529,7 +530,7 @@ bool OptionsFormExecute()
 
 
 	AcfParams.Time_discr = OptionsForm->ComboBox1->ItemIndex;
-//	AcfParams.Multi_Angle =  OptionsForm->CheckBox5->Checked;
+	AcfParams.Multi_Angle =  OptionsForm->CheckBox5->Checked;
 	AcfParams.Initial_Angle = OptionsForm->ComboBox3->ItemIndex; // CheckString(OptionsForm->Edit9->Text);
 
 //	AcfParams.Angle_Shift = CheckString(OptionsForm->Edit28->Text);
@@ -608,25 +609,12 @@ bool OpenProject(UnicodeString Name, TProjectData &pd)
 	MainForm->XMLDocument1->LoadFromFile(Name);
 	root = MainForm->XMLDocument1->ChildNodes->Nodes["Dynamic_Light_Scattering_XML_Document"];
 	int n = root->ChildNodes->Count;
-	//AcfParams.n_seq = n-3;
-
-	/*
-	item = MainForm->ListView3->Items->Add();
-	for (int k = 0; k < 10; k++)
-		item->SubItems->Add("");
-
-	item->Caption = root->ChildNodes->Nodes["Date"]->Text;
-	item->SubItems->Strings[0] = root->ChildNodes->Nodes["Name"]->Text;
-	item->Data = 0;
-
-	*/
 
 	pd.Date = root->ChildNodes->Nodes["Date"]->Text;
 	pd.Name_Spec = root->ChildNodes->Nodes["Name"]->Text;
 	pd.Name_Sol = root->ChildNodes->Nodes["Solution"]->Text;
 
 	seq_node = root->ChildNodes->Nodes["Series"];
-	AcfParams.n_rec = seq_node->ChildNodes->Count-1;
     seq_node = root->ChildNodes->First();
 
 	for (int i=0; i < n; i++) {
@@ -1030,8 +1018,24 @@ void UpdateVt( TVirtualStringTree *vt )
 	vt->Clear();
 	for (size_t i=0; i < pd_vector.size(); i++)
 		AddToVt(pd_vector[i], vt);
+
+	SendMessageA(vt->Handle, WM_VSCROLL, SB_BOTTOM, 0);
 }
 
-
+void RegisterExt()
+{
+	TRegistry *reg =  new TRegistry;
+	reg->RootKey = HKEY_CLASSES_ROOT;
+	reg->OpenKey(".dls", true);
+	reg->WriteString("", "DLS.File");
+	reg->CloseKey();
+	reg->OpenKey("DLS.File\\DefaultIcon", true);
+	reg->WriteString("", Application->ExeName + ", 0");
+	reg->CloseKey();
+	reg->OpenKey("DLS.File\\shell\\open\\command", true);
+	reg->WriteString("", Application->ExeName + " %1");
+	reg->CloseKey();
+	reg->Free();
+}
 
 
