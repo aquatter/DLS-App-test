@@ -71,6 +71,12 @@ void __fastcall TSeqThread::Execute() {
 				rec_->DataParams = DataParams;
 //				DataParams_ = DataParams;
 
+				rec_->rate = GetRate();
+				rec_->prism = AcfParams.Prism;
+				rec_->aperture = AcfParams.Aperture;
+				rec_->polar = AcfParams.Polar;
+
+
 				if (AcfParams.DoAcf) {
 					CalculateACF();
 					CalculateCumulants(acf_app);
@@ -189,6 +195,21 @@ void __fastcall TSeqThread::Execute() {
         }
 
 	}
+}
+
+double __fastcall TSeqThread::GetRate()
+{
+	double dt = GetTime_Discr(AcfParams.Time_discr);
+
+	double time = 0.0;
+
+	for (int i=0; i < n0; ++i)
+		time += (double)Data[i];
+
+	if (n0)
+		return (double)n0/(1.0e-9*dt*time);
+	else
+    	return 0.0;
 }
 
 void __fastcall TSeqThread::CalculateACF() {
@@ -837,10 +858,11 @@ void __fastcall TSeqThread::SaveData(){
 	FileWrite(f, &DataParams, sizeof(TDataParams));
 	FileClose(f);
 
-
+	/*
 	s = "Сохранение данных: "+s;
 	mm=4;
 	Synchronize(&Draw);
+	*/
 
 }
 
@@ -862,9 +884,11 @@ void __fastcall TSeqThread::SaveAcf(bool k){
 
 	SaveAcf2Tdf(s);
 
+	/*
 	s = "Сохранение АКФ: "+s;
 	mm=4;
 	Synchronize(&Draw);
+	*/
 
 }
 
@@ -879,9 +903,11 @@ void __fastcall TSeqThread::SaveAcf(int ns, int nr){
 	s = pd_->Path + "\\" + pd_->Name + buff+".tdf";
 	SaveAcf2Tdf(s, DataParams_);
 
+	/*
 	s = "Сохранение АКФ: "+s;
-    mm=4;
+	mm=4;
 	Synchronize(&Draw);
+	*/
 
 	if (nr == -1)
 		(*pd_)[ns].Mean_Acf_ = s;

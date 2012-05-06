@@ -245,6 +245,10 @@ void __fastcall TTimerThread::SaveProject() {
 			rec_node->AddChild("a2")->Text = FloatToStr((*pd_)[i][j].a2);
 			rec_node->AddChild("x_pcs")->Text = FloatToStr((*pd_)[i][j].x_pcs);
 			rec_node->AddChild("pi")->Text = FloatToStr((*pd_)[i][j].pi);
+			rec_node->AddChild("rate")->Text = FloatToStr((*pd_)[i][j].rate);
+			rec_node->AddChild("prism")->Text = IntToStr((*pd_)[i][j].prism);
+			rec_node->AddChild("aperture")->Text = IntToStr((*pd_)[i][j].aperture);
+			rec_node->AddChild("polar")->Text = IntToStr((*pd_)[i][j].polar);
 
 		}
 		seq_node->AddChild("Mean_ACF")->Text = ExtractFileName((*pd_)[i].Mean_Acf_);

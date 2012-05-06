@@ -34,6 +34,10 @@ class TProjectData
 				double x_pcs;
 				double pi;
 				double gamma;
+				double rate;
+				char prism;
+				char aperture;
+				char polar;
 				TVtPDState State;
 				TProjectData *pd;
 			} TVtPD;
@@ -52,20 +56,14 @@ class TProjectData
 		double a2;
 		double pi;
 		double x_pcs;
+        double rate;
+		char prism;
+		char aperture;
+		char polar;
 
-		TRec(): process_(false), Data_(""), Acf_(""), a0(0.0), a1(0.0), a2(0.0), pi(0.0), x_pcs(0.0)
-		{
-		/*
-			process_ = false;
-			Data_ = "";
-			Acf_ = "";
-			a0=0;
-			a1=0;
-			a2=0;
-			pi=0;
-			x_pcs=0;
-			*/
-		}
+		TRec(): process_(false), Data_(""), Acf_(""), a0(0.0), a1(0.0), a2(0.0),
+		pi(0.0), x_pcs(0.0), rate(0.0), prism(0), aperture(0), polar(0)
+		{}
 
 		UnicodeString GetAcf()
 		{

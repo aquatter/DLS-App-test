@@ -646,6 +646,14 @@ bool OpenProject(UnicodeString Name, TProjectData &pd)
 					if (s != "") rec_.x_pcs = CheckString(s);
 					s = rec_node->ChildNodes->Nodes["pi"]->Text;
 					if (s != "") rec_.pi = CheckString(s);
+                    s = rec_node->ChildNodes->Nodes["rate"]->Text;
+					if (s != "") rec_.rate = CheckString(s);
+					s = rec_node->ChildNodes->Nodes["prism"]->Text;
+					if (s != "") rec_.prism = s.ToInt();
+					s = rec_node->ChildNodes->Nodes["aperture"]->Text;
+					if (s != "") rec_.aperture = s.ToInt();
+					s = rec_node->ChildNodes->Nodes["polar"]->Text;
+					if (s != "") rec_.polar = s.ToInt();
 
 				}
 				rec_node = rec_node->NextSibling();
@@ -862,9 +870,11 @@ void ProcessData(dls_mode mode, UnicodeString Name, int seq_num, int rec_num)
 			UnicodeString s;
 
 			MainForm->Memo1->Lines->Add("");
+			/*
 			s= "Открытие файла: "+Name;
 			MainForm->Memo1->Lines->Add(s);
 			MainForm->Memo1->Lines->Add("");
+			*/
 			if (rec_num != -1) {
 				s = "Серия "+ IntToStr((int)seq_num+1) + " Измерение " + IntToStr((int)rec_num+1);
 				MainForm->Memo1->Lines->Add(s);
@@ -989,6 +999,10 @@ void AddToVt( TProjectData &pd_ , TVirtualStringTree *vt )
 							d->x_pcs = pd_[i][j].x_pcs;
 							d->pi = pd_[i][j].pi;
 							d->gamma = pd_[i][j].a1;
+							d->rate = pd_[i][j].rate;
+							d->prism = pd_[i][j].prism;
+							d->aperture = pd_[i][j].aperture;
+							d->polar = pd_[i][j].polar;
 							d->rec_num = j;
 							d->seq_num = i;
 							d->pd = &pd_;

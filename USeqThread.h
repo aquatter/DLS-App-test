@@ -42,6 +42,7 @@ public:
 	bool DoMean_;
 	float mean_temp;
 
+    double __fastcall GetRate();
 	void __fastcall CalculateACF();
 	void __fastcall SetParams(TSeqThreadParams params);
 	void __fastcall Draw();

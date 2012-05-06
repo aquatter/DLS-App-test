@@ -81,16 +81,45 @@ __fastcall TMainForm::TMainForm(TComponent* Owner) : TForm(Owner) {
 	col->Width = 40;
 	col->Text = "ППД";
 	col->Options << coVisible << coAllowFocus << coAutoSpring << coEnabled << coResizable << coAutoSpring << coSmartResize << coAllowFocus;
-    col = vt->Header->Columns->Add();
+	col = vt->Header->Columns->Add();
 	col->Position = 5;
 	col->Width = 40;
 	col->Text = "Гамма";
-    col->Options << coVisible << coAllowFocus << coAutoSpring << coEnabled << coResizable << coAutoSpring << coSmartResize << coAllowFocus;
+	col->Options << coVisible << coAllowFocus << coAutoSpring << coEnabled << coResizable << coAutoSpring << coSmartResize << coAllowFocus;
+	/*
+	col = vt->Header->Columns->Add();
+	col->Position = 6;
+	col->Width = 30;
+	col->Text = "Имп/сек";
+	col->Options << coVisible << coAllowFocus << coAutoSpring << coEnabled << coResizable << coAutoSpring << coSmartResize << coAllowFocus;
+	col = vt->Header->Columns->Add();
+	col->Position = 7;
+	col->Width = 30;
+	col->Text = "Призма";
+	col->Options << coVisible << coAllowFocus << coAutoSpring << coEnabled << coResizable << coAutoSpring << coSmartResize << coAllowFocus;
+	col = vt->Header->Columns->Add();
+	col->Position = 8;
+	col->Width = 30;
+	col->Text = "Диафрама";
+	col->Options << coVisible << coAllowFocus << coAutoSpring << coEnabled << coResizable << coAutoSpring << coSmartResize << coAllowFocus;
+	col = vt->Header->Columns->Add();
+	col->Position = 9;
+	col->Width = 30;
+	col->Text = "Поляризатор";
+	col->Options << coVisible << coAllowFocus << coAutoSpring << coEnabled << coResizable << coAutoSpring << coSmartResize << coAllowFocus;
+    */
 
+	vt->ShowHint = true;
+
+
+	vt->HintAnimation = hatSlide;
 	vt->OnGetText = VtGetText;
 
 	vt->OnDblClick = VtDblClick;
+	vt->OnClick = VtClick;
 
+
+	Application->HintPause = 0;
 
 	// OptionsForm->Edit7->Text = IntToStr(device.deviceSettings.Amplification);
 	// OptionsForm->Edit8->Text = FloatToStr(device.deviceSettings.Temperature);
@@ -2046,15 +2075,45 @@ void __fastcall TMainForm::VtDblClick(TObject *Sender)
 		TProjectData::TVtPD *d = (TProjectData::TVtPD *)vt->GetNodeData(t);
 		if (d)
 		{
-            pd__ = d->pd;
+			pd__ = d->pd;
 			ProcessData(d);
 		}
 	}
 }
 
+void __fastcall TMainForm::VtClick(TObject *Sender)
+{
+	TVirtualNode *t = vt->GetFirstSelected(false);
 
+	if (t)
+	{
+		TProjectData::TVtPD *d = (TProjectData::TVtPD *)vt->GetNodeData(t);
+		if (d)
+			switch (d->State)
+			{
+				case TProjectData::pdRecord :
+				{
+                    vt->ShowHint = true;
+					UnicodeString str;
+					str = "Имп/сек: " + FloatToStrF(d->rate, ffFixed, 10, 3) + "\nПризма Глана: ";
+					if (d->prism == 0)
+						str += "Вертикально";
+					else
+						str += "Горизонтально";
 
+					str += "\nДиафрагма: " + IntToStr(d->aperture) + "\nПоляризатор: " + IntToStr(d->polar);
 
+					vt->Hint = str;
+
+				}
+				break;
+				default :
+                	vt->ShowHint = false;
+                	vt->Hint = "";
+				break;
+			}
+	}
+}
 
 void __fastcall TMainForm::ToolButton10Click(TObject *Sender)
 {

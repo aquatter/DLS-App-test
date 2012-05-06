@@ -249,6 +249,7 @@ public:		// User declarations
 	void __fastcall VtGetText(TBaseVirtualTree *Sender, PVirtualNode Node,
 		  TColumnIndex Column, TVSTTextType TextType, UnicodeString &CellText);
 	void __fastcall VtDblClick(TObject *Sender);
+	void __fastcall VtClick(TObject *Sender);
 	void __fastcall edtFEU_Init();
 	void __fastcall off(bool b);
 	void __fastcall StartMonitoring();
