@@ -12,7 +12,8 @@
 #include "USeqThread.h"
 #include "UTimerThread.h"
 #include <Registry.hpp>
-
+#include "DateUtils.hpp"
+#include "UTestRecForm.h"
 
 //---------------------------------------------------------------------------
 
@@ -521,13 +522,12 @@ bool OptionsFormExecute()
 	OptionsForm->ComboBox4->ItemIndex = AcfParams.Aperture;
 //	OptionsForm->Edit37->Text = IntToStr(AcfParams.Aperture);
 	OptionsForm->Edit38->Text = IntToStr(AcfParams.Polar);
+    OptionsForm->CheckBox8->Checked = AcfParams.Kinetics;
 
+	int ModalResult = OptionsForm->ShowModal();
 
-
-	if (OptionsForm->ShowModal() != mrOk) {
+	if ((ModalResult != mrOk) && (ModalResult != mrAbort))
 		return false;
-	}
-
 
 	AcfParams.Time_discr = OptionsForm->ComboBox1->ItemIndex;
 	AcfParams.Multi_Angle =  OptionsForm->CheckBox5->Checked;
@@ -565,23 +565,18 @@ bool OptionsFormExecute()
 	AcfParams.Prism = OptionsForm->ComboBox2->ItemIndex;
 	AcfParams.Aperture = OptionsForm->ComboBox4->ItemIndex; //Edit37->Text.ToInt();
 	AcfParams.Polar = OptionsForm->Edit38->Text.ToInt();
-	
-	/*
-	try
-	{
-		if (!device.SetFrequency(AcfParams.Time_discr))
-			Abort();
-		if (!device.SetAngle(AcfParams.Initial_Angle))
-			Abort;
+	AcfParams.Kinetics = OptionsForm->CheckBox8->Checked;
 
-		return true;
-	}
-	catch (...)
+    MainForm->LineSeries4->Clear();
+	MainForm->LineSeries5->Clear();
+
+	if (ModalResult == mrAbort)
 	{
-		ShowMessage("Прибор не подключен");
-		return true;
+       	TestRecForm->Show();
+		return false;
 	}
-	*/
+
+
 	return true;
 }
 
@@ -780,7 +775,6 @@ bool OpenProject(UnicodeString Name, TProjectData &pd)
 	   //	seq_node = seq_node->NextSibling();
 
 
-
 	MainForm->XMLDocument1->XML->Clear();
 	MainForm->XMLDocument1->Active = false;
 
@@ -808,7 +802,7 @@ void ProcessData(TProjectData::TVtPD *d)
 		{
 			UnicodeString s =  (*d->pd)[d->seq_num][d->rec_num].Acf_;
 			if (FileExists(s))
-				ProcessData(acf_, s, d->seq_num, d->rec_num);
+				ProcessData(acf_, s, d->seq_num, d->rec_num, (*d->pd)[d->seq_num][d->rec_num].Data_);
 			else
 			{
 				d->pd->Disable_All();
@@ -847,7 +841,7 @@ void ProcessData(TProjectData::TVtPD *d)
 }
 
 
-void ProcessData(dls_mode mode, UnicodeString Name, int seq_num, int rec_num)
+void ProcessData(dls_mode mode, UnicodeString Name, int seq_num, int rec_num, UnicodeString data_Name)
 {
 	switch (mode) {
 		case acf_:
@@ -870,11 +864,7 @@ void ProcessData(dls_mode mode, UnicodeString Name, int seq_num, int rec_num)
 			UnicodeString s;
 
 			MainForm->Memo1->Lines->Add("");
-			/*
-			s= "Открытие файла: "+Name;
-			MainForm->Memo1->Lines->Add(s);
-			MainForm->Memo1->Lines->Add("");
-			*/
+		
 			if (rec_num != -1) {
 				s = "Серия "+ IntToStr((int)seq_num+1) + " Измерение " + IntToStr((int)rec_num+1);
 				MainForm->Memo1->Lines->Add(s);
@@ -894,8 +884,40 @@ void ProcessData(dls_mode mode, UnicodeString Name, int seq_num, int rec_num)
 			s = "Средний диаметр частиц " + FloatToStrF(AcfParams.x_pcs, ffFixed, 5, 2)+" нм";
 			MainForm->Label2->Caption = s;
 			MainForm->Memo1->Lines->Add(s);
-            MainForm->LineSeries4->Add(AcfParams.x_pcs);
-            MainForm->LineSeries5->Add(AcfParams.x_pcs);
+
+			if (AcfParams.Kinetics && (rec_num != -1))
+			{
+				MainForm->Chart6->LeftAxis->Title->Caption = "Средний диаметр, нм.";
+				MainForm->Chart6->BottomAxis->Title->Caption = "Номер измерения";
+				MainForm->LineSeries4->Add(AcfParams.x_pcs);
+				MainForm->LineSeries5->Add(AcfParams.x_pcs);
+			}
+			else
+			{
+				if (FileExists(data_Name))
+				{
+					WORD *Data;
+					int n0 = 0;
+
+					OpenData(&Data, n0, data_Name);
+
+					MainForm->LineSeries4->Clear();
+					MainForm->LineSeries5->Clear();
+					MainForm->Chart6->LeftAxis->Title->Caption = "Скорость счета, имп./с";
+					MainForm->Chart6->BottomAxis->Title->Caption = "Время, с";
+
+					std::vector<double> rate, time;
+					getRateGraph(Data, n0, rate, time);
+
+					for (size_t i=0; i < rate.size(); ++i)
+					{
+						MainForm->LineSeries4->AddXY(time[i], rate[i]);
+						MainForm->LineSeries5->AddXY(time[i], rate[i]);
+					}
+
+					delete [] Data;
+				}
+			}
 
 			delete [] acf_app;
         	break;
@@ -938,12 +960,12 @@ void ProcessData(dls_mode mode, UnicodeString Name, int seq_num, int rec_num)
 
 
 
-void OpenData(WORD *data, int &n, UnicodeString Name)
+void OpenData(WORD **data, int &n, UnicodeString Name)
 {
 	int f = FileOpen(Name, fmOpenRead);
 	FileRead(f, &n, sizeof(int));
-	data = new WORD[n];
-	FileRead(f, (void *) data, n*sizeof(WORD));
+	*data = new WORD[n];
+	FileRead(f, (void *) *data, n*sizeof(WORD));
 	FileRead(f, (void *)&DataParams, sizeof(TDataParams));
 	FileClose(f);
 }
@@ -1031,7 +1053,10 @@ void UpdateVt( TVirtualStringTree *vt )
 {
 	vt->Clear();
 	for (size_t i=0; i < pd_vector.size(); i++)
+	{
+    	pd_vector[i].num = i;
 		AddToVt(pd_vector[i], vt);
+	}
 
 	SendMessageA(vt->Handle, WM_VSCROLL, SB_BOTTOM, 0);
 }
@@ -1050,6 +1075,91 @@ void RegisterExt()
 	reg->WriteString("", Application->ExeName + " %1");
 	reg->CloseKey();
 	reg->Free();
+}
+
+bool CheckExistProject(UnicodeString FileName)
+{
+	return false;
+}
+
+void SaveProject(TProjectData *pd_)
+{
+	_di_IXMLNode root, seq_node, rec_node;
+	MainForm->XMLDocument1->Active = true;
+
+	root = MainForm->XMLDocument1->AddChild("Dynamic_Light_Scattering_XML_Document");
+	root->AddChild("Date")->Text = Today().DateString();
+	root->AddChild("Name")->Text = pd_->Name_Spec;
+	root->AddChild("Solution")->Text = pd_->Name_Sol;
+
+	for (size_t i=0; i < (*pd_).SizeOf(); i++) {
+		seq_node = root->AddChild("Series");
+		for (size_t j=0; j < (*pd_)[i].SizeOf(); j++) {
+			rec_node = seq_node->AddChild("Measurement");
+			rec_node->AddChild("Data")->Text = ExtractFileName((*pd_)[i][j].Data_);
+			rec_node->AddChild("ACF")->Text = ExtractFileName((*pd_)[i][j].Acf_);
+			rec_node->AddChild("a0")->Text = FloatToStr((*pd_)[i][j].a0);
+			rec_node->AddChild("a1")->Text = FloatToStr((*pd_)[i][j].a1);
+			rec_node->AddChild("a2")->Text = FloatToStr((*pd_)[i][j].a2);
+			rec_node->AddChild("x_pcs")->Text = FloatToStr((*pd_)[i][j].x_pcs);
+			rec_node->AddChild("pi")->Text = FloatToStr((*pd_)[i][j].pi);
+			rec_node->AddChild("rate")->Text = FloatToStr((*pd_)[i][j].rate);
+			rec_node->AddChild("prism")->Text = IntToStr((*pd_)[i][j].prism);
+			rec_node->AddChild("aperture")->Text = IntToStr((*pd_)[i][j].aperture);
+			rec_node->AddChild("polar")->Text = IntToStr((*pd_)[i][j].polar);
+
+		}
+		seq_node->AddChild("Mean_ACF")->Text = ExtractFileName((*pd_)[i].Mean_Acf_);
+		seq_node->AddChild("a0")->Text = FloatToStr((*pd_)[i].a0);
+		seq_node->AddChild("a1")->Text = FloatToStr((*pd_)[i].a1);
+		seq_node->AddChild("a2")->Text = FloatToStr((*pd_)[i].a2);
+		seq_node->AddChild("x_pcs")->Text = FloatToStr((*pd_)[i].x_pcs);
+		seq_node->AddChild("pi")->Text = FloatToStr((*pd_)[i].pi);
+
+	}
+
+	MainForm->XMLDocument1->SaveToFile(pd_->Path+pd_->Name+".dls");
+
+	MainForm->XMLDocument1->XML->Clear();
+	MainForm->XMLDocument1->Active = false;
+}
+
+void getRateGraph(WORD *Data, int n0, std::vector<double> &rate, std::vector<double> &time)
+{
+	double dt = GetTime_Discr(AcfParams.Time_discr);
+	double interv = 1e-2;
+	int step = interv/(dt*1e-9);
+	int sum = 0, time_sum = 0;
+	int thresh = step;
+	double ind = 0.5;
+
+	for (int i=0; i < n0; i++)
+	{
+		time_sum += Data[i];
+		if (time_sum <= thresh)
+			sum++;
+		else
+		{
+			rate.push_back((double)sum/interv);
+			time.push_back(interv*ind);
+
+			sum = 1;
+			thresh += step;
+			ind++;
+
+		}
+	}
+	/*
+	double mean;
+	sum = 0;
+	for (int i=0; i < n0; i++)
+		sum += Data[i];
+
+	mean = (double)n0/(sum*dt*1e-9);
+
+	MainForm->Memo1->Lines->Add(FloatToStr(mean));
+    */
+
 }
 
 

@@ -416,8 +416,28 @@ void __fastcall TSeqThread::Draw() {
 			MainForm->Memo1->Lines->Add(s);
 			MainForm->Label2->Caption = s;
 			MainForm->Memo1->Lines->Add("");
-			MainForm->LineSeries4->Add(AcfParams.x_pcs);
-			MainForm->LineSeries5->Add(AcfParams.x_pcs);
+
+			if (AcfParams.Kinetics)
+			{
+				MainForm->Chart6->LeftAxis->Title->Caption = "Средний диаметр, нм.";
+				MainForm->Chart6->BottomAxis->Title->Caption = "Номер измерения";
+				MainForm->LineSeries4->Add(AcfParams.x_pcs);
+				MainForm->LineSeries5->Add(AcfParams.x_pcs);
+			}
+			else
+			{
+				MainForm->LineSeries4->Clear();
+				MainForm->LineSeries5->Clear();
+				MainForm->Chart6->LeftAxis->Title->Caption = "Скорость счета, имп./с";
+				MainForm->Chart6->BottomAxis->Title->Caption = "Время, мс";
+				std::vector<double> rate, time;
+				getRateGraph(Data, n0, rate, time);
+				for (size_t i=0; i < rate.size(); ++i)
+				{
+					MainForm->LineSeries4->AddXY(time[i], rate[i]);
+					MainForm->LineSeries5->AddXY(time[i], rate[i]);
+                }
+			}
 
 			break;
 		case 2:
@@ -449,8 +469,15 @@ void __fastcall TSeqThread::Draw() {
 			MainForm->Memo1->Lines->Add(s);
 			MainForm->Label2->Caption = s;
 			MainForm->Memo1->Lines->Add("");
-			MainForm->LineSeries4->Add(AcfParams.x_pcs);
-			MainForm->LineSeries5->Add(AcfParams.x_pcs);
+			/*
+			if (AcfParams.Kinetics)
+			{
+				MainForm->Chart6->LeftAxis->Title->Caption = "Средний диаметр, нм.";
+				MainForm->Chart6->BottomAxis->Title->Caption = "Номер измерения";
+				MainForm->LineSeries4->Add(AcfParams.x_pcs);
+				MainForm->LineSeries5->Add(AcfParams.x_pcs);
+			}
+            */
 			break;
 		case 4: MainForm->Memo1->Lines->Add(s); break;
 
@@ -883,6 +910,7 @@ void __fastcall TSeqThread::SaveAcf(bool k){
 		seq_->Mean_Acf_ = s;
 
 	SaveAcf2Tdf(s);
+    SaveAcf2Crv(s);
 
 	/*
 	s = "Сохранение АКФ: "+s;
@@ -901,8 +929,9 @@ void __fastcall TSeqThread::SaveAcf(int ns, int nr){
 		sprintf(buff, "_%.3d", ns+1);
 
 	s = pd_->Path + "\\" + pd_->Name + buff+".tdf";
-	SaveAcf2Tdf(s, DataParams_);
 
+	SaveAcf2Tdf(s, DataParams_);
+	SaveAcf2Crv(s);
 	/*
 	s = "Сохранение АКФ: "+s;
 	mm=4;
@@ -962,10 +991,11 @@ int __fastcall TSeqThread::OpenData(int n_seq, int n_rec, bool GetCnt)
 	if (!GetCnt) {
 		FileRead(f, (void *) Data, n*sizeof(WORD));
 	  //	FileRead(f, (void *)&DataParams, sizeof(TDataParams));
-
-        s = "Открытие  данных: "+s;
+		/*
+		s = "Открытие  данных: "+s;
 		mm=4;
 		Synchronize(&Draw);
+		*/
 
 	}
 	/*

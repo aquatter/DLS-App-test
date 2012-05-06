@@ -151,6 +151,7 @@ __published:	// IDE-managed Components
 	TToolButton *ToolButton9;
 	TImageList *ImageList5;
 	TToolButton *ToolButton10;
+	TMenuItem *N7;
 	void __fastcall Timer1Timer(TObject *Sender);
 	void __fastcall chckbxLFDClick(TObject *Sender);
 	void __fastcall chckbxFEUClick(TObject *Sender);
@@ -202,6 +203,7 @@ __published:	// IDE-managed Components
 	void __fastcall ListView3DblClick(TObject *Sender);
 	void __fastcall ToolButton9Click(TObject *Sender);
 	void __fastcall ToolButton10Click(TObject *Sender);
+	void __fastcall N7Click(TObject *Sender);
 
 
 
@@ -250,6 +252,9 @@ public:		// User declarations
 		  TColumnIndex Column, TVSTTextType TextType, UnicodeString &CellText);
 	void __fastcall VtDblClick(TObject *Sender);
 	void __fastcall VtClick(TObject *Sender);
+    void __fastcall VtMouseUp(System::TObject* Sender, TMouseButton Button, Classes::TShiftState Shift, int X, int Y);
+
+
 	void __fastcall edtFEU_Init();
 	void __fastcall off(bool b);
 	void __fastcall StartMonitoring();

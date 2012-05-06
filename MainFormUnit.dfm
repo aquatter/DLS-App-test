@@ -125,6 +125,7 @@ object MainForm: TMainForm
       AutoSize = True
       Caption = 'Test'
       ImageIndex = 6
+      Visible = False
       OnClick = ToolButton10Click
     end
   end
@@ -1249,18 +1250,18 @@ object MainForm: TMainForm
     Enabled = False
     Interval = 300
     OnTimer = Timer1Timer
-    Left = 624
-    Top = 272
+    Left = 592
+    Top = 224
   end
   object SaveDialog1: TSaveDialog
     Filter = 'IDAT|*.idat|'#1090#1077#1082#1089#1090#1086#1074#1099#1077'|*.txt'
-    Left = 920
-    Top = 264
+    Left = 768
+    Top = 224
   end
   object ImageList1: TImageList
     Height = 32
     Width = 32
-    Left = 480
+    Left = 504
     Top = 65
     Bitmap = {
       494C0101070009000C0020002000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
@@ -2327,8 +2328,8 @@ object MainForm: TMainForm
       000000000000}
   end
   object OpenDialog1: TOpenDialog
-    Left = 874
-    Top = 268
+    Left = 730
+    Top = 220
   end
   object ImageList2: TImageList
     Left = 535
@@ -2606,26 +2607,33 @@ object MainForm: TMainForm
       000000000000}
   end
   object PopupMenu1: TPopupMenu
-    Left = 680
-    Top = 272
+    Left = 624
+    Top = 224
     object N1: TMenuItem
       Caption = #1044#1072#1085#1085#1099#1077
       ImageIndex = 2
+      Visible = False
       OnClick = bbtnSaveClick
     end
     object N2: TMenuItem
       Caption = #1040#1074#1090#1086#1082#1086#1088#1088#1077#1083#1103#1094#1080#1086#1085#1085#1091#1102' '#1092#1091#1085#1082#1094#1080#1102
       ImageIndex = 2
+      Visible = False
       OnClick = ToolButton3Click
     end
     object N5: TMenuItem
       Caption = #1056#1072#1089#1087#1088#1077#1076#1077#1083#1077#1085#1080#1077' '#1095#1072#1089#1090#1080#1094
+      Visible = False
       OnClick = N5Click
+    end
+    object N7: TMenuItem
+      Caption = #1059#1076#1072#1083#1080#1090#1100
+      OnClick = N7Click
     end
   end
   object PopupMenu2: TPopupMenu
-    Left = 744
-    Top = 273
+    Left = 656
+    Top = 225
     object N3: TMenuItem
       Caption = #1044#1072#1085#1085#1099#1077
       ImageIndex = 2
@@ -2644,7 +2652,7 @@ object MainForm: TMainForm
   object ImageList3: TImageList
     Height = 32
     Width = 32
-    Left = 587
+    Left = 571
     Top = 69
     Bitmap = {
       494C0101070009000C0020002000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
@@ -3711,14 +3719,14 @@ object MainForm: TMainForm
       000000000000}
   end
   object XMLDocument1: TXMLDocument
-    Left = 808
-    Top = 272
+    Left = 688
+    Top = 224
     DOMVendorDesc = 'MSXML'
   end
   object ImageList4: TImageList
     Height = 24
     Width = 24
-    Left = 640
+    Left = 608
     Top = 64
     Bitmap = {
       494C010103000500040018001800FFFFFFFFFF00FFFFFFFFFFFFFFFF424D3600
@@ -4027,7 +4035,7 @@ object MainForm: TMainForm
   object ImageList5: TImageList
     Height = 24
     Width = 24
-    Left = 696
+    Left = 640
     Top = 64
     Bitmap = {
       494C010103000500040018001800FFFFFFFFFF00FFFFFFFFFFFFFFFF424D3600

@@ -116,9 +116,9 @@ __fastcall TMainForm::TMainForm(TComponent* Owner) : TForm(Owner) {
 	vt->OnGetText = VtGetText;
 
 	vt->OnDblClick = VtDblClick;
-	vt->OnClick = VtClick;
-
-
+//	vt->OnClick = VtClick;
+	vt->OnMouseUp = VtMouseUp;
+	vt->PopupMenu = PopupMenu1;
 	Application->HintPause = 0;
 
 	// OptionsForm->Edit7->Text = IntToStr(device.deviceSettings.Amplification);
@@ -1616,11 +1616,13 @@ void __fastcall TMainForm::FormClose(TObject *Sender, TCloseAction &Action) {
 	CloseHandle(CaptureDone);
 	CloseHandle(AcfDone);
 
+	/*
 	if (Memo1->Lines->Count)
 	{
 		UnicodeString s = pd.Path + "dls("+Now().FormatString("dd_MM_YYYY_hh_mm_ss")+").log";
 		Memo1->Lines->SaveToFile(s);
 	}
+	*/
 }
 // ---------------------------------------------------------------------------
 
@@ -1850,24 +1852,9 @@ void __fastcall TMainForm::Button8Click(TObject *Sender) {
 		if ((MessageDlg("Файл " + s + "\n существует и будет перезаписан. Продолжить?", mtWarning, TMsgDlgButtons() << mbOK << mbCancel, 0, mbCancel)+1) == mbCancel)
 			return;
 
+	LineSeries4->Clear();
+    LineSeries5->Clear();
 
-
-
-	// AcfParams.Rec_time = StrToInt(RecThreadStartForm->Edit1->Text);
-
- //	StopMonitoring();
-//	StatusRecForm->Show();
- //   ListView3->Clear();
-	// InitDeviceThread = new TInitDeviceThread(true);
-	// InitDeviceThread->Resume();
-	//
-	//
-	// return;
-
-
-
-
-  //	pd.Clear();
 	int n = pd_vector.size();
 	pd_vector.push_back(TProjectData());
 
@@ -2083,6 +2070,7 @@ void __fastcall TMainForm::VtDblClick(TObject *Sender)
 
 void __fastcall TMainForm::VtClick(TObject *Sender)
 {
+	/*
 	TVirtualNode *t = vt->GetFirstSelected(false);
 
 	if (t)
@@ -2093,7 +2081,7 @@ void __fastcall TMainForm::VtClick(TObject *Sender)
 			{
 				case TProjectData::pdRecord :
 				{
-                    vt->ShowHint = true;
+					vt->ShowHint = true;
 					UnicodeString str;
 					str = "Имп/сек: " + FloatToStrF(d->rate, ffFixed, 10, 3) + "\nПризма Глана: ";
 					if (d->prism == 0)
@@ -2108,11 +2096,12 @@ void __fastcall TMainForm::VtClick(TObject *Sender)
 				}
 				break;
 				default :
-                	vt->ShowHint = false;
-                	vt->Hint = "";
+					vt->ShowHint = false;
+					vt->Hint = "";
 				break;
 			}
 	}
+	*/
 }
 
 void __fastcall TMainForm::ToolButton10Click(TObject *Sender)
@@ -2125,14 +2114,131 @@ void TMainForm::file_open_msg(TWMCopyData &msg)
 	UnicodeString str((char *)msg.CopyDataStruct->lpData);
 
     if (FileExists(str))
-    {
-    	int n = pd_vector.size();
+	{
+		int n = pd_vector.size();
     	pd_vector.push_back(TProjectData());
     	OpenProject(str, pd_vector[n]);
 	}
 
 	WindowState = wsMaximized;
     BringToFront();
+}
+
+
+void __fastcall TMainForm::N7Click(TObject *Sender)
+{
+	TVirtualNode *t = vt->GetFirstSelected(false);
+
+    if (t)
+	{
+    	TProjectData::TVtPD *d = (TProjectData::TVtPD *)vt->GetNodeData(t);
+		if (d)
+		{
+			switch (d->State)
+			{
+				case TProjectData::pdRecord:
+				{
+					TProjectData *pd_ = d->pd;
+					TProjectData::TSeq &seq_ = (*pd_)[d->seq_num];
+					seq_.rec_.erase(seq_.rec_.begin() + d->rec_num);
+					seq_.Mean_Acf_ = "";
+					seq_.a0 = 0.0;
+					seq_.a1 = 0.0;
+					seq_.a2 = 0.0;
+					seq_.pi = 0.0;
+					seq_.x_pcs = 0.0;
+                    SaveProject(pd_);
+				}
+				break;
+				case TProjectData::pdSerie:
+				{
+					TProjectData *pd_ = d->pd;
+					pd_->seq_.erase(pd_->seq_.begin() + d->seq_num);
+					SaveProject(pd_);
+				}
+				break;
+				case TProjectData::pdMean:
+				{
+					TProjectData *pd_ = d->pd;
+					TProjectData::TSeq &seq_ = (*pd_)[d->seq_num];
+                    seq_.Mean_Acf_ = "";
+                    seq_.a0 = 0.0;
+                    seq_.a1 = 0.0;
+                    seq_.a2 = 0.0;
+                    seq_.pi = 0.0;
+                    seq_.x_pcs = 0.0;
+				}
+				break;
+				case TProjectData::pdHeader:
+				{
+					pd_vector.erase(pd_vector.begin() + d->pd->num);
+				}
+				break;
+			}
+
+			UpdateVt(vt);
+		}
+	}
+
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TMainForm::VtMouseUp(System::TObject* Sender, TMouseButton Button, Classes::TShiftState Shift, int X, int Y)
+{
+
+	vt->ShowHint = false;
+	vt->Hint = "";
+	TVirtualNode *t = vt->GetFirstSelected(false);
+
+	if (t)
+	{
+		TProjectData::TVtPD *d = (TProjectData::TVtPD *)vt->GetNodeData(t);
+		if (d)
+			switch (d->State)
+			{
+				case TProjectData::pdRecord:
+				if (Button == mbLeft)
+				{
+					vt->ShowHint = true;
+					UnicodeString str;
+					str = "Имп/сек: " + FloatToStrF(d->rate, ffFixed, 10, 3) + "\nПризма Глана: ";
+					if (d->prism == 0)
+						str += "Вертикально";
+					else
+						str += "Горизонтально";
+
+					str += "\nДиафрагма: " + IntToStr(d->aperture) + "\nПоляризатор: " + IntToStr(d->polar);
+
+					vt->Hint = str;
+
+				}
+				break;
+				case TProjectData::pdHeader:
+				/*
+					if (Button == mbRight)
+						Label14->Caption = IntToStr(Panel5->Top + vt->Top + Y);
+						*/
+				break;
+				default :
+
+
+				break;
+			}
+	}
+
+/*
+	if (Button != mbRight)
+		return;
+
+
+	TVirtualNode *t = vt->GetFirstSelected(false);
+
+	if (t)
+	{
+		TProjectData::TVtPD *d = (TProjectData::TVtPD *)vt->GetNodeData(t);
+		if (d && (d->State == TProjectData::pdHeader))
+			PopupMenu1->Popup(vt->Left + X, vt->Top + Y );
+	}                                                     */
 }
 
 

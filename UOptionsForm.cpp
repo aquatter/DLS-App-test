@@ -14,6 +14,7 @@
 #include "UGradForm.h"
 #include "ShlObj.h"
 #include "UTAdjustAngleAperForm.h"
+#include "UTestRecForm.h"
 
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
@@ -444,4 +445,6 @@ void __fastcall TOptionsForm::Button7Click(TObject *Sender)
 	//AdjustAngleAperForm->ShowModal();
 }
 //---------------------------------------------------------------------------
+
+
 

@@ -2,7 +2,7 @@ object OptionsForm: TOptionsForm
   Left = 486
   Top = 140
   BorderStyle = bsDialog
-  Caption = #1053#1072#1089#1090#1088#1086#1081#1082#1080' '#1087#1088#1086#1075#1088#1072#1084#1084#1099
+  Caption = #1048#1079#1084#1077#1088#1077#1085#1080#1077
   ClientHeight = 545
   ClientWidth = 397
   Color = clBtnFace
@@ -19,12 +19,13 @@ object OptionsForm: TOptionsForm
     Left = 0
     Top = 0
     Width = 397
-    Height = 465
+    Height = 481
     ActivePage = TabSheet1
     Align = alTop
     TabOrder = 0
     object TabSheet1: TTabSheet
-      Caption = #1055#1088#1072#1084#1077#1090#1088#1099' '#1088#1077#1075#1080#1089#1090#1088#1072#1094#1080#1080
+      Caption = #1055#1072#1088#1072#1084#1077#1090#1088#1099' '#1088#1077#1075#1080#1089#1090#1088#1072#1094#1080#1080
+      ExplicitHeight = 437
       object Label19: TLabel
         Left = 27
         Top = 89
@@ -38,14 +39,6 @@ object OptionsForm: TOptionsForm
         Width = 101
         Height = 13
         Caption = #1064#1072#1075' '#1076#1080#1089#1082#1088#1077#1090#1080#1079#1072#1094#1080#1080
-      end
-      object Label21: TLabel
-        Left = 254
-        Top = 449
-        Width = 69
-        Height = 13
-        Caption = #1063#1080#1089#1083#1086' '#1073#1083#1086#1082#1086#1074
-        Visible = False
       end
       object Label31: TLabel
         Left = 271
@@ -124,16 +117,23 @@ object OptionsForm: TOptionsForm
       end
       object Label56: TLabel
         Left = 28
-        Top = 338
+        Top = 330
         Width = 3
         Height = 13
       end
       object Label57: TLabel
         Left = 27
-        Top = 371
+        Top = 358
         Width = 54
         Height = 13
         Caption = #1048#1084#1103' '#1092#1072#1081#1083#1072
+      end
+      object Label52: TLabel
+        Left = 27
+        Top = 390
+        Width = 117
+        Height = 13
+        Caption = #1053#1072#1080#1084#1077#1085#1086#1074#1072#1085#1080#1077' '#1086#1073#1088#1072#1079#1094#1072
       end
       object GroupBox1: TGroupBox
         Left = 53
@@ -367,23 +367,13 @@ object OptionsForm: TOptionsForm
         Caption = #1052#1085#1086#1075#1086#1091#1075#1083#1086#1074#1086#1081' '#1088#1077#1078#1080#1084
         TabOrder = 11
       end
-      object Edit28: TEdit
-        Left = 237
-        Top = 450
-        Width = 79
-        Height = 21
-        Alignment = taRightJustify
-        TabOrder = 12
-        Text = '0'
-        Visible = False
-      end
       object Edit29: TEdit
         Left = 237
         Top = 483
         Width = 79
         Height = 21
         Alignment = taRightJustify
-        TabOrder = 13
+        TabOrder = 12
         Text = '0'
         Visible = False
       end
@@ -393,7 +383,7 @@ object OptionsForm: TOptionsForm
         Width = 79
         Height = 21
         Alignment = taRightJustify
-        TabOrder = 14
+        TabOrder = 13
         Text = '0'
       end
       object Edit31: TEdit
@@ -402,7 +392,7 @@ object OptionsForm: TOptionsForm
         Width = 79
         Height = 21
         Alignment = taRightJustify
-        TabOrder = 15
+        TabOrder = 14
         Text = '0'
       end
       object Edit32: TEdit
@@ -411,7 +401,7 @@ object OptionsForm: TOptionsForm
         Width = 79
         Height = 21
         Alignment = taRightJustify
-        TabOrder = 16
+        TabOrder = 15
         Text = '0'
       end
       object Edit33: TEdit
@@ -420,7 +410,7 @@ object OptionsForm: TOptionsForm
         Width = 79
         Height = 21
         Alignment = taRightJustify
-        TabOrder = 17
+        TabOrder = 16
         Text = '0'
       end
       object CheckBox6: TCheckBox
@@ -428,8 +418,8 @@ object OptionsForm: TOptionsForm
         Top = 276
         Width = 206
         Height = 17
-        Caption = #1059#1089#1088#1077#1076#1085#1103#1090#1100' '#1088#1077#1079#1091#1083#1100#1090#1072#1090' '#1074' '#1089#1077#1088#1080#1080
-        TabOrder = 18
+        Caption = #1059#1089#1088#1077#1076#1085#1103#1090#1100' '#1088#1077#1079#1091#1083#1100#1090#1072#1090#1099' '#1074' '#1089#1077#1088#1080#1080
+        TabOrder = 17
       end
       object CheckBox7: TCheckBox
         Left = 27
@@ -437,7 +427,7 @@ object OptionsForm: TOptionsForm
         Width = 258
         Height = 17
         Caption = #1056#1072#1089#1089#1095#1080#1090#1099#1074#1072#1090#1100' '#1040#1050#1060' '#1087#1086#1089#1083#1077' '#1082#1072#1078#1086#1075#1086' '#1080#1079#1084#1077#1088#1077#1085#1080#1103
-        TabOrder = 19
+        TabOrder = 18
       end
       object Panel1: TPanel
         Left = 246
@@ -446,13 +436,13 @@ object OptionsForm: TOptionsForm
         Height = 25
         BevelOuter = bvNone
         Caption = 'Panel1'
-        TabOrder = 20
+        TabOrder = 19
         object ToolBar1: TToolBar
           Left = 0
           Top = 0
           Width = 75
           Height = 23
-          ButtonWidth = 72
+          ButtonWidth = 71
           Caption = 'none'
           Images = MainForm.ImageList2
           List = True
@@ -461,7 +451,7 @@ object OptionsForm: TOptionsForm
           object ToolButton1: TToolButton
             Left = 0
             Top = 0
-            Caption = ' '#1059#1082#1072#1079#1072#1090#1100
+            Caption = #1042#1099#1073#1088#1072#1090#1100
             ImageIndex = 3
             OnClick = ToolButton1Click
           end
@@ -469,11 +459,11 @@ object OptionsForm: TOptionsForm
       end
       object Edit36: TEdit
         Left = 237
-        Top = 368
+        Top = 355
         Width = 79
         Height = 21
         Alignment = taRightJustify
-        TabOrder = 21
+        TabOrder = 20
       end
       object ComboBox3: TComboBox
         Left = 237
@@ -482,7 +472,7 @@ object OptionsForm: TOptionsForm
         Height = 21
         Style = csDropDownList
         ItemIndex = 0
-        TabOrder = 22
+        TabOrder = 21
         Text = '0 '#1075#1088#1072#1076'.'
         Items.Strings = (
           '0 '#1075#1088#1072#1076'.'
@@ -504,14 +494,274 @@ object OptionsForm: TOptionsForm
         Top = 468
         Width = 49
         Height = 21
-        TabOrder = 23
+        TabOrder = 22
         Text = 'Edit9'
         Visible = False
       end
+      object Edit34: TEdit
+        Left = 237
+        Top = 387
+        Width = 79
+        Height = 21
+        Alignment = taRightJustify
+        TabOrder = 23
+      end
+      object CheckBox8: TCheckBox
+        Left = 27
+        Top = 418
+        Width = 78
+        Height = 17
+        Caption = #1050#1080#1085#1077#1090#1080#1082#1072
+        TabOrder = 24
+      end
+    end
+    object TabSheet3: TTabSheet
+      Caption = #1060#1080#1079#1080#1095#1077#1089#1082#1080#1077' '#1087#1072#1088#1072#1084#1077#1090#1088#1099
+      ImageIndex = 2
+      ExplicitLeft = -28
+      ExplicitTop = 0
+      ExplicitHeight = 437
+      object Label8: TLabel
+        Left = 20
+        Top = 47
+        Width = 203
+        Height = 13
+        Caption = #1055#1086#1082#1072#1079#1072#1090#1077#1083#1100' '#1087#1088#1077#1083#1086#1084#1083#1077#1085#1080#1103' '#1088#1072#1089#1090#1074#1086#1088#1080#1090#1077#1083#1103
+      end
+      object Label9: TLabel
+        Left = 26
+        Top = 536
+        Width = 49
+        Height = 13
+        Caption = #1042#1103#1079#1082#1086#1089#1090#1100' '
+        Visible = False
+      end
+      object Label23: TLabel
+        Left = 25
+        Top = 547
+        Width = 79
+        Height = 13
+        Caption = #1059#1075#1086#1083' '#1088#1072#1089#1089#1077#1103#1085#1080#1103
+        Visible = False
+      end
+      object Label24: TLabel
+        Left = 25
+        Top = 563
+        Width = 66
+        Height = 13
+        Caption = #1058#1077#1084#1087#1077#1088#1072#1090#1091#1088#1072
+        Visible = False
+      end
+      object Label25: TLabel
+        Left = 20
+        Top = 122
+        Width = 123
+        Height = 13
+        Caption = #1044#1083#1080#1085#1072' '#1074#1086#1083#1085#1099' '#1080#1089#1090#1086#1095#1085#1080#1082#1072
+      end
+      object Label26: TLabel
+        Left = 280
+        Top = 565
+        Width = 12
+        Height = 13
+        Caption = #176'C'
+        Visible = False
+      end
+      object Label27: TLabel
+        Left = 356
+        Top = 122
+        Width = 16
+        Height = 13
+        Caption = #1085#1084'.'
+      end
+      object Label28: TLabel
+        Left = 280
+        Top = 536
+        Width = 12
+        Height = 13
+        Caption = #1089#1055
+        Visible = False
+      end
+      object Label29: TLabel
+        Left = 280
+        Top = 547
+        Width = 28
+        Height = 13
+        Caption = #1075#1088#1072#1076'.'
+        Visible = False
+      end
+      object Label22: TLabel
+        Left = 20
+        Top = 318
+        Width = 173
+        Height = 13
+        Caption = #1058#1077#1082#1091#1097#1077#1077' '#1079#1085#1072#1095#1077#1085#1080#1077' '#1090#1077#1084#1087#1077#1088#1072#1090#1091#1088#1099': '
+      end
+      object Label53: TLabel
+        Left = 20
+        Top = 85
+        Width = 147
+        Height = 13
+        Caption = #1053#1072#1080#1084#1077#1085#1086#1074#1072#1085#1080#1077' '#1088#1072#1089#1090#1074#1086#1088#1080#1090#1077#1083#1103
+      end
+      object Label18: TLabel
+        Left = 20
+        Top = 160
+        Width = 128
+        Height = 13
+        Caption = #1058#1077#1084#1087#1077#1088#1072#1090#1091#1088#1072' '#1090#1077#1088#1084#1086#1089#1090#1072#1090#1072
+      end
+      object Label59: TLabel
+        Left = 356
+        Top = 160
+        Width = 6
+        Height = 13
+        Caption = 'K'
+      end
+      object Label60: TLabel
+        Left = 20
+        Top = 198
+        Width = 130
+        Height = 13
+        Caption = #1055#1086#1083#1086#1078#1077#1085#1080#1077' '#1087#1088#1080#1079#1084#1099' '#1043#1083#1072#1085#1072
+      end
+      object Label62: TLabel
+        Left = 20
+        Top = 237
+        Width = 92
+        Height = 13
+        Caption = #1053#1086#1084#1077#1088' '#1076#1080#1072#1092#1088#1072#1075#1084#1099
+      end
+      object Label61: TLabel
+        Left = 20
+        Top = 276
+        Width = 200
+        Height = 13
+        Caption = #1055#1086#1083#1086#1078#1077#1085#1080#1077' '#1076#1080#1093#1088#1086#1080#1095#1085#1086#1075#1086' '#1087#1086#1083#1103#1088#1080#1079#1072#1090#1086#1088#1072
+      end
+      object Edit12: TEdit
+        Left = 305
+        Top = 44
+        Width = 44
+        Height = 21
+        Alignment = taRightJustify
+        NumbersOnly = True
+        TabOrder = 0
+        Text = '1.330'
+      end
+      object Edit13: TEdit
+        Left = 217
+        Top = 533
+        Width = 57
+        Height = 21
+        Alignment = taRightJustify
+        NumbersOnly = True
+        TabOrder = 1
+        Text = '0.8872'
+        Visible = False
+      end
+      object Edit14: TEdit
+        Left = 217
+        Top = 544
+        Width = 57
+        Height = 21
+        Alignment = taRightJustify
+        NumbersOnly = True
+        TabOrder = 2
+        Text = '90'
+        Visible = False
+      end
+      object Edit15: TEdit
+        Left = 217
+        Top = 560
+        Width = 57
+        Height = 21
+        Alignment = taRightJustify
+        NumbersOnly = True
+        TabOrder = 3
+        Text = '25'
+        Visible = False
+      end
+      object Edit16: TEdit
+        Left = 305
+        Top = 119
+        Width = 44
+        Height = 21
+        Alignment = taRightJustify
+        TabOrder = 4
+        Text = '632.8'
+      end
+      object Edit35: TEdit
+        Left = 244
+        Top = 82
+        Width = 105
+        Height = 21
+        Alignment = taRightJustify
+        TabOrder = 5
+      end
+      object Edit8: TEdit
+        Left = 305
+        Top = 157
+        Width = 44
+        Height = 21
+        Alignment = taRightJustify
+        TabOrder = 6
+        Text = '0'
+        OnKeyPress = Edit8KeyPress
+      end
+      object ComboBox2: TComboBox
+        Left = 244
+        Top = 195
+        Width = 105
+        Height = 21
+        Style = csDropDownList
+        ItemIndex = 0
+        TabOrder = 7
+        Text = #1042#1077#1088#1090#1080#1082#1072#1083#1100#1085#1086#1077
+        Items.Strings = (
+          #1042#1077#1088#1090#1080#1082#1072#1083#1100#1085#1086#1077
+          #1043#1086#1088#1080#1079#1086#1085#1090#1072#1083#1100#1085#1086#1077)
+      end
+      object Edit38: TEdit
+        Left = 305
+        Top = 273
+        Width = 44
+        Height = 21
+        Alignment = taRightJustify
+        TabOrder = 8
+        Text = '0'
+        OnKeyPress = Edit8KeyPress
+      end
+      object ComboBox4: TComboBox
+        Left = 305
+        Top = 234
+        Width = 44
+        Height = 21
+        Style = csDropDownList
+        ItemIndex = 0
+        TabOrder = 9
+        Text = '1'
+        Items.Strings = (
+          '1'
+          '2'
+          '3'
+          '4'
+          '5')
+      end
+      object Button7: TButton
+        Left = 20
+        Top = 392
+        Width = 188
+        Height = 25
+        Caption = #1053#1072#1089#1090#1088#1086#1081#1082#1072' '#1075#1086#1085#1080#1086#1084#1077#1090#1088#1072
+        TabOrder = 10
+        OnClick = Button7Click
+      end
     end
     object TabSheet2: TTabSheet
-      Caption = #1056#1072#1089#1095#1077#1090' '#1088#1072#1089#1087#1088#1077#1076#1077#1083#1077#1085#1080#1103
+      Caption = #1056#1072#1089#1095#1077#1090#1099
       ImageIndex = 1
+      ExplicitHeight = 437
       object Label1: TLabel
         Left = 12
         Top = 27
@@ -795,83 +1045,84 @@ object OptionsForm: TOptionsForm
         Left = 0
         Top = 144
         Width = 389
-        Height = 293
+        Height = 309
         Align = alClient
         Caption = ' Contin '
         TabOrder = 8
+        ExplicitHeight = 293
         object Label36: TLabel
           Left = 28
-          Top = 73
+          Top = 97
           Width = 128
           Height = 13
           Caption = #1055#1072#1088#1072#1084#1077#1090#1088' '#1088#1077#1075#1091#1083#1103#1088#1080#1079#1072#1094#1080#1080
         end
         object Label37: TLabel
           Left = 28
-          Top = 40
+          Top = 64
           Width = 161
           Height = 13
           Caption = #1050#1086#1083#1080#1095#1077#1089#1090#1074#1086' '#1090#1086#1095#1077#1082' '#1075#1080#1089#1090#1086#1075#1088#1072#1084#1084#1099
         end
         object Label38: TLabel
           Left = 28
-          Top = 105
+          Top = 129
           Width = 93
           Height = 13
           Caption = #1044#1080#1072#1087#1072#1079#1086#1085' '#1088#1072#1089#1095#1077#1090#1072
         end
         object Label39: TLabel
           Left = 140
-          Top = 107
+          Top = 131
           Width = 5
           Height = 13
           Caption = #1089
         end
         object Label40: TLabel
           Left = 202
-          Top = 107
+          Top = 131
           Width = 12
           Height = 13
           Caption = #1087#1086
         end
         object Label41: TLabel
           Left = 275
-          Top = 106
+          Top = 130
           Width = 12
           Height = 13
           Caption = #1085#1084
         end
         object Label42: TLabel
           Left = 27
-          Top = 139
+          Top = 163
           Width = 106
           Height = 13
           Caption = #1042#1099#1074#1086#1076#1080#1090#1100' '#1085#1072' '#1075#1088#1072#1092#1080#1082
         end
         object Label43: TLabel
           Left = 140
-          Top = 140
+          Top = 164
           Width = 5
           Height = 13
           Caption = #1089
         end
         object Label44: TLabel
           Left = 202
-          Top = 140
+          Top = 164
           Width = 12
           Height = 13
           Caption = #1087#1086
         end
         object Label45: TLabel
           Left = 275
-          Top = 140
+          Top = 164
           Width = 12
           Height = 13
           Caption = #1085#1084
         end
         object Edit22: TEdit
           Left = 219
-          Top = 38
+          Top = 62
           Width = 46
           Height = 21
           Alignment = taRightJustify
@@ -880,7 +1131,7 @@ object OptionsForm: TOptionsForm
         end
         object Edit23: TEdit
           Left = 219
-          Top = 70
+          Top = 94
           Width = 46
           Height = 21
           Alignment = taRightJustify
@@ -889,7 +1140,7 @@ object OptionsForm: TOptionsForm
         end
         object Edit24: TEdit
           Left = 151
-          Top = 102
+          Top = 126
           Width = 47
           Height = 21
           Alignment = taRightJustify
@@ -898,7 +1149,7 @@ object OptionsForm: TOptionsForm
         end
         object Edit25: TEdit
           Left = 219
-          Top = 102
+          Top = 126
           Width = 47
           Height = 21
           Alignment = taRightJustify
@@ -908,7 +1159,7 @@ object OptionsForm: TOptionsForm
         end
         object CheckBox3: TCheckBox
           Left = 28
-          Top = 173
+          Top = 197
           Width = 201
           Height = 17
           Caption = #1054#1090#1086#1073#1088#1072#1078#1072#1090#1100' '#1074' '#1074#1080#1076#1077' '#1075#1080#1089#1090#1086#1075#1088#1072#1084#1084#1099
@@ -916,7 +1167,7 @@ object OptionsForm: TOptionsForm
         end
         object Edit26: TEdit
           Left = 151
-          Top = 136
+          Top = 160
           Width = 47
           Height = 21
           Alignment = taRightJustify
@@ -925,7 +1176,7 @@ object OptionsForm: TOptionsForm
         end
         object Edit27: TEdit
           Left = 219
-          Top = 136
+          Top = 160
           Width = 47
           Height = 21
           Alignment = taRightJustify
@@ -935,279 +1186,33 @@ object OptionsForm: TOptionsForm
         end
       end
     end
-    object TabSheet3: TTabSheet
-      Caption = #1060#1080#1079#1080#1095#1077#1089#1082#1080#1077' '#1087#1072#1088#1072#1084#1077#1090#1088#1099
-      ImageIndex = 2
-      object Label8: TLabel
-        Left = 20
-        Top = 70
-        Width = 203
-        Height = 13
-        Caption = #1055#1086#1082#1072#1079#1072#1090#1077#1083#1100' '#1087#1088#1077#1083#1086#1084#1083#1077#1085#1080#1103' '#1088#1072#1089#1090#1074#1086#1088#1080#1090#1077#1083#1103
-      end
-      object Label9: TLabel
-        Left = 26
-        Top = 536
-        Width = 49
-        Height = 13
-        Caption = #1042#1103#1079#1082#1086#1089#1090#1100' '
-        Visible = False
-      end
-      object Label23: TLabel
-        Left = 25
-        Top = 547
-        Width = 79
-        Height = 13
-        Caption = #1059#1075#1086#1083' '#1088#1072#1089#1089#1077#1103#1085#1080#1103
-        Visible = False
-      end
-      object Label24: TLabel
-        Left = 25
-        Top = 563
-        Width = 66
-        Height = 13
-        Caption = #1058#1077#1084#1087#1077#1088#1072#1090#1091#1088#1072
-        Visible = False
-      end
-      object Label25: TLabel
-        Left = 20
-        Top = 145
-        Width = 123
-        Height = 13
-        Caption = #1044#1083#1080#1085#1072' '#1074#1086#1083#1085#1099' '#1080#1089#1090#1086#1095#1085#1080#1082#1072
-      end
-      object Label26: TLabel
-        Left = 280
-        Top = 565
-        Width = 12
-        Height = 13
-        Caption = #176'C'
-        Visible = False
-      end
-      object Label27: TLabel
-        Left = 356
-        Top = 145
-        Width = 16
-        Height = 13
-        Caption = #1085#1084'.'
-      end
-      object Label28: TLabel
-        Left = 280
-        Top = 536
-        Width = 12
-        Height = 13
-        Caption = #1089#1055
-        Visible = False
-      end
-      object Label29: TLabel
-        Left = 280
-        Top = 547
-        Width = 28
-        Height = 13
-        Caption = #1075#1088#1072#1076'.'
-        Visible = False
-      end
-      object Label22: TLabel
-        Left = 20
-        Top = 341
-        Width = 173
-        Height = 13
-        Caption = #1058#1077#1082#1091#1097#1077#1077' '#1079#1085#1072#1095#1077#1085#1080#1077' '#1090#1077#1084#1087#1077#1088#1072#1090#1091#1088#1099': '
-      end
-      object Label52: TLabel
-        Left = 20
-        Top = 32
-        Width = 117
-        Height = 13
-        Caption = #1053#1072#1080#1084#1077#1085#1086#1074#1072#1085#1080#1077' '#1086#1073#1088#1072#1079#1094#1072
-      end
-      object Label53: TLabel
-        Left = 20
-        Top = 108
-        Width = 147
-        Height = 13
-        Caption = #1053#1072#1080#1084#1077#1085#1086#1074#1072#1085#1080#1077' '#1088#1072#1089#1090#1074#1086#1088#1080#1090#1077#1083#1103
-      end
-      object Label18: TLabel
-        Left = 20
-        Top = 183
-        Width = 128
-        Height = 13
-        Caption = #1058#1077#1084#1087#1077#1088#1072#1090#1091#1088#1072' '#1090#1077#1088#1084#1086#1089#1090#1072#1090#1072
-      end
-      object Label59: TLabel
-        Left = 356
-        Top = 183
-        Width = 6
-        Height = 13
-        Caption = 'K'
-      end
-      object Label60: TLabel
-        Left = 20
-        Top = 221
-        Width = 130
-        Height = 13
-        Caption = #1055#1086#1083#1086#1078#1077#1085#1080#1077' '#1087#1088#1080#1079#1084#1099' '#1043#1083#1072#1085#1072
-      end
-      object Label62: TLabel
-        Left = 20
-        Top = 260
-        Width = 92
-        Height = 13
-        Caption = #1053#1086#1084#1077#1088' '#1076#1080#1072#1092#1088#1072#1075#1084#1099
-      end
-      object Label61: TLabel
-        Left = 20
-        Top = 299
-        Width = 200
-        Height = 13
-        Caption = #1055#1086#1083#1086#1078#1077#1085#1080#1077' '#1076#1080#1093#1088#1086#1080#1095#1085#1086#1075#1086' '#1087#1086#1083#1103#1088#1080#1079#1072#1090#1086#1088#1072
-      end
-      object Edit12: TEdit
-        Left = 305
-        Top = 67
-        Width = 44
-        Height = 21
-        Alignment = taRightJustify
-        NumbersOnly = True
-        TabOrder = 0
-        Text = '1.330'
-      end
-      object Edit13: TEdit
-        Left = 217
-        Top = 533
-        Width = 57
-        Height = 21
-        Alignment = taRightJustify
-        NumbersOnly = True
-        TabOrder = 1
-        Text = '0.8872'
-        Visible = False
-      end
-      object Edit14: TEdit
-        Left = 217
-        Top = 544
-        Width = 57
-        Height = 21
-        Alignment = taRightJustify
-        NumbersOnly = True
-        TabOrder = 2
-        Text = '90'
-        Visible = False
-      end
-      object Edit15: TEdit
-        Left = 217
-        Top = 560
-        Width = 57
-        Height = 21
-        Alignment = taRightJustify
-        NumbersOnly = True
-        TabOrder = 3
-        Text = '25'
-        Visible = False
-      end
-      object Edit16: TEdit
-        Left = 305
-        Top = 142
-        Width = 44
-        Height = 21
-        Alignment = taRightJustify
-        TabOrder = 4
-        Text = '632.8'
-      end
-      object Edit34: TEdit
-        Left = 244
-        Top = 29
-        Width = 105
-        Height = 21
-        Alignment = taRightJustify
-        TabOrder = 5
-      end
-      object Edit35: TEdit
-        Left = 244
-        Top = 105
-        Width = 105
-        Height = 21
-        Alignment = taRightJustify
-        TabOrder = 6
-      end
-      object Edit8: TEdit
-        Left = 305
-        Top = 180
-        Width = 44
-        Height = 21
-        Alignment = taRightJustify
-        TabOrder = 7
-        Text = '0'
-        OnKeyPress = Edit8KeyPress
-      end
-      object ComboBox2: TComboBox
-        Left = 244
-        Top = 218
-        Width = 105
-        Height = 21
-        Style = csDropDownList
-        ItemIndex = 0
-        TabOrder = 8
-        Text = #1042#1077#1088#1090#1080#1082#1072#1083#1100#1085#1086#1077
-        Items.Strings = (
-          #1042#1077#1088#1090#1080#1082#1072#1083#1100#1085#1086#1077
-          #1043#1086#1088#1080#1079#1086#1085#1090#1072#1083#1100#1085#1086#1077)
-      end
-      object Edit38: TEdit
-        Left = 305
-        Top = 296
-        Width = 44
-        Height = 21
-        Alignment = taRightJustify
-        TabOrder = 9
-        Text = '0'
-        OnKeyPress = Edit8KeyPress
-      end
-      object ComboBox4: TComboBox
-        Left = 305
-        Top = 257
-        Width = 44
-        Height = 21
-        Style = csDropDownList
-        ItemIndex = 0
-        TabOrder = 10
-        Text = '1'
-        Items.Strings = (
-          '1'
-          '2'
-          '3'
-          '4'
-          '5')
-      end
-      object Button7: TButton
-        Left = 20
-        Top = 392
-        Width = 188
-        Height = 25
-        Caption = #1053#1072#1089#1090#1088#1086#1081#1082#1072' '#1075#1086#1085#1080#1086#1084#1077#1090#1088#1072
-        TabOrder = 11
-        OnClick = Button7Click
-      end
-    end
   end
   object Button2: TButton
-    Left = 101
-    Top = 494
-    Width = 76
+    Left = 52
+    Top = 496
+    Width = 78
     Height = 25
-    Caption = #1047#1072#1087#1091#1089#1082
+    Caption = #1048#1079#1084#1077#1088#1077#1085#1080#1077
     ModalResult = 1
     TabOrder = 1
     OnClick = Button2Click
   end
   object Button4: TButton
-    Left = 222
-    Top = 494
+    Left = 254
+    Top = 496
     Width = 76
     Height = 25
     Caption = #1054#1090#1084#1077#1085#1072
     ModalResult = 2
     TabOrder = 2
+  end
+  object Button8: TButton
+    Left = 154
+    Top = 496
+    Width = 75
+    Height = 25
+    Caption = #1058#1077#1089#1090
+    ModalResult = 3
+    TabOrder = 3
   end
 end

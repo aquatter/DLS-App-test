@@ -102,11 +102,31 @@ void __fastcall TTestRecThread::Draw()
 				if (time)
 					TestRecForm->Label2->Caption = "Количество импульсов в ед. времени:\n" + FloatToStr(n/time);
 
+				if (!AcfParams.Kinetics)
+				{
+					AcfParams.Time_discr = freq;
+					MainForm->LineSeries4->Clear();
+					MainForm->LineSeries5->Clear();
+					MainForm->Chart6->LeftAxis->Title->Caption = "Скорость счета, имп./с";
+					MainForm->Chart6->BottomAxis->Title->Caption = "Время, мс";
+					std::vector<double> rate, time;
+
+					getRateGraph(Data, n, rate, time);
+					for (size_t i=0; i < rate.size(); ++i)
+					{
+						MainForm->LineSeries4->AddXY(time[i], rate[i]);
+						MainForm->LineSeries5->AddXY(time[i], rate[i]);
+					}
+				}
+
+				/*
 				if (n > 1000) n = 1000;
 //				n = std::min<int>(5000, n);
 				MainForm->LineSeries5->Clear();
 				for (int i=0; i < n; ++i)
 					MainForm->LineSeries5->AddXY(i, Data[i]);
+				*/
+
 
 				delete [] Data;
 			}
@@ -177,13 +197,30 @@ void __fastcall TTestRecForm::Button4Click(TObject *Sender)
 	time *=t*1e-9;
 	if (time)
 		Label2->Caption = "Количество импульсов в ед. времени:\n" + FloatToStrF(n/time, ffFixed, 8, 2);
-
+	/*
 	if (n > 1000) n = 1000;
 
 	MainForm->LineSeries5->Clear();
 	for (int i=0; i < n; ++i)
 		MainForm->LineSeries5->AddXY(i, Data[i]);
+	*/
 
+	if (!AcfParams.Kinetics)
+	{
+        AcfParams.Time_discr = freq;
+    	MainForm->LineSeries4->Clear();
+        MainForm->LineSeries5->Clear();
+        MainForm->Chart6->LeftAxis->Title->Caption = "Скорость счета, имп./с";
+        MainForm->Chart6->BottomAxis->Title->Caption = "Время, мс";
+		std::vector<double> rate, time;
+
+		getRateGraph(Data, n, rate, time);
+		for (size_t i=0; i < rate.size(); ++i)
+        {
+        	MainForm->LineSeries4->AddXY(time[i], rate[i]);
+        	MainForm->LineSeries5->AddXY(time[i], rate[i]);
+        }
+	}
 
 	delete [] Data;
 	Data = NULL;

@@ -194,6 +194,7 @@ void __fastcall TTimerThread::Execute() {
 		}
 		case from_hdd:
 		{
+        	Sync(6);
 			Sync(7);
 			void *wait_event = CreateEventA(NULL, 1, 0, NULL);
 			for (size_t i=0; i < pd_->SizeOf(); i++) {
@@ -224,6 +225,7 @@ void __fastcall TTimerThread::Execute() {
 }
 
 void __fastcall TTimerThread::SaveProject() {
+
 
 	_di_IXMLNode root, seq_node, rec_node;
 
@@ -293,9 +295,10 @@ void __fastcall TTimerThread::SaveProject() {
 	MainForm->XMLDocument1->XML->Clear();
 	MainForm->XMLDocument1->Active = false;
 
+	/*
 	mm = 1;
 	s = "Сохранение проекта: "+s;
 	Synchronize(&Draw);
-
+	*/
 }
 // ---------------------------------------------------------------------------

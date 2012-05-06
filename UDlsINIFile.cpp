@@ -46,6 +46,7 @@ void WriteDlsINIFile(UnicodeString s) {
 	f->WriteInteger("Device", "Prism", AcfParams.Prism);
 	f->WriteInteger("Device", "Aperture", AcfParams.Aperture);
 	f->WriteInteger("Device", "Polar", AcfParams.Polar);
+	f->WriteBool("Device", "Kinetics", AcfParams.Kinetics);
 
 	// -------------------------- ACF -------------------------------------------------
 
@@ -132,7 +133,7 @@ void ReadDlsINIFile(UnicodeString s) {
 	AcfParams.Prism = f->ReadInteger("Device", "Prism", 0);
 	AcfParams.Aperture = f->ReadInteger("Device", "Aperture", 0);
 	AcfParams.Polar = f->ReadInteger("Device", "Polar", 0);
-
+    AcfParams.Kinetics = f->ReadBool("Device", "Kinetics", false);
 
 	// -------------------------- ACF -------------------------------------------------
 

@@ -105,6 +105,7 @@ struct TAcfParams {
 	char Polar;
 
     int Intensity;
+	bool Kinetics;
 
 	TAcfParams();
 };
@@ -159,14 +160,17 @@ double NuttallWin(double x, double x0, double w);
 double FormulaPuazeilia(double t);
 bool OptionsFormExecute();
 bool OpenProject(UnicodeString Name, TProjectData &pd);
+void SaveProject(TProjectData *pd_);
 void ExtractDataParams(UnicodeString Name, TDataParams *params);
-void ProcessData(dls_mode mode, UnicodeString Name, int seq_num, int rec_num);
+void ProcessData(dls_mode mode, UnicodeString Name, int seq_num, int rec_num, UnicodeString data_Name = "");
 void ProcessData(TProjectData::TVtPD *d);
-void OpenData(WORD *data, int &n, UnicodeString Name);
+void OpenData(WORD **data, int &n, UnicodeString Name);
 double GetTime_Discr(int i);
 void AddToVt( TProjectData &pd_ , TVirtualStringTree *vt );
 void UpdateVt( TVirtualStringTree *vt );
 void RegisterExt();
+bool CheckExistProject(UnicodeString FileName);
+void getRateGraph(WORD *Data, int n0, std::vector<double> &rate, std::vector<double> &time);
 
 
 typedef struct ThreadData

@@ -135,15 +135,18 @@ class TProjectData
 			rec_[n].num_seq = num_seq;
 			return rec_[n];
 		}
-		TSeq()
+		TSeq(): a0(0.0), a1(0.0), a2(0.0), pi(0.0), x_pcs(0.0), process_(false),
+				Mean_Acf_("")
 		{
-        	a0=0;
-            a1=0;
-            a2=0;
-            pi=0;
-            x_pcs=0;
+			/*
+			a0=0;
+			a1=0;
+			a2=0;
+			pi=0;
+			x_pcs=0;
 			process_ = false;
 			Mean_Acf_ = "";
+			*/
         }
 
 		~TSeq()
@@ -160,6 +163,8 @@ class TProjectData
 	UnicodeString Name_Spec;
 	UnicodeString Name_Sol;
 	UnicodeString Date;
+	int num;
+
 	size_t SizeOf()
 	{
         return seq_.size();
@@ -222,13 +227,18 @@ class TProjectData
 		Path = "";
 	}
 
-	TProjectData()
+	TProjectData(): num(0)
 	{  };
 
 	~TProjectData()
 	{
 		seq_.clear();
 	};
+
+	bool operator ==(TProjectData &pd_)
+	{
+		return (Path == pd_.Path);
+    }
 
 };
 
