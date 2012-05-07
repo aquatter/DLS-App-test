@@ -2039,6 +2039,7 @@ void __fastcall TMainForm::VtGetText(TBaseVirtualTree *Sender, PVirtualNode Node
 				}
 				break;
 			case TProjectData::pdMean:
+			case TProjectData::pdSerie:
                 switch (Column) {
                 	case 0: CellText = d->Name; break;
 					case 3: CellText = FloatToStrF(d->x_pcs, ffFixed, 5, 2); break;

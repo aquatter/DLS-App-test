@@ -524,3 +524,116 @@ void __fastcall TReportForm::ToolButton5Click(TObject *Sender)
 }
 //---------------------------------------------------------------------------
 
+void __fastcall TReportForm::ToolButton6Click(TObject *Sender)
+{
+	Variant ExcelApp, ExcelBooks, Book, WorkSheet, Cells, EmptyParam;
+	TDateTime dtReport = Date();
+	UnicodeString s=ExtractFileDir(Application->ExeName)+"\\template.xls";
+
+	if (!FileExists(s))
+	{
+		ShowMessage("Файл шаблона не найден");
+		return;
+	}
+
+	TVirtualNode *t_root=VirtualStringTree1->RootNode->FirstChild;
+	TVirtualNode *t_child;
+	TReportData *data_root, *data_child;
+
+	try
+	{
+		ExcelApp = GetActiveOleObject("Excel.Application");
+		ExcelBooks = ExcelApp.OlePropertyGet("WorkBooks");
+	}
+	catch (...)
+	{
+		try
+		{
+			ExcelApp = CreateOleObject("Excel.Application");
+			ExcelBooks = ExcelApp.OlePropertyGet("WorkBooks");
+
+		}
+		catch (...)
+		{
+		  ShowMessage("Microsoft Excel не установлен");
+		return;
+		}
+	}
+
+	int i = 27;
+	int j = 2;
+	TFormatSettings format_settings;
+	GetLocaleFormatSettings(LOCALE_SYSTEM_DEFAULT, format_settings);
+	format_settings.DecimalSeparator = ',';
+
+	try
+	{
+    	ExcelApp.OlePropertySet("Visible", false);
+		Book = ExcelBooks.OleFunction("Add", s.t_str());
+		WorkSheet = Book.OlePropertyGet("Worksheets").OlePropertyGet("Item", 1);
+		Cells = WorkSheet.OlePropertyGet("Cells");
+		Cells.OlePropertyGet("Item",4,3).OlePropertySet("Value", dtReport.FormatString("dd.mm.yyyy").t_str());
+		Cells.OlePropertyGet("Item",8,1).OleProcedure("Select");
+		MainForm->Chart5->CopyToClipboardMetafile(true);
+		WorkSheet.OleProcedure("Paste");
+		Variant shapes = WorkSheet.OlePropertyGet("Shapes").OleFunction("Item", 1);
+		shapes.OleFunction("ScaleWidth", 0.9, EmptyParam, EmptyParam);
+		shapes.OleFunction("ScaleHeight", 0.9, EmptyParam, EmptyParam);
+
+
+		for (size_t k=0; k < VirtualStringTree1->RootNodeCount; k++)
+		{
+			if (t_root)
+			{
+				data_root = (TReportData *)ReportForm->VirtualStringTree1->GetNodeData(t_root);
+				if (data_root)
+				{
+					s=data_root->Name;
+					Cells.OlePropertyGet("Item",i,j).OlePropertySet("Value", s.t_str());
+					i++;
+				}
+
+
+				t_child=t_root->FirstChild;
+				while (t_child)
+				{
+					data_child=(TReportData *)ReportForm->VirtualStringTree1->GetNodeData(t_child);
+					if (data_root)
+					{
+						s=data_child->Name;
+						Cells.OlePropertyGet("Item",i,j).OlePropertySet("Value", s.t_str());
+						Cells.OlePropertyGet("Item",i,j+1).OlePropertySet("Value", FloatToStrF(data_child->pcs, ffFixed, 5, 2, format_settings).t_str());
+						Cells.OlePropertyGet("Item",i,j+2).OlePropertySet("Value", FloatToStrF(data_child->pi, ffFixed, 5, 2, format_settings).t_str());
+						Cells.OlePropertyGet("Item",i,j+3).OlePropertySet("Value", FloatToStrF(data_child->angle, ffFixed, 5, 2,format_settings).t_str());
+						i++;
+
+					}
+					t_child = t_child->NextSibling;
+				}
+
+				Cells.OlePropertyGet("Item",i,j).OlePropertySet("Value", "Средний диаметр");
+				Cells.OlePropertyGet("Item",i,j).OlePropertyGet("Font").OlePropertySet("Bold", true);
+				Cells.OlePropertyGet("Item",i,j+1).OlePropertySet("Value", FloatToStrF(data_root->pcs, ffFixed, 5, 2, format_settings).t_str());
+				i++;
+				Cells.OlePropertyGet("Item",i,j).OlePropertySet("Value", "Средний ПДД");
+				Cells.OlePropertyGet("Item",i,j).OlePropertyGet("Font").OlePropertySet("Bold", true);
+				Cells.OlePropertyGet("Item",i,j+1).OlePropertySet("Value", FloatToStrF(data_root->pi, ffFixed, 5, 2, format_settings).t_str());
+				i++;
+				Cells.OlePropertyGet("Item",i,j).OlePropertySet("Value", "СКО");
+				Cells.OlePropertyGet("Item",i,j).OlePropertyGet("Font").OlePropertySet("Bold", true);
+				Cells.OlePropertyGet("Item",i,j+1).OlePropertySet("Value", FloatToStrF(data_root->rms, ffFixed, 5, 2, format_settings).t_str());
+				i++;
+			}
+
+			t_root=t_root->NextSibling;
+		}
+	}
+	__finally
+	{
+		ExcelApp.OlePropertySet("Visible", true);
+		ExcelApp=Unassigned();
+	}
+
+}
+//---------------------------------------------------------------------------
+

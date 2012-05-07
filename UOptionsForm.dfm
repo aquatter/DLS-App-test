@@ -25,7 +25,6 @@ object OptionsForm: TOptionsForm
     TabOrder = 0
     object TabSheet1: TTabSheet
       Caption = #1055#1072#1088#1072#1084#1077#1090#1088#1099' '#1088#1077#1075#1080#1089#1090#1088#1072#1094#1080#1080
-      ExplicitHeight = 437
       object Label19: TLabel
         Left = 27
         Top = 89
@@ -518,9 +517,6 @@ object OptionsForm: TOptionsForm
     object TabSheet3: TTabSheet
       Caption = #1060#1080#1079#1080#1095#1077#1089#1082#1080#1077' '#1087#1072#1088#1072#1084#1077#1090#1088#1099
       ImageIndex = 2
-      ExplicitLeft = -28
-      ExplicitTop = 0
-      ExplicitHeight = 437
       object Label8: TLabel
         Left = 20
         Top = 47
@@ -761,7 +757,6 @@ object OptionsForm: TOptionsForm
     object TabSheet2: TTabSheet
       Caption = #1056#1072#1089#1095#1077#1090#1099
       ImageIndex = 1
-      ExplicitHeight = 437
       object Label1: TLabel
         Left = 12
         Top = 27
@@ -1049,7 +1044,6 @@ object OptionsForm: TOptionsForm
         Align = alClient
         Caption = ' Contin '
         TabOrder = 8
-        ExplicitHeight = 293
         object Label36: TLabel
           Left = 28
           Top = 97

@@ -12,6 +12,7 @@
 #include <ComCtrls.hpp>
 #include <ImgList.hpp>
 #include <ToolWin.hpp>
+#include <Menus.hpp>
 //---------------------------------------------------------------------------
 class TReportForm : public TForm
 {
@@ -27,6 +28,10 @@ __published:	// IDE-managed Components
 	TImageList *ImageList1;
 	TToolButton *ToolButton4;
 	TToolButton *ToolButton5;
+	TToolButton *ToolButton6;
+	TPopupMenu *PopupMenu1;
+	TMenuItem *MicrosoftWord1;
+	TMenuItem *MicrosoftExcel1;
 	void __fastcall VirtualStringTree1GetText(TBaseVirtualTree *Sender, PVirtualNode Node,
 		  TColumnIndex Column, TVSTTextType TextType, UnicodeString &CellText);
 	void __fastcall Button1Click(TObject *Sender);
@@ -37,6 +42,7 @@ __published:	// IDE-managed Components
 	void __fastcall ToolButton4Click(TObject *Sender);
 	void __fastcall ToolButton3Click(TObject *Sender);
 	void __fastcall ToolButton5Click(TObject *Sender);
+	void __fastcall ToolButton6Click(TObject *Sender);
 private:	// User declarations
 public:		// User declarations
 	TVirtualStringTree *VirtualStringTree1;

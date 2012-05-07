@@ -1005,6 +1005,10 @@ void AddToVt( TProjectData &pd_ , TVirtualStringTree *vt )
 					d->Name = "Серия " + IntToStr((int)i+1);
 					d->State = TProjectData::pdSerie;
 					d->seq_num = i;
+                    d->x_pcs = pd_[i].x_pcs;
+                    d->pi = pd_[i].pi;
+                    d->gamma = pd_[i].a1;
+
 					d->pd = &pd_;
 				}
 
