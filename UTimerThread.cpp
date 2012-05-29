@@ -81,7 +81,7 @@ void __fastcall TTimerThread::Draw() {
 	{
 		MainForm->off(true);
 		pd_vector.pop_back();
-        UpdateVt(MainForm->vt);
+		UpdateVt(MainForm->vt);
 	}
     break;
 
@@ -123,26 +123,30 @@ void __fastcall TTimerThread::Execute() {
 			InitDevice->Start();
 
 			Sleep(10);
-			if (WaitForSingleObject(wait_event, 2*THREAD_TIMEOUT) == WAIT_TIMEOUT) {
+			if (WaitForSingleObject(wait_event, 2*THREAD_TIMEOUT) == WAIT_TIMEOUT)
+			{
 				Sync(1, "Ошибка инициализации устройства");
 				InitDevice->Free();
+				Sync(10);
+				Sync(11);
 				//mm = 2;
 				//Synchronize(&Draw);
-//				return;
+				return;
 			}
 
-			if (error) {
-				Sync(1, "Ошибка инициализации устройства: ");
-				Sync(1, InitDevice->s);
+			if (error)
+			{
+				Sync(1, "Ошибка инициализации устройства");
+//				Sync(1, InitDevice->s);
 
 				InitDevice->Free();
-				//mm = 2;
-				//Synchronize(&Draw);
-//				return;
+
+                Sync(10);
+                Sync(11);
+				return;
 			}
 
-//			InitDevice->Free();
-
+			InitDevice->Free();
 
 			ResetEvent(wait_event);
 			TInitDeviceThread *Init = new TInitDeviceThread(true);
@@ -150,20 +154,26 @@ void __fastcall TTimerThread::Execute() {
 			Init->wait_event = wait_event;
 			Init->Start();
 			Sleep(10);
-			if (WaitForSingleObject(wait_event, THREAD_TIMEOUT) == WAIT_TIMEOUT) {
+			if (WaitForSingleObject(wait_event, THREAD_TIMEOUT) == WAIT_TIMEOUT)
+			{
 				Sync(1, "Ошибка инициализации устройства");
 
 				Init->Free();
-			   //	mm = 2;
-				//Synchronize(&Draw);
+                Sync(10);
+				Sync(11);
+
 				return;
 			}
 
 			num_blocks = Init->num_blocks;
 			Init->Free();
 
-			if (num_blocks == 0) {
+			if (num_blocks == 0)
+			{
 				Sync(1, "Ошибка инициализации устройства");
+
+                Sync(10);
+                Sync(11);
 				return;
 			}
 

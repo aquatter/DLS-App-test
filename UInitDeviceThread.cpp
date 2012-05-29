@@ -55,7 +55,7 @@ void __fastcall TInitDeviceThread::Execute()
 
    return;
   */
-	/*
+
 	num_blocks = 0;
 	if(!device.SetLength(test_num)){
 		SetEvent(wait_event);
@@ -81,9 +81,8 @@ void __fastcall TInitDeviceThread::Execute()
 	while(!status.bits.data);
 
 	Sleep(100);
-	*/
 
-	Sleep(1000);
+//	Sleep(1000);
 
 	Data = device.GetData(test_num);
 
@@ -131,17 +130,14 @@ int __fastcall TInitDeviceThread::ProcessInitialData()
 	int n0 = test_num*BLOCK_DATA_NUM;
 
 	for (int i=0; i < n0; i++)
-	{
 	  time += Data[i];
-	}
 
 	time*=t*1e-6;
 
-	if (time) {
-	  return AcfParams.Rec_time*n0/time;
-	}
+	if (time)
+		return AcfParams.Rec_time*n0/time;
 	else
-	  return 0;
+		return 0;
 }
 
 

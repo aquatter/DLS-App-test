@@ -1921,6 +1921,7 @@ void __fastcall TMainForm::off(bool b) {
 	ToolButton7->Enabled = b;
 	ToolButton8->Enabled = b;
 	ToolButton9->Enabled = b;
+	ToolButton11->Enabled = b;
 
 	// PageControl1->Enabled=b;
 	// ToolBar1->Enabled=b;

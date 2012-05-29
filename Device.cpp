@@ -100,11 +100,11 @@ WORD* Device::GetData(DWORD& dwReadBlockNumData)
 	if(!ftd2xxDevice.Exec(command_data))
 	  return NULL;
 
-	/*
-	int f = FileOpen("e:\\dls.idata", fmOpenRead);
+
+	//int f = FileOpen("e:\\dls.idata", fmOpenRead);
 
 	WORD* Data = new WORD[dwReadBlockNumData*BLOCK_DATA_NUM];
-
+    /*
 	FileRead(f, (void *)Data,  dwReadBlockNumData*BLOCK_DATA_NUM*sizeof(WORD));
 	FileClose(f);
 	*/

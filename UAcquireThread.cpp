@@ -85,7 +85,8 @@ void __fastcall TAcquireThread::Execute() {
 	Status status;
 
 
-	for (int i = 0; i < count; i++) {
+	for (int i = 0; i < count; i++)
+	{
 
      	status.byte = 0;
 		pData += i*blocksSize*BLOCK_DATA_NUM;
@@ -126,7 +127,7 @@ void __fastcall TAcquireThread::Execute() {
 
     pData = Data + count*blocksSize*BLOCK_DATA_NUM;
 	status.byte = 0;
-	/*
+
 	if (!device.SetLength(modValue)) {
 		SetEvent(WaitEvent);
 		return;
@@ -145,7 +146,7 @@ void __fastcall TAcquireThread::Execute() {
 	while (!status.bits.data);
 
 	Sleep(100);
-	*/
+
 
 	if (!device.GetData(modValue, pData)) {
      	SetEvent(WaitEvent);
