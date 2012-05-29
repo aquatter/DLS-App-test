@@ -11,6 +11,7 @@
 #include "USeqThread.h"
 #include "MainFormUnit.h"
 #include "DateUtils.hpp"
+#include "UPlease_stop_form.h"
 
 #pragma package(smart_init)
 // ---------------------------------------------------------------------------
@@ -74,6 +75,15 @@ void __fastcall TTimerThread::Draw() {
 	case 6: MainForm->off(false); break;
 	case 7: StatusRecForm->Show(); break;
 	case 8: StatusRecForm->Close(); break;
+	case 9: Please_stop_form->Show(); break;
+	case 10: Please_stop_form->Close(); break;
+	case 11:
+	{
+		MainForm->off(true);
+		pd_vector.pop_back();
+        UpdateVt(MainForm->vt);
+	}
+    break;
 
 	default: ;
 	}
@@ -86,6 +96,14 @@ void __fastcall TTimerThread::Execute() {
 	switch (mode) {
 		case from_device:
 		{
+		try {
+
+
+
+			please_stop_ = false;
+			Please_stop_form->please_stop = &please_stop_;
+            Sync(9);
+
 			pd_->Name = AcfParams.File_Name;
 			pd_->Path = AcfParams.Save_Dir+"\\";
 			pd_->Name_Sol = AcfParams.Name_Sol;
@@ -110,7 +128,7 @@ void __fastcall TTimerThread::Execute() {
 				InitDevice->Free();
 				//mm = 2;
 				//Synchronize(&Draw);
-				return;
+//				return;
 			}
 
 			if (error) {
@@ -120,10 +138,10 @@ void __fastcall TTimerThread::Execute() {
 				InitDevice->Free();
 				//mm = 2;
 				//Synchronize(&Draw);
-				return;
+//				return;
 			}
 
-			InitDevice->Free();
+//			InitDevice->Free();
 
 
 			ResetEvent(wait_event);
@@ -153,7 +171,22 @@ void __fastcall TTimerThread::Execute() {
 			Sync(2);
 			Sync(1, "Количество блоков: " + IntToStr(num_blocks));
 
-			for (int i = 0; i < AcfParams.n_seq; i++) {
+			if (please_stop_)
+			{
+                CloseHandle(wait_event);
+                CloseHandle(q);
+				throw std::exception();
+			}
+
+			for (int i = 0; i < AcfParams.n_seq; i++)
+			{
+                if (please_stop_)
+                {
+                 	CloseHandle(wait_event);
+                    CloseHandle(q);
+                	throw std::exception();
+				}
+
 				ResetEvent(wait_event);
 				num_seq = i;
 				Sync(1);
@@ -166,6 +199,7 @@ void __fastcall TTimerThread::Execute() {
 				Seq->seq_ = &pd_->Add();
 				Seq->pd_ = pd_;
 				Seq->wait_event = wait_event;
+				Seq->please_stop_ = &please_stop_;
 
 				Seq->Start();
 				Sleep(10);
@@ -176,9 +210,17 @@ void __fastcall TTimerThread::Execute() {
 				Seq->Free();
 			}
 
+			if (please_stop_)
+			{
+             	CloseHandle(wait_event);
+                CloseHandle(q);
+				throw std::exception();
+			}
+
 			CloseHandle(wait_event);
 			CloseHandle(q);
 			Sync(4);
+			Sync(10);
 
 			if (!AcfParams.DoAcf)
 			{
@@ -191,6 +233,14 @@ void __fastcall TTimerThread::Execute() {
 				Sync(5);
 				break;
 			}
+
+		} catch (...)
+		{
+			Sync(1, "Прервано пользователем!");
+			Sync(10);
+			Sync(11);
+			break;
+		}
 		}
 		case from_hdd:
 		{

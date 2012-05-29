@@ -38,6 +38,9 @@ void __fastcall TSeqThread::Execute() {
 	switch (mode) {
 		case from_device:
 		{
+			if (*please_stop_)
+				throw std::exception();
+
 			Init();
             mean_temp = 0.0f;
 
@@ -50,8 +53,16 @@ void __fastcall TSeqThread::Execute() {
 
             void *RecEvent = CreateEventA(NULL, 1, 0, NULL);
 
-			for (int i = 0; i < AcfParams.n_rec; i++) {
-            	ResetEvent(RecEvent);
+			for (int i = 0; i < AcfParams.n_rec; i++)
+			{
+                if (*please_stop_)
+                {
+                	Clear();
+                	CloseHandle(RecEvent);
+                	throw std::exception();
+				}
+
+				ResetEvent(RecEvent);
 				num_rec = i;
 				Sync(2);
 				rec_ = &seq_->Add();
@@ -98,6 +109,13 @@ void __fastcall TSeqThread::Execute() {
 
 				//delete [] Data;
 			}
+
+			if (*please_stop_)
+			{
+				Clear();
+				CloseHandle(RecEvent);
+				throw std::exception();
+            }
 
 			if (AcfParams.DoMean){
 				num_rec = AcfParams.n_rec;

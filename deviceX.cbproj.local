@@ -11,5 +11,8 @@
     <Transaction>2011.12.10 19:49:02.937.cpp,F:\Files\Delphi Files\dls\Device X\Unit1.cpp=F:\Files\Delphi Files\dls\Device X\UTestRecForm.cpp</Transaction>
     <Transaction>2011.12.10 19:49:02.937.h,F:\Files\Delphi Files\dls\Device X\Unit1.h=F:\Files\Delphi Files\dls\Device X\UTestRecForm.h</Transaction>
     <Transaction>2011.12.10 19:49:02.937.dfm,F:\Files\Delphi Files\dls\Device X\Unit1.dfm=F:\Files\Delphi Files\dls\Device X\UTestRecForm.dfm</Transaction>
+    <Transaction>2012.05.28 00:31:28.812.cpp,F:\Files\Delphi Files\dls\Device X\Unit1.cpp=F:\Files\Delphi Files\dls\Device X\UPlease_stop_form.cpp</Transaction>
+    <Transaction>2012.05.28 00:31:28.812.h,F:\Files\Delphi Files\dls\Device X\Unit1.h=F:\Files\Delphi Files\dls\Device X\UPlease_stop_form.h</Transaction>
+    <Transaction>2012.05.28 00:31:28.812.dfm,F:\Files\Delphi Files\dls\Device X\Unit1.dfm=F:\Files\Delphi Files\dls\Device X\UPlease_stop_form.dfm</Transaction>
   </Transactions>
 </BorlandProject>

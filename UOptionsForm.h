@@ -144,6 +144,7 @@ __published:	// IDE-managed Components
 	TEdit *Edit34;
 	TButton *Button8;
 	TCheckBox *CheckBox8;
+	TButton *Button9;
 	void __fastcall Button2Click(TObject *Sender);
 	void __fastcall Button1Click(TObject *Sender);
 	void __fastcall CheckBox1Click(TObject *Sender);

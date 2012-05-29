@@ -41,6 +41,7 @@ public:
 	TProjectData::TRec *rec_;
 	bool DoMean_;
 	float mean_temp;
+	bool *please_stop_;
 
     double __fastcall GetRate();
 	void __fastcall CalculateACF();

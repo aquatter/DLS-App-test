@@ -67,10 +67,19 @@ bool Device::Start()
 
 bool Device::GetData(int dwReadBlockNumData, WORD *Data)
 {
+	/*
+	int f = FileOpen("e:\\dls.idata", fmOpenRead);
+
+	FileRead(f, (void *)Data,  dwReadBlockNumData*BLOCK_DATA_NUM*sizeof(WORD));
+	FileClose(f);
+
+	Sleep(1000);
+	return true;
+    */
 	__command_data command_data;
-    InitCommandData(command_data,2,2*dwReadBlockNumData*BLOCK_DATA_NUM+1);
-    command_data.WriteData[0] = 0x12;
-    command_data.WriteData[1] = 0x03;
+	InitCommandData(command_data,2,2*dwReadBlockNumData*BLOCK_DATA_NUM+1);
+	command_data.WriteData[0] = 0x12;
+	command_data.WriteData[1] = 0x03;
 	if(!ftd2xxDevice.Exec(command_data))
 		return false;
 
@@ -91,21 +100,20 @@ WORD* Device::GetData(DWORD& dwReadBlockNumData)
 	if(!ftd2xxDevice.Exec(command_data))
 	  return NULL;
 
-
-   //	int f = FileOpen("dls.idata", fmOpenRead);
+	/*
+	int f = FileOpen("e:\\dls.idata", fmOpenRead);
 
 	WORD* Data = new WORD[dwReadBlockNumData*BLOCK_DATA_NUM];
 
-   //	FileRead(f, (void *)Data,  dwReadBlockNumData*BLOCK_DATA_NUM*sizeof(WORD));
-   //	FileClose(f);
-
+	FileRead(f, (void *)Data,  dwReadBlockNumData*BLOCK_DATA_NUM*sizeof(WORD));
+	FileClose(f);
+	*/
 
 	for(size_t i=0;i < dwReadBlockNumData*BLOCK_DATA_NUM; i++)
 	{
 		int index = 2*i+1;
 		Data[i] = command_data.ReadData[index] + command_data.ReadData[index+1]*256;
 	}
-
 
 	return Data;
 }

@@ -152,6 +152,7 @@ __published:	// IDE-managed Components
 	TImageList *ImageList5;
 	TToolButton *ToolButton10;
 	TMenuItem *N7;
+	TToolButton *ToolButton11;
 	void __fastcall Timer1Timer(TObject *Sender);
 	void __fastcall chckbxLFDClick(TObject *Sender);
 	void __fastcall chckbxFEUClick(TObject *Sender);

@@ -5,19 +5,21 @@
 #include <tchar.h>
 #include <windows.h>
 //---------------------------------------------------------------------------
-USEFORM("UReportForm.cpp", ReportForm);
-USEFORM("UOptionsForm.cpp", OptionsForm);
-USEFORM("UAdd2ReportForm.cpp", Add2ReportForm);
-USEFORM("UAutoProgressForm.cpp", AutoProgressForm);
-USEFORM("URecThreadStartForm.cpp", RecThreadStartForm);
 USEFORM("UGradForm.cpp", GradForm);
-USEFORM("MainFormUnit.cpp", MainForm);
 USEFORM("UReportEditForm.cpp", ReportEditForm);
-USEFORM("UStatusRecForm.cpp", StatusRecForm);
-USEFORM("UAddGradForm.cpp", AddGradForm);
+USEFORM("MainFormUnit.cpp", MainForm);
 USEFORM("UGraphApproxForm.cpp", GraphApproxForm);
-USEFORM("UTAdjustAngleAperForm.cpp", AdjustAngleAperForm);
+USEFORM("UAddGradForm.cpp", AddGradForm);
 USEFORM("UTestRecForm.cpp", TestRecForm);
+USEFORM("UTAdjustAngleAperForm.cpp", AdjustAngleAperForm);
+USEFORM("UStatusRecForm.cpp", StatusRecForm);
+USEFORM("UOptionsForm.cpp", OptionsForm);
+USEFORM("UReportForm.cpp", ReportForm);
+USEFORM("URecThreadStartForm.cpp", RecThreadStartForm);
+USEFORM("UAutoProgressForm.cpp", AutoProgressForm);
+USEFORM("UAdd2ReportForm.cpp", Add2ReportForm);
+USEFORM("UPlease_stop_form.cpp", Please_stop_form);
+//---------------------------------------------------------------------------
 #include "MainFormUnit.h"
 //---------------------------------------------------------------------------
 
@@ -70,6 +72,7 @@ WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int)
 		Application->CreateForm(__classid(TStatusRecForm), &StatusRecForm);
 		Application->CreateForm(__classid(TAdjustAngleAperForm), &AdjustAngleAperForm);
 		Application->CreateForm(__classid(TTestRecForm), &TestRecForm);
+		Application->CreateForm(__classid(TPlease_stop_form), &Please_stop_form);
 		Application->Run();
 	}
 	catch (Exception &exception)

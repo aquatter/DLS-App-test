@@ -51,7 +51,7 @@ __fastcall TMainForm::TMainForm(TComponent* Owner) : TForm(Owner) {
 	vt->Header->Style = hsFlatButtons;
 	vt->Header->Options << hoVisible << hoColumnResize << hoAutoSpring;
 	vt->TreeOptions->PaintOptions <<  toShowHorzGridLines <<  toShowVertGridLines << toFullVertGridLines << toShowButtons;
-	vt->TreeOptions->SelectionOptions <<  toFullRowSelect << toLevelSelectConstraint;
+	vt->TreeOptions->SelectionOptions <<  toFullRowSelect << toMultiSelect << toRightClickSelect << toCenterScrollIntoView;
 	vt->TreeOptions->AnimationOptions << toAnimatedToggle << toAdvancedAnimatedToggle;
 	vt->NodeDataSize=sizeof(TProjectData::TVtPD);
 	vt->DefaultText = "";
@@ -1579,7 +1579,10 @@ void __fastcall TMainForm::N5Click(TObject *Sender) {
 	if (!SaveDialog1->Execute())
 		return;
 
-	CreateCrv(contin_g.a, contin_s.a, contin_g.w, SaveDialog1->FileName);
+	UnicodeString s = SaveDialog1->FileName;
+    ChangeFileExt(s, ".crv");
+
+	CreateCrv(contin_g.a, contin_s.a, contin_g.w, s);
 }
 // ---------------------------------------------------------------------------
 
@@ -1679,8 +1682,92 @@ void __fastcall TMainForm::Button7Click(TObject *Sender) {
 
 void __fastcall TMainForm::Button9Click(TObject *Sender) {
 
-    TVirtualNode *t = ReportForm->VirtualStringTree1->RootNode->FirstChild;
-    TReportData *data;
+	TVirtualNode *selected_node = vt->GetFirstSelected(false);
+
+	while (selected_node)
+	{
+		TProjectData::TVtPD *pd_data = (TProjectData::TVtPD *)vt->GetNodeData(selected_node);
+		if (pd_data)
+		{
+			if ( (pd_data->State == TProjectData::pdHeader) || (pd_data->State == TProjectData::pdSerie))
+			{
+              	selected_node = vt->GetNextSelected(selected_node);
+				continue;
+			}
+
+			UnicodeString name = pd_data->pd->Name;
+
+			TVirtualNode *t = ReportForm->VirtualStringTree1->RootNode->FirstChild;
+			TReportData *data;
+			bool new_ = true;
+			for (size_t i = 0; i < ReportForm->VirtualStringTree1->RootNodeCount; i++)
+				if (t)
+				{
+					data = (TReportData*)ReportForm->VirtualStringTree1->GetNodeData(t);
+					if (data)
+						if (data->Name == name)
+						{
+							new_ = false;
+							break;
+						}
+					t = t->NextSibling;
+				}
+
+			if (new_)
+			{
+            	t = ReportForm->VirtualStringTree1->AddChild(NULL);
+				if (t)
+				{
+					t->States << vsExpanded;
+					data = (TReportData*)ReportForm->VirtualStringTree1->GetNodeData(t);
+					if (data) {
+						data->Name = name;
+						data->pcs = 0;
+						data->pi = 0;
+						data->rms = 0;
+					}
+				}
+			}
+
+            t = ReportForm->VirtualStringTree1->AddChild(t);
+			if (t)
+			{
+            	data = (TReportData*)ReportForm->VirtualStringTree1->GetNodeData(t);
+            	t->States << vsExpanded;
+				if (data)
+				{
+            		data->Name = IntToStr((int)t->Index + 1);
+					data->pcs = pd_data->x_pcs;
+					data->pi = pd_data->pi;
+
+					if (pd_data->State == TProjectData::pdMean)
+					{
+						if ((*(pd_data->pd))[pd_data->seq_num].SizeOf() > 0)
+							data->angle = (*(pd_data->pd))[pd_data->seq_num][0].DataParams.ScatAngle;
+					}
+					else
+						data->angle = pd_data->ScatAngle;
+
+					data->a1 = (*(pd_data->pd))[pd_data->seq_num][pd_data->rec_num].a1;
+					data->a2 = (*(pd_data->pd))[pd_data->seq_num][pd_data->rec_num].a2;
+					data->t = pd_data->Temperature;
+				}
+
+            	t->CheckType = ctCheckBox;
+            	t->CheckState = csCheckedNormal;
+            }
+		}
+
+		selected_node = vt->GetNextSelected(selected_node);
+	}
+
+    ReportForm->RecalculateReport();
+    ReportForm->Show();
+    /*
+	return;
+
+	TVirtualNode *t = ReportForm->VirtualStringTree1->RootNode->FirstChild;
+	TReportData *data;
 	bool new_ = true;
 	UnicodeString name = pd__->Name_Spec;
 
@@ -1697,7 +1784,7 @@ void __fastcall TMainForm::Button9Click(TObject *Sender) {
 		}
 
 	if (new_) {
-    	t = ReportForm->VirtualStringTree1->AddChild(NULL);
+		t = ReportForm->VirtualStringTree1->AddChild(NULL);
 		if (t) {
 			t->States << vsExpanded;
 			data = (TReportData*)ReportForm->VirtualStringTree1->GetNodeData(t);
@@ -1710,21 +1797,21 @@ void __fastcall TMainForm::Button9Click(TObject *Sender) {
 		}
 	}
 
-    t = ReportForm->VirtualStringTree1->AddChild(t);
-    if (t) {
-    	data = (TReportData*)ReportForm->VirtualStringTree1->GetNodeData(t);
-    	t->States << vsExpanded;
-    	if (data) {
-    		data->Name = IntToStr((int)t->Index + 1);
-    		data->pcs = AcfParams.x_pcs;
-    		data->pi = AcfParams.PI;
-    		data->angle = DataParams.ScatAngle;
-    		data->a1 = AcfParams.a1;
-    		data->a2 = AcfParams.a2;
-    		data->t = DataParams.Temperature;
-    	}
-    	t->CheckType = ctCheckBox;
-    	t->CheckState = csCheckedNormal;
+	t = ReportForm->VirtualStringTree1->AddChild(t);
+	if (t) {
+		data = (TReportData*)ReportForm->VirtualStringTree1->GetNodeData(t);
+		t->States << vsExpanded;
+		if (data) {
+			data->Name = IntToStr((int)t->Index + 1);
+			data->pcs = AcfParams.x_pcs;
+			data->pi = AcfParams.PI;
+			data->angle = DataParams.ScatAngle;
+			data->a1 = AcfParams.a1;
+			data->a2 = AcfParams.a2;
+			data->t = DataParams.Temperature;
+		}
+		t->CheckType = ctCheckBox;
+		t->CheckState = csCheckedNormal;
 	}
 
 	ReportForm->RecalculateReport();
@@ -1813,6 +1900,7 @@ void __fastcall TMainForm::Button9Click(TObject *Sender) {
 	}
 	ReportForm->RecalculateReport();
 	ReportForm->Show();
+	*/
 }
 // ---------------------------------------------------------------------------
 
@@ -1848,15 +1936,30 @@ void __fastcall TMainForm::Button8Click(TObject *Sender) {
 
 	UnicodeString s = AcfParams.Save_Dir +"\\" +AcfParams.File_Name + ".dls";
 
+	if (!DirectoryExists(AcfParams.Save_Dir))
+	{
+	  ShowMessage("Неверно указана директория для сохранения данных:\n" + AcfParams.Save_Dir);
+	  return;
+	}
+
 	if (FileExists(s))
 		if ((MessageDlg("Файл " + s + "\n существует и будет перезаписан. Продолжить?", mtWarning, TMsgDlgButtons() << mbOK << mbCancel, 0, mbCancel)+1) == mbCancel)
 			return;
 
 	LineSeries4->Clear();
-    LineSeries5->Clear();
+	LineSeries5->Clear();
 
 	int n = pd_vector.size();
 	pd_vector.push_back(TProjectData());
+
+	/*
+	pd_vector[n].Name = AcfParams.File_Name;
+	pd_vector[n].Path = AcfParams.Save_Dir+"\\";
+	pd_vector[n].Name_Sol = AcfParams.Name_Sol;
+	pd_vector[n].Name_Spec = AcfParams.Name_Spec;
+	SaveProject(&pd_vector[n]);
+	return;
+	*/
 
 	TTimerThread *t = new TTimerThread(true);
 	t->FreeOnTerminate = true;

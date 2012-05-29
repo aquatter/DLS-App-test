@@ -21,6 +21,7 @@ public:
 	TSeqThreadParams params_;
 	TAquireMode mode;
 	bool DoMean_;
+	bool please_stop_;
 
 	__fastcall TTimerThread(bool CreateSuspended);
 	void  __fastcall SaveProject();

@@ -16,6 +16,7 @@
 #include "UTAdjustAngleAperForm.h"
 #include "UTestRecForm.h"
 
+
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma link "cspin"
@@ -445,6 +446,9 @@ void __fastcall TOptionsForm::Button7Click(TObject *Sender)
 	//AdjustAngleAperForm->ShowModal();
 }
 //---------------------------------------------------------------------------
+
+
+
 
 
 

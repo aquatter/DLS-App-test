@@ -14,6 +14,7 @@
 #include <Registry.hpp>
 #include "DateUtils.hpp"
 #include "UTestRecForm.h"
+#include "UDeviceInitThread.h"
 
 //---------------------------------------------------------------------------
 
@@ -168,20 +169,27 @@ void SaveAcf2Txt(UnicodeString s)
 void SaveAcf2Tdf(UnicodeString s)
 {
   s = ChangeFileExt(s, ".tdf");
-  char buff[50];
+//  char buff[50];
   TIniFile *f = new TIniFile(s);
-  DecimalSeparator='.';
-//  wchar_t(".");
+//  DecimalSeparator='.';
+  UnicodeString str;
+  TFormatSettings format_set;
+  GetLocaleFormatSettings(LOCALE_SYSTEM_DEFAULT, format_set);
+  format_set.DecimalSeparator = '.';
+
   try
   {
-	f->WriteFloat("PCSPHYSPAR", "WAVELENGTH", DataParams.WaveLength);
-	f->WriteFloat("PCSPHYSPAR", "VISCOSITY", FormulaPuazeilia(DataParams.Temperature)*1e3);
-	f->WriteFloat("PCSPHYSPAR", "SCATANGLE", DataParams.ScatAngle);
-	f->WriteFloat("PCSPHYSPAR", "TEMPERATURE", DataParams.Temperature);
-	f->WriteFloat("PCSPHYSPAR", "REFRINDEX", DataParams.RefIndex);
-	for (int i=0; i < acf.w; i++) {
-	  sprintf(buff, " %e %e", acf_t.a[i]*1e-6, acf.a[i]+1);
-	  f->WriteString("PCSDATA2", IntToStr(i+1), buff);
+	f->WriteString("PCSPHYSPAR", "WAVELENGTH", FloatToStrF(DataParams.WaveLength, ffFixed, 5, 2, format_set));
+	f->WriteString("PCSPHYSPAR", "VISCOSITY", FloatToStrF(FormulaPuazeilia(DataParams.Temperature)*1e3, ffFixed, 5, 4, format_set));
+	f->WriteString("PCSPHYSPAR", "SCATANGLE", FloatToStrF(DataParams.ScatAngle, ffFixed, 5, 1, format_set));
+	f->WriteString("PCSPHYSPAR", "TEMPERATURE", FloatToStrF(DataParams.Temperature, ffFixed, 5, 2, format_set));
+	f->WriteString("PCSPHYSPAR", "REFRINDEX", FloatToStrF(DataParams.RefIndex, ffFixed, 5, 2, format_set));
+
+	for (int i=0; i < acf.w; i++)
+	{
+		str = FloatToStrF(acf_t.a[i]*1e-6, ffExponent, 5, 4, format_set) + " " + FloatToStrF(acf.a[i]+1.0, ffFixed, 5, 4, format_set);
+//	  sprintf(buff, " %e %e", acf_t.a[i]*1e-6, acf.a[i]+1);
+	  f->WriteString("PCSDATA2", IntToStr(i+1), str);
 	}
   } catch (...)
   {
@@ -193,9 +201,36 @@ void SaveAcf2Tdf(UnicodeString s)
 void SaveAcf2Tdf(UnicodeString s, TDataParams DataParams_)
 {
   s = ChangeFileExt(s, ".tdf");
-  char buff[50];
+//  char buff[50];
   TIniFile *f = new TIniFile(s);
-  DecimalSeparator='.';
+//  DecimalSeparator='.';
+
+  UnicodeString str;
+  TFormatSettings format_set;
+  GetLocaleFormatSettings(LOCALE_SYSTEM_DEFAULT, format_set);
+  format_set.DecimalSeparator = '.';
+
+  try
+  {
+	f->WriteString("PCSPHYSPAR", "WAVELENGTH", FloatToStrF(DataParams_.WaveLength, ffFixed, 5, 2, format_set));
+	f->WriteString("PCSPHYSPAR", "VISCOSITY", FloatToStrF(FormulaPuazeilia(DataParams_.Temperature)*1e3, ffFixed, 5, 4, format_set));
+	f->WriteString("PCSPHYSPAR", "SCATANGLE", FloatToStrF(DataParams_.ScatAngle, ffFixed, 5, 1, format_set));
+	f->WriteString("PCSPHYSPAR", "TEMPERATURE", FloatToStrF(DataParams_.Temperature, ffFixed, 5, 2, format_set));
+	f->WriteString("PCSPHYSPAR", "REFRINDEX", FloatToStrF(DataParams_.RefIndex, ffFixed, 5, 2, format_set));
+
+	for (int i=0; i < acf.w; i++)
+	{
+		str = FloatToStrF(acf_t.a[i]*1e-6, ffExponent, 5, 4, format_set) + " " + FloatToStrF(acf.a[i]+1.0, ffFixed, 5, 4, format_set);
+	  f->WriteString("PCSDATA2", IntToStr(i+1), str);
+	}
+  } catch (...)
+  {
+	delete f;
+  }
+  delete f;
+
+  return;
+  /*
 //  wchar_t(".");
   try
   {
@@ -213,6 +248,7 @@ void SaveAcf2Tdf(UnicodeString s, TDataParams DataParams_)
 	delete f;
   }
   delete f;
+  */
 }
 
 void OpenTdf(UnicodeString s)
@@ -336,7 +372,7 @@ void SaveAcf2Crv(UnicodeString s)
   };
   s = ChangeFileExt(s,".crv");
   __point* points = NULL;
-  unsigned count = AcfParams.n_avt;
+  unsigned count = acf.w;
   int iFileHandle = -1;
 
   try {
@@ -524,9 +560,11 @@ bool OptionsFormExecute()
 	OptionsForm->Edit38->Text = IntToStr(AcfParams.Polar);
     OptionsForm->CheckBox8->Checked = AcfParams.Kinetics;
 
+	MainForm->StartMonitoring();
 	int ModalResult = OptionsForm->ShowModal();
+    MainForm->StopMonitoring();
 
-	if ((ModalResult != mrOk) && (ModalResult != mrAbort))
+	if (ModalResult == mrCancel)
 		return false;
 
 	AcfParams.Time_discr = OptionsForm->ComboBox1->ItemIndex;
@@ -572,9 +610,21 @@ bool OptionsFormExecute()
 
 	if (ModalResult == mrAbort)
 	{
-       	TestRecForm->Show();
+		TestRecForm->Show();
 		return false;
 	}
+
+	if (ModalResult == mrRetry)
+	{
+		bool error;
+		TDeviceInitThread *t = new TDeviceInitThread(true);
+		t->FreeOnTerminate = true;
+		t->monitoring = true;
+		t->error_ = &error;
+		t->Start();
+		return false;
+	}
+
 
 
 	return true;

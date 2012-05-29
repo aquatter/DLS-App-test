@@ -3,7 +3,7 @@ object OptionsForm: TOptionsForm
   Top = 140
   BorderStyle = bsDialog
   Caption = #1048#1079#1084#1077#1088#1077#1085#1080#1077
-  ClientHeight = 545
+  ClientHeight = 571
   ClientWidth = 397
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -1208,5 +1208,14 @@ object OptionsForm: TOptionsForm
     Caption = #1058#1077#1089#1090
     ModalResult = 3
     TabOrder = 3
+  end
+  object Button9: TButton
+    Left = 122
+    Top = 533
+    Width = 139
+    Height = 25
+    Caption = #1059#1089#1090#1072#1085#1086#1074#1080#1090#1100' '#1087#1072#1088#1072#1084#1077#1090#1088#1099
+    ModalResult = 4
+    TabOrder = 4
   end
 end
