@@ -12,7 +12,7 @@ object OptionsForm: TOptionsForm
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
-  Position = poDesigned
+  Position = poScreenCenter
   PixelsPerInch = 96
   TextHeight = 13
   object PageControl1: TPageControl
@@ -517,6 +517,10 @@ object OptionsForm: TOptionsForm
     object TabSheet3: TTabSheet
       Caption = #1060#1080#1079#1080#1095#1077#1089#1082#1080#1077' '#1087#1072#1088#1072#1084#1077#1090#1088#1099
       ImageIndex = 2
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object Label8: TLabel
         Left = 20
         Top = 47
@@ -757,6 +761,10 @@ object OptionsForm: TOptionsForm
     object TabSheet2: TTabSheet
       Caption = #1056#1072#1089#1095#1077#1090#1099
       ImageIndex = 1
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object Label1: TLabel
         Left = 12
         Top = 27

@@ -28,27 +28,14 @@ object MainForm: TMainForm
     Caption = #1063#1090#1077#1085#1080#1077
     OnClick = spbtnReadDataClick
   end
-  object Splitter2: TSplitter
-    Left = 0
-    Top = 327
-    Width = 1211
-    Height = 3
-    Cursor = crVSplit
-    Align = alTop
+  object Splitter1: TSplitter
+    Left = 621
+    Top = 38
+    Height = 799
     Color = clBtnFace
     ParentColor = False
-    ExplicitLeft = 64
-    ExplicitTop = 375
-    ExplicitWidth = 973
-  end
-  object Splitter4: TSplitter
-    Left = 62
-    Top = 690
-    Width = 235
-    Height = 39
-    Align = alNone
-    Color = clBlack
-    ParentColor = False
+    ExplicitLeft = 679
+    ExplicitTop = 44
   end
   object ToolBar1: TToolBar
     Left = 0
@@ -132,12 +119,13 @@ object MainForm: TMainForm
     end
   end
   object PageControl1: TPageControl
-    Left = 348
-    Top = 605
+    Left = 650
+    Top = 432
     Width = 633
     Height = 345
     ActivePage = TabSheet5
     TabOrder = 1
+    Visible = False
     object TabSheet1: TTabSheet
       Caption = #1044#1072#1085#1085#1099#1077
       ImageIndex = -1
@@ -561,6 +549,8 @@ object MainForm: TMainForm
     object TabSheet4: TTabSheet
       Caption = #1050#1091#1084#1091#1083#1103#1085#1090#1099
       ImageIndex = 2
+      ExplicitLeft = -148
+      ExplicitTop = -24
       object Button1: TButton
         Left = 13
         Top = 9
@@ -716,54 +706,54 @@ object MainForm: TMainForm
       end
     end
   end
-  object Panel5: TPanel
+  object Panel10: TPanel
     Left = 0
     Top = 38
-    Width = 1211
-    Height = 289
-    Align = alTop
-    BevelEdges = []
-    BevelKind = bkSoft
+    Width = 621
+    Height = 799
+    Align = alLeft
     BevelOuter = bvNone
-    Caption = 'Panel5'
-    TabOrder = 2
-    ExplicitWidth = 965
-    object Splitter1: TSplitter
-      Left = 489
-      Top = 0
-      Height = 289
-      Color = clBtnFace
-      ParentColor = False
-      ExplicitLeft = 493
-      ExplicitTop = 6
-      ExplicitHeight = 261
-    end
-    object Panel4: TPanel
+    TabOrder = 3
+    ExplicitLeft = -3
+    ExplicitTop = 42
+    object Splitter2: TSplitter
       Left = 0
-      Top = 0
-      Width = 489
-      Height = 289
-      Align = alLeft
-      BevelEdges = []
-      BevelKind = bkSoft
+      Top = 249
+      Width = 621
+      Height = 3
+      Cursor = crVSplit
+      Align = alTop
+      ExplicitTop = 281
+      ExplicitWidth = 547
+    end
+    object Splitter4: TSplitter
+      Left = 0
+      Top = 433
+      Width = 621
+      Height = 3
+      Cursor = crVSplit
+      Align = alTop
+      ExplicitLeft = 19
+      ExplicitTop = 504
+      ExplicitWidth = 311
+    end
+    object Panel7: TPanel
+      Left = 0
+      Top = 436
+      Width = 621
+      Height = 363
+      Align = alClient
       BevelOuter = bvNone
-      Caption = 'Panel4'
       TabOrder = 0
-      object Splitter5: TSplitter
+      ExplicitLeft = 83
+      ExplicitTop = 472
+      ExplicitWidth = 452
+      ExplicitHeight = 217
+      object Chart3: TChart
         Left = 0
-        Top = 55
-        Width = 489
-        Height = 3
-        Cursor = crVSplit
-        Align = alTop
-        ExplicitTop = 41
-        ExplicitWidth = 27
-      end
-      object Chart5: TChart
-        Left = 0
-        Top = 58
-        Width = 489
-        Height = 231
+        Top = 33
+        Width = 621
+        Height = 330
         BackWall.Pen.Visible = False
         Legend.Visible = False
         Title.Text.Strings = (
@@ -772,394 +762,177 @@ object MainForm: TMainForm
         BottomAxis.AxisValuesFormat = '#,##0.######'
         BottomAxis.LabelsExponent = True
         BottomAxis.Logarithmic = True
-        BottomAxis.Title.Caption = #1042#1088#1077#1084#1103', '#1084#1082#1089
+        BottomAxis.Title.Caption = #1044#1080#1072#1084#1077#1090#1088' '#1095#1072#1089#1090#1080#1094', '#1085#1084
         DepthAxis.Automatic = False
         DepthAxis.AutomaticMaximum = False
         DepthAxis.AutomaticMinimum = False
-        DepthAxis.Maximum = 0.500000000000000000
-        DepthAxis.Minimum = -0.500000000000000000
+        DepthAxis.Maximum = 0.439999999999999900
+        DepthAxis.Minimum = -0.560000000000000100
         DepthTopAxis.Automatic = False
         DepthTopAxis.AutomaticMaximum = False
         DepthTopAxis.AutomaticMinimum = False
-        DepthTopAxis.Maximum = 0.500000000000000000
-        DepthTopAxis.Minimum = -0.500000000000000000
+        DepthTopAxis.Maximum = 0.439999999999999900
+        DepthTopAxis.Minimum = -0.560000000000000100
         Frame.Visible = False
         RightAxis.Automatic = False
         RightAxis.AutomaticMaximum = False
         RightAxis.AutomaticMinimum = False
+        Shadow.Visible = False
         View3D = False
-        Zoom.Pen.Color = clBlack
         Align = alClient
         BevelOuter = bvNone
         Color = clWhite
         ParentShowHint = False
         ShowHint = True
         TabOrder = 0
-        OnMouseMove = Chart5MouseMove
+        OnMouseMove = Chart3MouseMove
+        ExplicitLeft = 50
+        ExplicitTop = 64
+        ExplicitWidth = 455
+        ExplicitHeight = 262
         PrintMargins = (
           15
           20
           15
           20)
-        ColorPaletteIndex = 5
-        object LineSeries3: TLineSeries
+        ColorPaletteIndex = 13
+        object Panel1: TPanel
+          Left = 209
+          Top = 120
+          Width = 233
+          Height = 57
+          Caption = #1055#1086#1076#1086#1078#1076#1080#1090#1077'. '#1048#1076#1077#1090' '#1088#1072#1089#1095#1077#1090'...'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -11
+          Font.Name = 'Tahoma'
+          Font.Style = [fsBold]
+          ParentFont = False
+          TabOrder = 0
+          Visible = False
+        end
+        object LineSeries1: TAreaSeries
+          Marks.Arrow.Visible = False
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Callout.Arrow.Visible = False
+          Marks.BackColor = 8454143
+          Marks.Color = 8454143
+          Marks.Shadow.Color = 8553090
+          Marks.Shadow.Visible = False
+          Marks.Style = smsXValue
+          Marks.Symbol.Shadow.Visible = False
+          Marks.Symbol.Transparency = 38
+          Marks.Visible = False
+          SeriesColor = clRed
+          DrawArea = True
+          Pointer.HorizSize = 2
+          Pointer.InflateMargins = True
+          Pointer.Pen.Visible = False
+          Pointer.Style = psRectangle
+          Pointer.VertSize = 2
+          Pointer.Visible = False
+          Stairs = True
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+        end
+        object Series6: TLineSeries
           Marks.Arrow.Visible = True
           Marks.Callout.Brush.Color = clBlack
           Marks.Callout.Arrow.Visible = True
           Marks.Visible = False
-          SeriesColor = clRed
-          LinePen.Width = 2
-          LinePen.Visible = False
+          SeriesColor = clBlack
+          Pointer.Gradient.EndColor = clBlack
           Pointer.InflateMargins = True
           Pointer.Pen.Visible = False
-          Pointer.Shadow.Color = 10855845
           Pointer.Style = psCircle
-          Pointer.Transparency = 50
           Pointer.Visible = True
           XValues.Name = 'X'
           XValues.Order = loAscending
           YValues.Name = 'Y'
           YValues.Order = loNone
         end
-        object Series5: TLineSeries
-          Marks.Arrow.Visible = True
-          Marks.Callout.Brush.Color = clBlack
-          Marks.Callout.Arrow.Visible = True
-          Marks.Visible = False
-          SeriesColor = clBlack
-          LinePen.Width = 2
-          Pointer.HorizSize = 2
-          Pointer.InflateMargins = True
-          Pointer.Pen.Visible = False
-          Pointer.Style = psCircle
-          Pointer.VertSize = 2
-          Pointer.Visible = False
-          XValues.Name = 'X'
-          XValues.Order = loAscending
-          YValues.Name = 'Y'
-          YValues.Order = loNone
-        end
       end
-      object Panel8: TPanel
+      object Panel9: TPanel
         Left = 0
         Top = 0
-        Width = 489
-        Height = 55
+        Width = 621
+        Height = 33
         Align = alTop
         BevelOuter = bvNone
-        Constraints.MaxHeight = 55
-        Constraints.MinHeight = 55
+        Constraints.MaxHeight = 33
+        Constraints.MinHeight = 33
         TabOrder = 1
-        ExplicitLeft = -6
-        ExplicitTop = -3
-        object Label2: TLabel
-          Left = 15
-          Top = 3
-          Width = 12
-          Height = 23
-          Caption = '  '
-          Font.Charset = DEFAULT_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -19
-          Font.Name = 'Tahoma'
-          Font.Style = []
-          ParentFont = False
+        object Label14: TLabel
+          Left = 9
+          Top = 11
+          Width = 27
+          Height = 13
+          Alignment = taCenter
+          Caption = '(0; 0)'
         end
-        object Label3: TLabel
-          Left = 15
-          Top = 25
-          Width = 12
-          Height = 23
-          Caption = '  '
-          Font.Charset = DEFAULT_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -19
-          Font.Name = 'Tahoma'
-          Font.Style = []
-          ParentFont = False
-        end
-        object Button9: TButton
-          Left = 153
-          Top = 6
-          Width = 120
+        object Button2: TButton
+          Left = 100
+          Top = 5
+          Width = 75
           Height = 25
-          Caption = #1044#1086#1073#1072#1074#1080#1090#1100' '#1074' '#1086#1090#1095#1077#1090
+          Caption = #1056#1072#1089#1089#1095#1080#1090#1072#1090#1100
           TabOrder = 0
           Visible = False
-          OnClick = Button9Click
+          OnClick = Button2Click
         end
-        object ToolBar2: TToolBar
-          Left = 360
+        object ToolBar3: TToolBar
+          Left = 349
           Top = 0
-          Width = 129
-          Height = 55
+          Width = 272
+          Height = 33
           Align = alRight
+          AutoSize = True
           ButtonHeight = 30
-          ButtonWidth = 127
+          ButtonWidth = 174
           Caption = 'ToolBar2'
           DisabledImages = ImageList5
           Images = ImageList4
           List = True
           ShowCaptions = True
           TabOrder = 1
-          object ToolButton7: TToolButton
+          object ToolButton8: TToolButton
             Left = 0
             Top = 0
-            Caption = #1044#1086#1073#1072#1074#1080#1090#1100' '#1074' '#1086#1090#1095#1077#1090
-            ImageIndex = 0
-            OnClick = Button9Click
-          end
-        end
-      end
-    end
-  end
-  object Panel6: TPanel
-    Left = 0
-    Top = 330
-    Width = 1211
-    Height = 507
-    Align = alClient
-    BevelOuter = bvNone
-    TabOrder = 3
-    ExplicitWidth = 965
-    object Splitter3: TSplitter
-      Left = 505
-      Top = 0
-      Height = 507
-      Color = clBtnFace
-      ParentColor = False
-      ExplicitLeft = 620
-      ExplicitTop = -4
-    end
-    object Memo1: TMemo
-      Left = 508
-      Top = 0
-      Width = 703
-      Height = 507
-      Align = alClient
-      BorderStyle = bsNone
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -13
-      Font.Name = 'Tahoma'
-      Font.Style = [fsBold]
-      ParentFont = False
-      ScrollBars = ssVertical
-      TabOrder = 0
-      ExplicitWidth = 457
-    end
-    object Panel10: TPanel
-      Left = 0
-      Top = 0
-      Width = 505
-      Height = 507
-      Align = alLeft
-      BevelOuter = bvNone
-      TabOrder = 1
-      object Splitter7: TSplitter
-        Left = 0
-        Top = 253
-        Width = 505
-        Height = 3
-        Cursor = crVSplit
-        Align = alBottom
-        ExplicitTop = 192
-      end
-      object Splitter8: TSplitter
-        Left = 0
-        Top = 33
-        Width = 505
-        Height = 3
-        Cursor = crVSplit
-        Align = alTop
-        ExplicitTop = 57
-      end
-      object Panel7: TPanel
-        Left = 0
-        Top = 256
-        Width = 505
-        Height = 251
-        Align = alBottom
-        BevelOuter = bvNone
-        TabOrder = 0
-        object Splitter6: TSplitter
-          Left = 0
-          Top = 33
-          Width = 505
-          Height = 3
-          Cursor = crVSplit
-          Align = alTop
-          ExplicitTop = 57
-          ExplicitWidth = 55
-        end
-        object Chart3: TChart
-          Left = 0
-          Top = 36
-          Width = 505
-          Height = 215
-          BackWall.Pen.Visible = False
-          Legend.Visible = False
-          Title.Text.Strings = (
-            'TChart')
-          Title.Visible = False
-          BottomAxis.AxisValuesFormat = '#,##0.######'
-          BottomAxis.LabelsExponent = True
-          BottomAxis.Logarithmic = True
-          BottomAxis.Title.Caption = #1044#1080#1072#1084#1077#1090#1088' '#1095#1072#1089#1090#1080#1094', '#1085#1084
-          DepthAxis.Automatic = False
-          DepthAxis.AutomaticMaximum = False
-          DepthAxis.AutomaticMinimum = False
-          DepthAxis.Maximum = 0.439999999999999900
-          DepthAxis.Minimum = -0.560000000000000100
-          DepthTopAxis.Automatic = False
-          DepthTopAxis.AutomaticMaximum = False
-          DepthTopAxis.AutomaticMinimum = False
-          DepthTopAxis.Maximum = 0.439999999999999900
-          DepthTopAxis.Minimum = -0.560000000000000100
-          Frame.Visible = False
-          RightAxis.Automatic = False
-          RightAxis.AutomaticMaximum = False
-          RightAxis.AutomaticMinimum = False
-          Shadow.Visible = False
-          View3D = False
-          Align = alClient
-          BevelOuter = bvNone
-          Color = clWhite
-          ParentShowHint = False
-          ShowHint = True
-          TabOrder = 0
-          OnMouseMove = Chart3MouseMove
-          PrintMargins = (
-            15
-            20
-            15
-            20)
-          ColorPaletteIndex = 13
-          object Panel1: TPanel
-            Left = 140
-            Top = 96
-            Width = 233
-            Height = 57
-            Caption = #1055#1086#1076#1086#1078#1076#1080#1090#1077'. '#1048#1076#1077#1090' '#1088#1072#1089#1095#1077#1090'...'
-            Font.Charset = DEFAULT_CHARSET
-            Font.Color = clWindowText
-            Font.Height = -11
-            Font.Name = 'Tahoma'
-            Font.Style = [fsBold]
-            ParentFont = False
-            TabOrder = 0
-            Visible = False
-          end
-          object LineSeries1: TAreaSeries
-            Marks.Arrow.Visible = False
-            Marks.Callout.Brush.Color = clBlack
-            Marks.Callout.Arrow.Visible = False
-            Marks.BackColor = 8454143
-            Marks.Color = 8454143
-            Marks.Shadow.Color = 8553090
-            Marks.Shadow.Visible = False
-            Marks.Style = smsXValue
-            Marks.Symbol.Shadow.Visible = False
-            Marks.Symbol.Transparency = 38
-            Marks.Visible = False
-            SeriesColor = clRed
-            DrawArea = True
-            Pointer.HorizSize = 2
-            Pointer.InflateMargins = True
-            Pointer.Pen.Visible = False
-            Pointer.Style = psRectangle
-            Pointer.VertSize = 2
-            Pointer.Visible = False
-            Stairs = True
-            XValues.Name = 'X'
-            XValues.Order = loAscending
-            YValues.Name = 'Y'
-            YValues.Order = loNone
-          end
-          object Series6: TLineSeries
-            Marks.Arrow.Visible = True
-            Marks.Callout.Brush.Color = clBlack
-            Marks.Callout.Arrow.Visible = True
-            Marks.Visible = False
-            SeriesColor = clBlack
-            Pointer.Gradient.EndColor = clBlack
-            Pointer.InflateMargins = True
-            Pointer.Pen.Visible = False
-            Pointer.Style = psCircle
-            Pointer.Visible = True
-            XValues.Name = 'X'
-            XValues.Order = loAscending
-            YValues.Name = 'Y'
-            YValues.Order = loNone
-          end
-        end
-        object Panel9: TPanel
-          Left = 0
-          Top = 0
-          Width = 505
-          Height = 33
-          Align = alTop
-          BevelOuter = bvNone
-          Constraints.MaxHeight = 33
-          Constraints.MinHeight = 33
-          TabOrder = 1
-          object Label14: TLabel
-            Left = 9
-            Top = 11
-            Width = 27
-            Height = 13
-            Alignment = taCenter
-            Caption = '(0; 0)'
-          end
-          object Button2: TButton
-            Left = 100
-            Top = 5
-            Width = 75
-            Height = 25
-            Caption = #1056#1072#1089#1089#1095#1080#1090#1072#1090#1100
-            TabOrder = 0
-            Visible = False
+            AutoSize = True
+            Caption = #1056#1072#1089#1089#1095#1080#1090#1072#1090#1100' '#1088#1072#1089#1087#1088#1077#1076#1077#1083#1077#1085#1080#1077
+            ImageIndex = 1
             OnClick = Button2Click
           end
-          object ToolBar3: TToolBar
-            Left = 233
+          object ToolButton11: TToolButton
+            Left = 178
             Top = 0
-            Width = 272
-            Height = 33
-            Align = alRight
             AutoSize = True
-            ButtonHeight = 30
-            ButtonWidth = 174
-            Caption = 'ToolBar2'
-            DisabledImages = ImageList5
-            Images = ImageList4
-            List = True
-            ShowCaptions = True
-            TabOrder = 1
-            object ToolButton8: TToolButton
-              Left = 0
-              Top = 0
-              AutoSize = True
-              Caption = #1056#1072#1089#1089#1095#1080#1090#1072#1090#1100' '#1088#1072#1089#1087#1088#1077#1076#1077#1083#1077#1085#1080#1077
-              ImageIndex = 1
-              OnClick = Button2Click
-            end
-            object ToolButton11: TToolButton
-              Left = 178
-              Top = 0
-              AutoSize = True
-              Caption = #1057#1086#1093#1088#1072#1085#1080#1090#1100
-              ImageIndex = 3
-              OnClick = N5Click
-            end
+            Caption = #1057#1086#1093#1088#1072#1085#1080#1090#1100
+            ImageIndex = 3
+            OnClick = N5Click
           end
         end
       end
+    end
+    object Panel12: TPanel
+      Left = 0
+      Top = 252
+      Width = 621
+      Height = 181
+      Align = alTop
+      BevelOuter = bvNone
+      Caption = 'Panel12'
+      TabOrder = 1
+      ExplicitLeft = 51
+      ExplicitTop = 272
+      ExplicitWidth = 492
       object Chart6: TChart
         Left = 0
-        Top = 36
-        Width = 505
-        Height = 217
+        Top = 33
+        Width = 621
+        Height = 148
         BackWall.Pen.Visible = False
         Legend.Visible = False
         Title.Text.Strings = (
@@ -1177,8 +950,12 @@ object MainForm: TMainForm
         Color = clWhite
         ParentShowHint = False
         ShowHint = True
-        TabOrder = 1
+        TabOrder = 0
         OnMouseMove = Chart5MouseMove
+        ExplicitLeft = 36
+        ExplicitTop = 43
+        ExplicitWidth = 373
+        ExplicitHeight = 157
         PrintMargins = (
           15
           20
@@ -1226,15 +1003,18 @@ object MainForm: TMainForm
       object Panel11: TPanel
         Left = 0
         Top = 0
-        Width = 505
+        Width = 621
         Height = 33
         Align = alTop
         BevelOuter = bvNone
         Constraints.MaxHeight = 33
         Constraints.MinHeight = 33
-        TabOrder = 2
+        TabOrder = 1
+        ExplicitLeft = -26
+        ExplicitTop = -16
+        ExplicitWidth = 492
         object ToolBar4: TToolBar
-          Left = 420
+          Left = 536
           Top = 0
           Width = 85
           Height = 33
@@ -1257,14 +1037,245 @@ object MainForm: TMainForm
         end
       end
     end
-    object Button10: TButton
-      Left = 643
-      Top = 176
-      Width = 75
-      Height = 25
-      Caption = 'Button10'
+    object Panel4: TPanel
+      Left = 0
+      Top = 0
+      Width = 621
+      Height = 249
+      Align = alTop
+      BevelEdges = []
+      BevelOuter = bvNone
+      Caption = 'Panel4'
       TabOrder = 2
-      OnClick = Button10Click
+      ExplicitLeft = -3
+      ExplicitTop = 4
+      object Chart5: TChart
+        Left = 0
+        Top = 33
+        Width = 621
+        Height = 216
+        BackWall.Pen.Visible = False
+        Legend.Visible = False
+        Title.Text.Strings = (
+          'TChart')
+        Title.Visible = False
+        BottomAxis.AxisValuesFormat = '#,##0.######'
+        BottomAxis.LabelsExponent = True
+        BottomAxis.Logarithmic = True
+        BottomAxis.Title.Caption = #1042#1088#1077#1084#1103', '#1084#1082#1089
+        DepthAxis.Automatic = False
+        DepthAxis.AutomaticMaximum = False
+        DepthAxis.AutomaticMinimum = False
+        DepthAxis.Maximum = 0.500000000000000000
+        DepthAxis.Minimum = -0.500000000000000000
+        DepthTopAxis.Automatic = False
+        DepthTopAxis.AutomaticMaximum = False
+        DepthTopAxis.AutomaticMinimum = False
+        DepthTopAxis.Maximum = 0.500000000000000000
+        DepthTopAxis.Minimum = -0.500000000000000000
+        Frame.Visible = False
+        RightAxis.Automatic = False
+        RightAxis.AutomaticMaximum = False
+        RightAxis.AutomaticMinimum = False
+        View3D = False
+        Zoom.Pen.Color = clBlack
+        Align = alClient
+        BevelOuter = bvNone
+        Color = clWhite
+        ParentShowHint = False
+        ShowHint = True
+        TabOrder = 0
+        OnMouseMove = Chart5MouseMove
+        ExplicitLeft = 113
+        ExplicitTop = 44
+        ExplicitWidth = 313
+        ExplicitHeight = 231
+        PrintMargins = (
+          15
+          20
+          15
+          20)
+        ColorPaletteIndex = 5
+        object LineSeries3: TLineSeries
+          Marks.Arrow.Visible = True
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Callout.Arrow.Visible = True
+          Marks.Visible = False
+          SeriesColor = clRed
+          LinePen.Width = 2
+          LinePen.Visible = False
+          Pointer.InflateMargins = True
+          Pointer.Pen.Visible = False
+          Pointer.Shadow.Color = 10855845
+          Pointer.Style = psCircle
+          Pointer.Transparency = 50
+          Pointer.Visible = True
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+        end
+        object Series5: TLineSeries
+          Marks.Arrow.Visible = True
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Callout.Arrow.Visible = True
+          Marks.Visible = False
+          SeriesColor = clBlack
+          LinePen.Width = 2
+          Pointer.HorizSize = 2
+          Pointer.InflateMargins = True
+          Pointer.Pen.Visible = False
+          Pointer.Style = psCircle
+          Pointer.VertSize = 2
+          Pointer.Visible = False
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+        end
+      end
+      object Panel8: TPanel
+        Left = 0
+        Top = 0
+        Width = 621
+        Height = 33
+        Align = alTop
+        BevelOuter = bvNone
+        Constraints.MaxHeight = 33
+        Constraints.MinHeight = 33
+        TabOrder = 1
+        ExplicitTop = 3
+        object Label2: TLabel
+          Left = 15
+          Top = 3
+          Width = 12
+          Height = 23
+          Caption = '  '
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -19
+          Font.Name = 'Tahoma'
+          Font.Style = []
+          ParentFont = False
+        end
+        object Label3: TLabel
+          Left = 15
+          Top = 25
+          Width = 12
+          Height = 23
+          Caption = '  '
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -19
+          Font.Name = 'Tahoma'
+          Font.Style = []
+          ParentFont = False
+        end
+        object Button9: TButton
+          Left = 153
+          Top = 6
+          Width = 120
+          Height = 25
+          Caption = #1044#1086#1073#1072#1074#1080#1090#1100' '#1074' '#1086#1090#1095#1077#1090
+          TabOrder = 0
+          Visible = False
+          OnClick = Button9Click
+        end
+        object ToolBar2: TToolBar
+          Left = 491
+          Top = 0
+          Width = 130
+          Height = 33
+          Align = alRight
+          ButtonHeight = 30
+          ButtonWidth = 127
+          Caption = 'ToolBar2'
+          DisabledImages = ImageList5
+          Images = ImageList4
+          List = True
+          ShowCaptions = True
+          TabOrder = 1
+          ExplicitHeight = 55
+          object ToolButton7: TToolButton
+            Left = 0
+            Top = 0
+            Caption = #1044#1086#1073#1072#1074#1080#1090#1100' '#1074' '#1086#1090#1095#1077#1090
+            ImageIndex = 0
+            OnClick = Button9Click
+          end
+        end
+      end
+    end
+  end
+  object Panel5: TPanel
+    Left = 624
+    Top = 38
+    Width = 587
+    Height = 799
+    Align = alClient
+    BevelEdges = []
+    BevelKind = bkSoft
+    BevelOuter = bvNone
+    Caption = 'Panel5'
+    TabOrder = 2
+    ExplicitLeft = 901
+    ExplicitTop = 74
+    ExplicitWidth = 110
+    object Splitter3: TSplitter
+      Left = 0
+      Top = 349
+      Width = 587
+      Height = 3
+      Cursor = crVSplit
+      Align = alBottom
+      ExplicitTop = 0
+      ExplicitWidth = 499
+    end
+    object Memo1: TMemo
+      Left = 0
+      Top = 352
+      Width = 587
+      Height = 447
+      Align = alBottom
+      BorderStyle = bsNone
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
+      ParentFont = False
+      ScrollBars = ssVertical
+      TabOrder = 0
+      ExplicitLeft = 3
+      ExplicitTop = 358
+    end
+    object ToolBar5: TToolBar
+      Left = 0
+      Top = 0
+      Width = 587
+      Height = 22
+      AutoSize = True
+      Caption = 'ToolBar5'
+      Images = ImageList2
+      TabOrder = 1
+      object ToolButton12: TToolButton
+        Left = 0
+        Top = 0
+        Caption = 'ToolButton12'
+        ImageIndex = 0
+      end
+      object ToolButton13: TToolButton
+        Left = 23
+        Top = 0
+        Caption = 'ToolButton13'
+        ImageIndex = 1
+      end
+      object ToolButton14: TToolButton
+        Left = 46
+        Top = 0
+        Caption = 'ToolButton14'
+        ImageIndex = 2
+      end
     end
   end
   object Timer1: TTimer
@@ -1277,7 +1288,7 @@ object MainForm: TMainForm
   object SaveDialog1: TSaveDialog
     Filter = 'IDAT|*.idat|'#1090#1077#1082#1089#1090#1086#1074#1099#1077'|*.txt'
     Left = 784
-    Top = 232
+    Top = 216
   end
   object ImageList1: TImageList
     Height = 32
@@ -4801,7 +4812,7 @@ object MainForm: TMainForm
   end
   object XMLDocument1: TXMLDocument
     Left = 688
-    Top = 224
+    Top = 232
     DOMVendorDesc = 'MSXML'
   end
   object ImageList4: TImageList

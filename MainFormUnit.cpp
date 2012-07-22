@@ -49,7 +49,7 @@ __fastcall TMainForm::TMainForm(TComponent* Owner) : TForm(Owner) {
     vt = new TVirtualStringTree(this);
 	vt->Parent = Panel5;
 	vt->Align = alClient;
-	vt->Header->Style = hsFlatButtons;
+	vt->Header->Style = hsPlates;
 	vt->Header->Options << hoVisible << hoColumnResize << hoAutoSpring;
 	vt->TreeOptions->PaintOptions <<  toShowHorzGridLines <<  toShowVertGridLines << toFullVertGridLines << toShowButtons;
 	vt->TreeOptions->SelectionOptions <<  toFullRowSelect << toMultiSelect << toRightClickSelect /*<< toCenterScrollIntoView*/;
@@ -2020,9 +2020,14 @@ void __fastcall TMainForm::Button8Click(TObject *Sender) {
 
 // ---------------------------------------------------------------------------
 void __fastcall TMainForm::FormResize(TObject *Sender) {
-	Panel4->Width = Width / 2;
-	Panel5->Height = (Height-ToolBar1->Height) /3;
-	Panel7->Height = (Height-ToolBar1->Height) /3;
+	Panel4->Height = (int)((float)(Height-ToolBar1->Height) * 1.0f / 3.0f);
+	Panel12->Height = (int)((float)(Height-ToolBar1->Height) * 1.0f / 3.0f);
+	Panel7->Height = (int)((float)(Height-ToolBar1->Height) * 1.0f / 3.0f);
+
+	Memo1->Height = (int)((float)(Height-ToolBar1->Height) * 1.0f / 4.0f);
+//	Panel5->Width = Width/2;
+
+//	Panel7->Height = (Height-ToolBar1->Height) /3;
 	Panel10->Width = Width / 2;
 //	Memo1->Height = 100;
 }
@@ -2384,4 +2389,6 @@ void __fastcall TMainForm::open_dir_with_data_pop_upClick(TObject *Sender)
 
 }
 //---------------------------------------------------------------------------
+
+
 
