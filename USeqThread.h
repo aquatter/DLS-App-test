@@ -42,6 +42,7 @@ public:
 	bool DoMean_;
 	float mean_temp;
 	bool *please_stop_;
+    DWORD start_time;
 
     double __fastcall GetRate();
 	void __fastcall CalculateACF();
@@ -54,7 +55,7 @@ public:
 	void __fastcall FinishMean();
 	void __fastcall SaveData();
 	int __fastcall OpenData(int n_seq, int n_rec, bool GetCnt);
-	void __fastcall SaveAcf(bool k = true);
+	void __fastcall SaveAcf(bool it_is_not_mean = true);
 	void __fastcall SaveAcf(int ns, int nr);
 	bool __fastcall ChangeAngle();
 	bool __fastcall GetPhysicalSnapShot();

@@ -153,6 +153,8 @@ __published:	// IDE-managed Components
 	TToolButton *ToolButton10;
 	TMenuItem *N7;
 	TToolButton *ToolButton11;
+	TButton *Button10;
+	TMenuItem *open_dir_with_data_pop_up;
 	void __fastcall Timer1Timer(TObject *Sender);
 	void __fastcall chckbxLFDClick(TObject *Sender);
 	void __fastcall chckbxFEUClick(TObject *Sender);
@@ -205,6 +207,8 @@ __published:	// IDE-managed Components
 	void __fastcall ToolButton9Click(TObject *Sender);
 	void __fastcall ToolButton10Click(TObject *Sender);
 	void __fastcall N7Click(TObject *Sender);
+	void __fastcall Button10Click(TObject *Sender);
+	void __fastcall open_dir_with_data_pop_upClick(TObject *Sender);
 
 
 

@@ -26,6 +26,7 @@
 #include "UDeviceInitThread.h"
 #include "UTAdjustAngleAperForm.h"
 #include "UTestRecForm.h"
+#include "ShellApi.h"
 
 // ---------------------------------------------------------------------------
 #pragma package(smart_init)
@@ -51,7 +52,7 @@ __fastcall TMainForm::TMainForm(TComponent* Owner) : TForm(Owner) {
 	vt->Header->Style = hsFlatButtons;
 	vt->Header->Options << hoVisible << hoColumnResize << hoAutoSpring;
 	vt->TreeOptions->PaintOptions <<  toShowHorzGridLines <<  toShowVertGridLines << toFullVertGridLines << toShowButtons;
-	vt->TreeOptions->SelectionOptions <<  toFullRowSelect << toMultiSelect << toRightClickSelect << toCenterScrollIntoView;
+	vt->TreeOptions->SelectionOptions <<  toFullRowSelect << toMultiSelect << toRightClickSelect /*<< toCenterScrollIntoView*/;
 	vt->TreeOptions->AnimationOptions << toAnimatedToggle << toAdvancedAnimatedToggle;
 	vt->NodeDataSize=sizeof(TProjectData::TVtPD);
 	vt->DefaultText = "";
@@ -1953,14 +1954,20 @@ void __fastcall TMainForm::Button8Click(TObject *Sender) {
 	int n = pd_vector.size();
 	pd_vector.push_back(TProjectData());
 
-	/*
+
 	pd_vector[n].Name = AcfParams.File_Name;
-	pd_vector[n].Path = AcfParams.Save_Dir+"\\";
+	pd_vector[n].Path = AcfParams.Save_Dir;
 	pd_vector[n].Name_Sol = AcfParams.Name_Sol;
 	pd_vector[n].Name_Spec = AcfParams.Name_Spec;
-	SaveProject(&pd_vector[n]);
-	return;
-	*/
+	pd_vector[n].id = get_uuid();
+
+	if (!CreateDir(pd_vector[n].get_path()))
+	{
+		pd_vector.pop_back();
+		return;
+	}
+
+    Memo1->Clear();
 
 	TTimerThread *t = new TTimerThread(true);
 	t->FreeOnTerminate = true;
@@ -2346,4 +2353,35 @@ void __fastcall TMainForm::VtMouseUp(System::TObject* Sender, TMouseButton Butto
 	}                                                     */
 }
 
+
+void __fastcall TMainForm::Button10Click(TObject *Sender)
+{
+//	ShowMessage("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n tyr pyr");
+
+//	UnicodeString file_name = Format("data_%.3d_%.3d.idata", ARRAYOFCONST((5, 234)));
+//	file_name.Format("data_%.3d_%.3d.idata", ARRAYOFCONST((5, 234)));
+
+//   pd_vector[0].id = get_uuid();
+//   SaveProject(&pd_vector[0]);
+
+   ShellExecuteA(Handle, "explore", pd_vector[0].get_path().t_str(), NULL, NULL, SW_SHOW);
+  //
+//  ShowMessage(file_name);
+}
+//---------------------------------------------------------------------------
+
+
+void __fastcall TMainForm::open_dir_with_data_pop_upClick(TObject *Sender)
+{
+	TVirtualNode *t = vt->GetFirstSelected(false);
+
+	if (t)
+	{
+		TProjectData::TVtPD *d = (TProjectData::TVtPD *)vt->GetNodeData(t);
+		if (d)
+			ShellExecuteA(Handle, "explore", d->pd->get_path().t_str(), NULL, NULL, SW_SHOW);
+    }
+
+}
+//---------------------------------------------------------------------------
 

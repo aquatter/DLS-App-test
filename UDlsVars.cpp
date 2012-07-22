@@ -15,6 +15,7 @@
 #include "DateUtils.hpp"
 #include "UTestRecForm.h"
 #include "UDeviceInitThread.h"
+#include "XMLDoc.hpp"
 
 //---------------------------------------------------------------------------
 
@@ -644,20 +645,24 @@ bool OpenProject(UnicodeString Name, TProjectData &pd)
 {
 
 	//MainForm->ListView3->Clear();
-	UnicodeString Path = ExtractFileDir(Name) + "\\";
+	UnicodeString Path = ExtractFileDir(Name);
 	pd.Path  = Path;
 	pd.Name = ChangeFileExt(ExtractFileName(Name), "");
 
 	_di_IXMLNode root, seq_node, rec_node;
 	//TListItem *item;
 
+	MainForm->XMLDocument1->Active = true;
 	MainForm->XMLDocument1->LoadFromFile(Name);
+	
+
 	root = MainForm->XMLDocument1->ChildNodes->Nodes["Dynamic_Light_Scattering_XML_Document"];
 	int n = root->ChildNodes->Count;
 
 	pd.Date = root->ChildNodes->Nodes["Date"]->Text;
 	pd.Name_Spec = root->ChildNodes->Nodes["Name"]->Text;
 	pd.Name_Sol = root->ChildNodes->Nodes["Solution"]->Text;
+	pd.id = root->ChildNodes->Nodes["Id"]->Text;
 
 	seq_node = root->ChildNodes->Nodes["Series"];
     seq_node = root->ChildNodes->First();
@@ -673,13 +678,13 @@ bool OpenProject(UnicodeString Name, TProjectData &pd)
 					TProjectData::TRec &rec_ = seq_.Add();
 					UnicodeString _name  = rec_node->ChildNodes->Nodes["ACF"]->Text;
 					UnicodeString _name_data  = rec_node->ChildNodes->Nodes["Data"]->Text;
-					if (FileExists(Path+_name_data))
-						ExtractDataParams(Path+_name_data, &rec_.DataParams);
+					if (FileExists(pd.get_path() + _name_data))
+						ExtractDataParams(pd.get_path() + _name_data, &rec_.DataParams);
 					else
-						ShowMessage("Файл не найден: \n"+Path+_name_data);
+						ShowMessage("Файл не найден: \n" + pd.get_path() + _name_data);
 
-					rec_.Acf_ = Path+_name;
-					rec_.Data_ = Path+_name_data;
+					rec_.Acf_ = pd.get_path() + _name;
+					rec_.Data_ = pd.get_path() + _name_data;
 
 					UnicodeString s = rec_node->ChildNodes->Nodes["a0"]->Text;
 					if (s != "") rec_.a0 = CheckString(s);
@@ -705,7 +710,7 @@ bool OpenProject(UnicodeString Name, TProjectData &pd)
 			}
 
 			UnicodeString _name  = seq_node->ChildNodes->Nodes["Mean_ACF"]->Text;
-            seq_.Mean_Acf_ = Path+_name;
+            seq_.Mean_Acf_ = pd.get_path() + _name;
             UnicodeString s = seq_node->ChildNodes->Nodes["a0"]->Text;
             if (s != "") seq_.a0 = CheckString(s);
 			s = seq_node->ChildNodes->Nodes["a1"]->Text;
@@ -1145,6 +1150,7 @@ void SaveProject(TProjectData *pd_)
 	root->AddChild("Date")->Text = Today().DateString();
 	root->AddChild("Name")->Text = pd_->Name_Spec;
 	root->AddChild("Solution")->Text = pd_->Name_Sol;
+	root->AddChild("Id")->Text = pd_->id;
 
 	for (size_t i=0; i < (*pd_).SizeOf(); i++) {
 		seq_node = root->AddChild("Series");
@@ -1172,7 +1178,18 @@ void SaveProject(TProjectData *pd_)
 
 	}
 
-	MainForm->XMLDocument1->SaveToFile(pd_->Path+pd_->Name+".dls");
+	UnicodeString xml_string;
+
+	MainForm->XMLDocument1->SaveToXML(xml_string);
+	xml_string = FormatXMLData( xml_string );
+	MainForm->XMLDocument1->LoadFromXML(xml_string);
+
+    MainForm->XMLDocument1->Options << doNodeAutoIndent;
+    MainForm->XMLDocument1->Encoding = "UTF-8";
+	MainForm->XMLDocument1->Version = "1.0";
+    MainForm->XMLDocument1->NodeIndentStr = "\t";
+
+	MainForm->XMLDocument1->SaveToFile(pd_->Path+ "\\" + pd_->Name+".dls");
 
 	MainForm->XMLDocument1->XML->Clear();
 	MainForm->XMLDocument1->Active = false;
@@ -1216,4 +1233,15 @@ void getRateGraph(WORD *Data, int n0, std::vector<double> &rate, std::vector<dou
 
 }
 
+UnicodeString get_uuid()
+{
+	HINSTANCE lib = LoadLibraryA("ptree.dll");
+	pUuid_str uuid_str = (pUuid_str)GetProcAddress(lib, "uuid_str");
 
+	char *str = uuid_str();
+	UnicodeString s = str;
+
+	FreeLibrary(lib);
+
+	return "{" + s + "}";
+}

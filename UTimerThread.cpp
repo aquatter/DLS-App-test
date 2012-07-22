@@ -66,7 +66,7 @@ void __fastcall TTimerThread::Draw() {
     	break;
 	case 5:
 	{
-		UnicodeString q = pd_->Path + pd_->Name + ".dls";
+		UnicodeString q = pd_->Path + "\\" + pd_->Name + ".dls";
 		pd_->Clear();
 		OpenProject(q, *pd_);
 		MainForm->off(true);
@@ -97,17 +97,14 @@ void __fastcall TTimerThread::Execute() {
 		case from_device:
 		{
 		try {
-
-
-
 			please_stop_ = false;
 			Please_stop_form->please_stop = &please_stop_;
             Sync(9);
 
-			pd_->Name = AcfParams.File_Name;
-			pd_->Path = AcfParams.Save_Dir+"\\";
-			pd_->Name_Sol = AcfParams.Name_Sol;
-			pd_->Name_Spec = AcfParams.Name_Spec;
+//			pd_->Name = AcfParams.File_Name;
+//			pd_->Path = AcfParams.Save_Dir;
+//			pd_->Name_Sol = AcfParams.Name_Sol;
+//			pd_->Name_Spec = AcfParams.Name_Spec;
 
 			Sync(0);
 			Sync(1, "Инициализация устройства...");
@@ -188,6 +185,10 @@ void __fastcall TTimerThread::Execute() {
 				throw std::exception();
 			}
 
+			DWORD time_to_wait = AcfParams.seq_time*1000;
+            DWORD overall_start_time = GetTickCount();
+
+
 			for (int i = 0; i < AcfParams.n_seq; i++)
 			{
                 if (please_stop_)
@@ -208,13 +209,20 @@ void __fastcall TTimerThread::Execute() {
 				Seq->mode = mode;
 				Seq->seq_ = &pd_->Add();
 				Seq->pd_ = pd_;
+                Seq->start_time = overall_start_time;
 				Seq->wait_event = wait_event;
 				Seq->please_stop_ = &please_stop_;
 
 				Seq->Start();
 				Sleep(10);
 
-				WaitForSingleObject(q, AcfParams.seq_time);
+				DWORD start_time = GetTickCount();
+
+				while ( (GetTickCount() - start_time) < time_to_wait )
+				{ Sleep(10); };
+
+
+//				WaitForSingleObject(q, AcfParams.seq_time*1000);
 				WaitForSingleObject(wait_event, THREAD_TIMEOUT);
 
 				Seq->Free();
@@ -295,6 +303,7 @@ void __fastcall TTimerThread::SaveProject() {
 	root->AddChild("Date")->Text = Today().DateString();
 	root->AddChild("Name")->Text = pd_->Name_Spec;
 	root->AddChild("Solution")->Text = pd_->Name_Sol;
+    root->AddChild("Id")->Text = pd_->id;
 
 	for (size_t i=0; i < (*pd_).SizeOf(); i++) {
 		seq_node = root->AddChild("Series");
@@ -349,7 +358,19 @@ void __fastcall TTimerThread::SaveProject() {
 	}
 	*/
 //	s=AcfParams.Save_Dir+"\\"+AcfParams.File_Name+".dls";
-	s = pd_->Path+pd_->Name+".dls";
+
+    UnicodeString xml_string;
+
+    MainForm->XMLDocument1->SaveToXML(xml_string);
+    xml_string = FormatXMLData( xml_string );
+    MainForm->XMLDocument1->LoadFromXML(xml_string);
+
+    MainForm->XMLDocument1->Options << doNodeAutoIndent;
+	MainForm->XMLDocument1->Encoding = "UTF-8";
+	MainForm->XMLDocument1->Version = "1.0";
+	MainForm->XMLDocument1->NodeIndentStr = "\t";
+
+	s = pd_->Path + "\\" + pd_->Name+".dls";
 	MainForm->XMLDocument1->SaveToFile(s);
 
 	MainForm->XMLDocument1->XML->Clear();

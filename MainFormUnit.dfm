@@ -3,7 +3,7 @@ object MainForm: TMainForm
   Top = 186
   Caption = #1055#1088#1080#1073#1086#1088' '#1076#1080#1085#1072#1084#1080#1095#1077#1089#1082#1086#1075#1086' '#1088#1072#1089#1089#1077#1103#1085#1080#1103
   ClientHeight = 837
-  ClientWidth = 965
+  ClientWidth = 1211
   Color = clWindow
   Ctl3D = False
   Font.Charset = DEFAULT_CHARSET
@@ -31,7 +31,7 @@ object MainForm: TMainForm
   object Splitter2: TSplitter
     Left = 0
     Top = 327
-    Width = 965
+    Width = 1211
     Height = 3
     Cursor = crVSplit
     Align = alTop
@@ -53,7 +53,7 @@ object MainForm: TMainForm
   object ToolBar1: TToolBar
     Left = 0
     Top = 0
-    Width = 965
+    Width = 1211
     Height = 38
     AutoSize = True
     ButtonHeight = 38
@@ -70,6 +70,7 @@ object MainForm: TMainForm
     ShowHint = True
     TabOrder = 0
     Transparent = False
+    ExplicitWidth = 965
     object ToolButton6: TToolButton
       Left = 0
       Top = 0
@@ -718,7 +719,7 @@ object MainForm: TMainForm
   object Panel5: TPanel
     Left = 0
     Top = 38
-    Width = 965
+    Width = 1211
     Height = 289
     Align = alTop
     BevelEdges = []
@@ -726,6 +727,7 @@ object MainForm: TMainForm
     BevelOuter = bvNone
     Caption = 'Panel5'
     TabOrder = 2
+    ExplicitWidth = 965
     object Splitter1: TSplitter
       Left = 489
       Top = 0
@@ -848,6 +850,8 @@ object MainForm: TMainForm
         Constraints.MaxHeight = 55
         Constraints.MinHeight = 55
         TabOrder = 1
+        ExplicitLeft = -6
+        ExplicitTop = -3
         object Label2: TLabel
           Left = 15
           Top = 3
@@ -912,11 +916,12 @@ object MainForm: TMainForm
   object Panel6: TPanel
     Left = 0
     Top = 330
-    Width = 965
+    Width = 1211
     Height = 507
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 3
+    ExplicitWidth = 965
     object Splitter3: TSplitter
       Left = 505
       Top = 0
@@ -929,7 +934,7 @@ object MainForm: TMainForm
     object Memo1: TMemo
       Left = 508
       Top = 0
-      Width = 457
+      Width = 703
       Height = 507
       Align = alClient
       BorderStyle = bsNone
@@ -941,6 +946,7 @@ object MainForm: TMainForm
       ParentFont = False
       ScrollBars = ssVertical
       TabOrder = 0
+      ExplicitWidth = 457
     end
     object Panel10: TPanel
       Left = 0
@@ -1251,6 +1257,15 @@ object MainForm: TMainForm
         end
       end
     end
+    object Button10: TButton
+      Left = 643
+      Top = 176
+      Width = 75
+      Height = 25
+      Caption = 'Button10'
+      TabOrder = 2
+      OnClick = Button10Click
+    end
   end
   object Timer1: TTimer
     Enabled = False
@@ -1261,8 +1276,8 @@ object MainForm: TMainForm
   end
   object SaveDialog1: TSaveDialog
     Filter = 'IDAT|*.idat|'#1090#1077#1082#1089#1090#1086#1074#1099#1077'|*.txt'
-    Left = 768
-    Top = 224
+    Left = 784
+    Top = 232
   end
   object ImageList1: TImageList
     Height = 32
@@ -1270,7 +1285,7 @@ object MainForm: TMainForm
     Left = 504
     Top = 65
     Bitmap = {
-      494C010108000A000C0020002000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010108001800180020002000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       00000000000036000000280000008000000060000000010020000000000000C0
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -2869,7 +2884,7 @@ object MainForm: TMainForm
     Left = 535
     Top = 66
     Bitmap = {
-      494C0101060008000C0010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010106001800180010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000002000000001002000000000000020
       00000000000000000000000000000000000039724B0039724B0039724B00326C
       4600326C4600326C46002B6541002B6541002B654100255C3700255C3700255C
@@ -3160,6 +3175,10 @@ object MainForm: TMainForm
       Visible = False
       OnClick = N5Click
     end
+    object open_dir_with_data_pop_up: TMenuItem
+      Caption = #1054#1090#1082#1088#1099#1090#1100' '#1076#1080#1088#1077#1082#1090#1086#1088#1080#1102' '#1089' '#1076#1072#1085#1085#1099#1084#1080
+      OnClick = open_dir_with_data_pop_upClick
+    end
     object N7: TMenuItem
       Caption = #1059#1076#1072#1083#1080#1090#1100
       OnClick = N7Click
@@ -3189,7 +3208,7 @@ object MainForm: TMainForm
     Left = 571
     Top = 69
     Bitmap = {
-      494C010108000A000C0020002000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010108001800180020002000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       00000000000036000000280000008000000060000000010020000000000000C0
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -4791,7 +4810,7 @@ object MainForm: TMainForm
     Left = 608
     Top = 64
     Bitmap = {
-      494C010104000600040018001800FFFFFFFFFF00FFFFFFFFFFFFFFFF424D3600
+      494C010104001000100018001800FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000600000003000000001002000000000000048
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -5389,7 +5408,8 @@ object MainForm: TMainForm
       07E00001F0000FC00001E00007E00001F0000FE00001E0000FE00001F0000FE0
       0001E0000FE00003F0001FF00003F0000FE00003F0003FF80007F0001FE00007
       F0007FFC000FF0003FE0003FF007FFFF001FF000FFE007FFF8FFFFFFE0FFF03F
-      FFF1FFFFFFFFFFFFFFFFFFFFFFFFFFFF}
+      FFF1FFFFFFFFFFFFFFFFFFFFFFFFFFFF00000000000000000000000000000000
+      000000000000}
   end
   object ImageList5: TImageList
     Height = 24
@@ -5397,7 +5417,7 @@ object MainForm: TMainForm
     Left = 640
     Top = 64
     Bitmap = {
-      494C010104000600040018001800FFFFFFFFFF00FFFFFFFFFFFFFFFF424D3600
+      494C010104001000100018001800FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000600000003000000001002000000000000048
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -5995,6 +6015,7 @@ object MainForm: TMainForm
       07E00001F0000FC00001E00007E00001F0000FE00001E0000FE00001F0000FE0
       0001E0000FE00003F0001FF00003F0000FE00003F0003FF80007F0001FE00007
       F0007FFC000FF0003FE0003FF007FFFF001FF000FFE007FFF8FFFFFFE0FFF03F
-      FFF1FFFFFFFFFFFFFFFFFFFFFFFFFFFF}
+      FFF1FFFFFFFFFFFFFFFFFFFFFFFFFFFF00000000000000000000000000000000
+      000000000000}
   end
 end

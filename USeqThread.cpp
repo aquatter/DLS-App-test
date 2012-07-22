@@ -437,10 +437,12 @@ void __fastcall TSeqThread::Draw() {
 
 			if (AcfParams.Kinetics)
 			{
+				/*
 				MainForm->Chart6->LeftAxis->Title->Caption = "Средний диаметр, нм.";
 				MainForm->Chart6->BottomAxis->Title->Caption = "Номер измерения";
 				MainForm->LineSeries4->Add(AcfParams.x_pcs);
 				MainForm->LineSeries5->Add(AcfParams.x_pcs);
+                */
 			}
 			else
 			{
@@ -487,15 +489,17 @@ void __fastcall TSeqThread::Draw() {
 			MainForm->Memo1->Lines->Add(s);
 			MainForm->Label2->Caption = s;
 			MainForm->Memo1->Lines->Add("");
-			/*
+
 			if (AcfParams.Kinetics)
 			{
-				MainForm->Chart6->LeftAxis->Title->Caption = "Средний диаметр, нм.";
-				MainForm->Chart6->BottomAxis->Title->Caption = "Номер измерения";
-				MainForm->LineSeries4->Add(AcfParams.x_pcs);
-				MainForm->LineSeries5->Add(AcfParams.x_pcs);
+				MainForm->Chart6->LeftAxis->Title->Caption = "Средний по серии диаметр, нм.";
+				MainForm->Chart6->BottomAxis->Title->Caption = "Время, с.";
+                float time = 1e-3f*(GetTickCount() - start_time);
+
+				MainForm->LineSeries4->AddXY(time, AcfParams.x_pcs);
+				MainForm->LineSeries5->AddXY(time, AcfParams.x_pcs);
 			}
-            */
+
 			break;
 		case 4: MainForm->Memo1->Lines->Add(s); break;
 
@@ -557,12 +561,12 @@ bool CalculateCumulants(double *acf_app, TDataParams DataParams_){
 	{
 		cum_t[i-ind_left] = acf_t.a[i];
 
-		if (acf.a[i] < 0.0)
+		if (acf.a[i] <= 0.0)
 		{
 			cum[i-ind_left] = 1e-3;
 			continue;
 		}
-		if (acf.a[i] > 1.0)
+		if (acf.a[i] >= 1.0)
 		{
 			cum[i-ind_left] = 1.0;
 			continue;
@@ -703,12 +707,12 @@ bool CalculateCumulants(double *acf_app){
 	for (int i = ind_left; i < ind_right; i++) {
 		cum_t[i-ind_left] = acf_t.a[i];
 
-		if (acf.a[i] < 0.0)
+		if (acf.a[i] <= 0.0)
 		{
 			cum[i-ind_left] = 1e-3;
 			continue;
 		}
-		if (acf.a[i] > 1.0)
+		if (acf.a[i] >= 1.0)
 		{
 			cum[i-ind_left] = 1.0;;
             continue;
@@ -893,9 +897,15 @@ void __fastcall TSeqThread::FinishMean(){
 
 void __fastcall TSeqThread::SaveData(){
 
-	char buff[50];
-	sprintf(buff, "_%.3d_%.3d", num_seq+1, num_rec+1);
-	s = AcfParams.Save_Dir + "\\" + AcfParams.File_Name + buff+".idata";
+//	char buff[50];
+	UnicodeString file_name = Format("data_%.3d_%.3d.idata", ARRAYOFCONST((num_seq+1, num_rec+1)));
+//	file_name.Format("data_%.3d_%.3d.idata", num_seq+1, num_rec+1);
+
+//	sprintf(buff, "data_%.3d_%.3d.idata", num_seq+1, num_rec+1);
+
+	s = pd_->get_path() + file_name;
+
+//	s = AcfParams.Save_Dir + "\\" + AcfParams.File_Name + buff+".idata";
 	rec_->Data_ = s;
 	int f = FileCreate(s);
 	FileWrite(f, &n0, sizeof(int));
@@ -911,18 +921,25 @@ void __fastcall TSeqThread::SaveData(){
 
 }
 
-void __fastcall TSeqThread::SaveAcf(bool k){
+void __fastcall TSeqThread::SaveAcf(bool it_is_not_mean){
 
-	char buff[50];
+//	char buff[50];
 
-	if (k)
-		sprintf(buff, "_%.3d_%.3d", num_seq+1, num_rec+1);
+	UnicodeString file_name;
+
+	if (it_is_not_mean)
+		file_name = Format("acf_%.3d_%.3d.tdf", ARRAYOFCONST((num_seq+1, num_rec+1)));
+//		sprintf(buff, "acf_%.3d_%.3d.tdf", num_seq+1, num_rec+1);
 	else
-		sprintf(buff, "_%.3d", num_seq+1);
+		file_name = Format("mean_acf_%.3d.tdf", ARRAYOFCONST((num_seq+1)));
 
-	s = AcfParams.Save_Dir + "\\" + AcfParams.File_Name + buff+".tdf";
+//		sprintf(buff, "mean_acf_%.3d.tdf", num_seq+1);
 
-	if (k)
+	s = pd_->get_path() + file_name;
+
+//	s = AcfParams.Save_Dir + "\\" + AcfParams.File_Name + buff+".tdf";
+
+	if (it_is_not_mean)
 		rec_->Acf_ = s;
 	else
 		seq_->Mean_Acf_ = s;
@@ -940,13 +957,18 @@ void __fastcall TSeqThread::SaveAcf(bool k){
 
 void __fastcall TSeqThread::SaveAcf(int ns, int nr){
 
-	char buff[50];
-	if (nr != -1)
-		sprintf(buff, "_%.3d_%.3d", ns+1, nr+1);
-	else
-		sprintf(buff, "_%.3d", ns+1);
+//	char buff[50];
+	UnicodeString file_name;
 
-	s = pd_->Path + "\\" + pd_->Name + buff+".tdf";
+	if (nr != -1)
+		file_name = Format("acf_%.3d_%.3d.tdf", ARRAYOFCONST((ns+1, nr+1)));
+//		sprintf(buff, "acf_%.3d_%.3d.tdf", ns+1, nr+1);
+	else
+	    file_name = Format("mean_acf_%.3d.tdf", ARRAYOFCONST((ns+1)));
+//		sprintf(buff, "mean_acf_%.3d.tdf", ns+1);
+
+	s = pd_->get_path() + file_name;
+//	s = pd_->Path + "\\" + pd_->Name + buff+".tdf";
 
 	SaveAcf2Tdf(s, DataParams_);
 	SaveAcf2Crv(s);
@@ -997,8 +1019,8 @@ void __fastcall TSeqThread::SetParams(TSeqThreadParams params)
 
 int __fastcall TSeqThread::OpenData(int n_seq, int n_rec, bool GetCnt)
 {
-	char buff[50];
-    sprintf(buff, "_%.3d_%.3d", n_seq+1, n_rec+1);
+//	char buff[50];
+//    sprintf(buff, "_%.3d_%.3d", n_seq+1, n_rec+1);
 //	UnicodeString s = params_.Save_Dir + "\\" + params_.File_Name + buff+".idata";
 	s = (*pd_)[n_seq][n_rec].Data_;
 

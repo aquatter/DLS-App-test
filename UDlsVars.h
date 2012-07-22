@@ -30,6 +30,10 @@ typedef void(__stdcall*pDimVector)(void*a, int n);
 typedef void(__stdcall*pDelVector)(void*a, int n);
 typedef double(*pExp2)(double x);
 
+typedef void(__stdcall *pUuid)(unsigned char *);
+typedef char *(__stdcall *pUuid_str)();
+typedef void(__stdcall *pPtree_save)(char *);
+
 
 class Seq_Exception : public Exception
 {
@@ -171,6 +175,7 @@ void UpdateVt( TVirtualStringTree *vt );
 void RegisterExt();
 bool CheckExistProject(UnicodeString FileName);
 void getRateGraph(WORD *Data, int n0, std::vector<double> &rate, std::vector<double> &time);
+UnicodeString get_uuid();
 
 
 typedef struct ThreadData

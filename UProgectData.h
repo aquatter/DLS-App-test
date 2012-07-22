@@ -160,10 +160,16 @@ class TProjectData
 	TSeqVect seq_;
 	UnicodeString Name;
 	UnicodeString Path;
+	UnicodeString id;
 	UnicodeString Name_Spec;
 	UnicodeString Name_Sol;
 	UnicodeString Date;
 	int num;
+
+	UnicodeString get_path()
+	{
+		return Path + "\\" + id + "\\";
+    }
 
 	size_t SizeOf()
 	{
