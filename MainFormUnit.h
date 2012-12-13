@@ -152,8 +152,6 @@ __published:	// IDE-managed Components
 	TSplitter *Splitter4;
 	TToolBar *ToolBar5;
 	TToolButton *ToolButton12;
-	TToolButton *ToolButton13;
-	TToolButton *ToolButton14;
 	void __fastcall Timer1Timer(TObject *Sender);
 	void __fastcall chckbxLFDClick(TObject *Sender);
 	void __fastcall chckbxFEUClick(TObject *Sender);
@@ -208,6 +206,7 @@ __published:	// IDE-managed Components
 	void __fastcall N7Click(TObject *Sender);
 	void __fastcall Button10Click(TObject *Sender);
 	void __fastcall open_dir_with_data_pop_upClick(TObject *Sender);
+	void __fastcall ToolButton12Click(TObject *Sender);
 
 
 
@@ -252,7 +251,7 @@ private:	// User declarations
 
 public:		// User declarations
 	TVirtualStringTree *vt;
-    TProjectData *pd__;
+	TProjectData *pd__;
 	void __fastcall VtGetText(TBaseVirtualTree *Sender, PVirtualNode Node,
 		  TColumnIndex Column, TVSTTextType TextType, UnicodeString &CellText);
 	void __fastcall VtDblClick(TObject *Sender);

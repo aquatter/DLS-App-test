@@ -170,6 +170,7 @@ __published:	// IDE-managed Components
 	void __fastcall Button6Click(TObject *Sender);
 	void __fastcall ToolButton1Click(TObject *Sender);
 	void __fastcall Button7Click(TObject *Sender);
+	void __fastcall Button9Click(TObject *Sender);
 
 private:	// User declarations
 public:		// User declarations

@@ -426,7 +426,7 @@ void __fastcall TSeqThread::Draw() {
 				MainForm->Series5->AddXY(acf_t.a[i], acf_app[i]);
 //				MainForm->Series1->AddXY(i, Data[i]);
 			}
-			MainForm->Memo1->Lines->Add("Температура "+FloatToStrF(DataParams.Temperature-273.15, ffFixed, 5, 2));
+			MainForm->Memo1->Lines->Add("Температура "+FloatToStrF(DataParams.Temperature, ffFixed, 5, 2));
 			s = "Показатель полидисперсности " + FloatToStrF(AcfParams.PI, ffFixed,5,3);
 			MainForm->Memo1->Lines->Add(s);
 			MainForm->Label3->Caption = s;

@@ -108,7 +108,7 @@ struct TAcfParams {
 	char Aperture;
 	char Polar;
 
-    int Intensity;
+	int Intensity;
 	bool Kinetics;
 
 	TAcfParams();
@@ -175,6 +175,10 @@ void UpdateVt( TVirtualStringTree *vt );
 void RegisterExt();
 bool CheckExistProject(UnicodeString FileName);
 void getRateGraph(WORD *Data, int n0, std::vector<double> &rate, std::vector<double> &time);
+void update_params();
+void generate_report_to_excel( TVirtualStringTree *vt );
+void linear_approximate( TVirtualStringTree *vt );
+
 UnicodeString get_uuid();
 
 

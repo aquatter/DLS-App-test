@@ -20,5 +20,7 @@ public:
 	void  __fastcall Draw();
 	__fastcall TDeviceInitThread(bool CreateSuspended);
 };
+
+extern bool init_thread_is_active;
 //---------------------------------------------------------------------------
 #endif

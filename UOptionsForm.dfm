@@ -517,10 +517,6 @@ object OptionsForm: TOptionsForm
     object TabSheet3: TTabSheet
       Caption = #1060#1080#1079#1080#1095#1077#1089#1082#1080#1077' '#1087#1072#1088#1072#1084#1077#1090#1088#1099
       ImageIndex = 2
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Label8: TLabel
         Left = 20
         Top = 47
@@ -761,10 +757,6 @@ object OptionsForm: TOptionsForm
     object TabSheet2: TTabSheet
       Caption = #1056#1072#1089#1095#1077#1090#1099
       ImageIndex = 1
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Label1: TLabel
         Left = 12
         Top = 27
@@ -955,6 +947,8 @@ object OptionsForm: TOptionsForm
         Align = alTop
         Caption = ' '#1050#1091#1084#1091#1083#1103#1085#1090#1099' '
         TabOrder = 7
+        ExplicitLeft = -115
+        ExplicitTop = -3
         object Label14: TLabel
           Left = 28
           Top = 31
@@ -1192,7 +1186,7 @@ object OptionsForm: TOptionsForm
   object Button2: TButton
     Left = 52
     Top = 496
-    Width = 78
+    Width = 75
     Height = 25
     Caption = #1048#1079#1084#1077#1088#1077#1085#1080#1077
     ModalResult = 1
@@ -1202,7 +1196,7 @@ object OptionsForm: TOptionsForm
   object Button4: TButton
     Left = 254
     Top = 496
-    Width = 76
+    Width = 75
     Height = 25
     Caption = #1054#1090#1084#1077#1085#1072
     ModalResult = 2
@@ -1223,7 +1217,7 @@ object OptionsForm: TOptionsForm
     Width = 139
     Height = 25
     Caption = #1059#1089#1090#1072#1085#1086#1074#1080#1090#1100' '#1087#1072#1088#1072#1084#1077#1090#1088#1099
-    ModalResult = 4
     TabOrder = 4
+    OnClick = Button9Click
   end
 end

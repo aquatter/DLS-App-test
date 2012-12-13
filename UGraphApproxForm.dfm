@@ -41,9 +41,9 @@ object GraphApproxForm: TGraphApproxForm
       'TChart')
     Title.Visible = False
     BottomAxis.LabelStyle = talText
-    BottomAxis.Title.Caption = #1059#1075#1086#1083' '#1088#1072#1089#1089#1077#1103#1085#1080#1103', '#1075#1088#1072#1076'.'
+    BottomAxis.Title.Caption = #1050#1074#1072#1076#1088#1072#1090' '#1074#1086#1083#1085#1086#1074#1086#1075#1086' '#1074#1077#1082#1090#1086#1088#1072
     Frame.Visible = False
-    LeftAxis.Visible = False
+    LeftAxis.Title.Caption = #1043#1072#1084#1084#1072
     View3D = False
     Zoom.Brush.Style = bsDiagCross
     Zoom.Pen.Color = clBlack

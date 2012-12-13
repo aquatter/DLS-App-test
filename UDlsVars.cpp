@@ -16,6 +16,7 @@
 #include "UTestRecForm.h"
 #include "UDeviceInitThread.h"
 #include "XMLDoc.hpp"
+#include "UGraphApproxForm.h"
 
 //---------------------------------------------------------------------------
 
@@ -568,7 +569,34 @@ bool OptionsFormExecute()
 	if (ModalResult == mrCancel)
 		return false;
 
-	AcfParams.Time_discr = OptionsForm->ComboBox1->ItemIndex;
+    update_params();
+
+    MainForm->LineSeries4->Clear();
+	MainForm->LineSeries5->Clear();
+
+	if (ModalResult == mrAbort)
+	{
+		TestRecForm->Show();
+		return false;
+	}
+
+	if (ModalResult == mrRetry)
+	{
+		bool error;
+		TDeviceInitThread *t = new TDeviceInitThread(true);
+		t->FreeOnTerminate = true;
+		t->monitoring = true;
+		t->error_ = &error;
+		t->Start();
+		return false;
+	}
+
+	return true;
+}
+
+void update_params()
+{
+    AcfParams.Time_discr = OptionsForm->ComboBox1->ItemIndex;
 	AcfParams.Multi_Angle =  OptionsForm->CheckBox5->Checked;
 	AcfParams.Initial_Angle = OptionsForm->ComboBox3->ItemIndex; // CheckString(OptionsForm->Edit9->Text);
 
@@ -605,31 +633,9 @@ bool OptionsFormExecute()
 	AcfParams.Aperture = OptionsForm->ComboBox4->ItemIndex; //Edit37->Text.ToInt();
 	AcfParams.Polar = OptionsForm->Edit38->Text.ToInt();
 	AcfParams.Kinetics = OptionsForm->CheckBox8->Checked;
-
-    MainForm->LineSeries4->Clear();
-	MainForm->LineSeries5->Clear();
-
-	if (ModalResult == mrAbort)
-	{
-		TestRecForm->Show();
-		return false;
-	}
-
-	if (ModalResult == mrRetry)
-	{
-		bool error;
-		TDeviceInitThread *t = new TDeviceInitThread(true);
-		t->FreeOnTerminate = true;
-		t->monitoring = true;
-		t->error_ = &error;
-		t->Start();
-		return false;
-	}
-
-
-
-	return true;
 }
+
+
 
 TAcfParams::TAcfParams() {
 	n = 1.33;
@@ -1060,9 +1066,9 @@ void AddToVt( TProjectData &pd_ , TVirtualStringTree *vt )
 					d->Name = "Серия " + IntToStr((int)i+1);
 					d->State = TProjectData::pdSerie;
 					d->seq_num = i;
-                    d->x_pcs = pd_[i].x_pcs;
-                    d->pi = pd_[i].pi;
-                    d->gamma = pd_[i].a1;
+					d->x_pcs = pd_[i].x_pcs;
+					d->pi = pd_[i].pi;
+					d->gamma = pd_[i].a1;
 
 					d->pd = &pd_;
 				}
@@ -1244,4 +1250,234 @@ UnicodeString get_uuid()
 	FreeLibrary(lib);
 
 	return "{" + s + "}";
+}
+
+void generate_report_to_excel( TVirtualStringTree *vt )
+{
+	Variant ExcelApp, ExcelBooks, Book, WorkSheet, Cells, EmptyParam;
+	TDateTime dtReport = Date();
+	UnicodeString s = ExtractFileDir(Application->ExeName)+"\\template.xls";
+
+	if (!FileExists(s))
+	{
+		ShowMessage("Файл шаблона не найден");
+		return;
+	}
+
+	TVirtualNode *t_root=vt->RootNode->FirstChild;
+	TVirtualNode *t_seq, *t_rec;
+	TProjectData::TVtPD *data;
+
+	try
+	{
+		ExcelApp = GetActiveOleObject("Excel.Application");
+		ExcelBooks = ExcelApp.OlePropertyGet("WorkBooks");
+	}
+	catch (...)
+	{
+		try
+		{
+			ExcelApp = CreateOleObject("Excel.Application");
+			ExcelBooks = ExcelApp.OlePropertyGet("WorkBooks");
+
+		}
+		catch (...)
+		{
+		  ShowMessage("Microsoft Excel не установлен");
+		return;
+		}
+	}
+
+	TFormatSettings format_settings;
+	GetLocaleFormatSettings(LOCALE_SYSTEM_DEFAULT, format_settings);
+	format_settings.DecimalSeparator = ',';
+
+	int i = 27;
+	int j = 2;
+	try
+	{
+		ExcelApp.OlePropertySet("Visible", false);
+		Book = ExcelBooks.OleFunction("Add", s.t_str());
+		WorkSheet = Book.OlePropertyGet("Worksheets").OlePropertyGet("Item", 1);
+		Cells = WorkSheet.OlePropertyGet("Cells");
+		Cells.OlePropertyGet("Item",4,3).OlePropertySet("Value", dtReport.FormatString("dd.mm.yyyy").t_str());
+		Cells.OlePropertyGet("Item",8,1).OleProcedure("Select");
+		MainForm->Chart5->CopyToClipboardMetafile(true);
+		WorkSheet.OleProcedure("Paste");
+		Variant shapes = WorkSheet.OlePropertyGet("Shapes").OleFunction("Item", 1);
+		shapes.OleFunction("ScaleWidth", 0.9, EmptyParam, EmptyParam);
+		shapes.OleFunction("ScaleHeight", 0.9, EmptyParam, EmptyParam);
+
+
+		for (size_t k=0; k < vt->RootNodeCount; k++)
+		{
+			if (t_root)
+			{
+				data = (TProjectData::TVtPD *)vt->GetNodeData(t_root);
+				if (data)
+				{
+					s=data->Name;
+					Cells.OlePropertyGet("Item",i,j).OlePropertySet("Value", s.t_str());
+					Cells.OlePropertyGet("Item",i,j).OlePropertyGet("Font").OlePropertySet("Bold", true);
+					i++;
+				}
+
+
+				t_seq = t_root->FirstChild;
+				while (t_seq)
+				{
+					data = (TProjectData::TVtPD *)vt->GetNodeData(t_seq);
+					if (data)
+					{
+						s = data->Name;
+						Cells.OlePropertyGet("Item",i,j).OlePropertySet("Value", s.t_str());
+						Cells.OlePropertyGet("Item",i,j).OlePropertyGet("Font").OlePropertySet("Bold", true);
+						++i;
+					}
+
+					float mean_x = 0.0f;
+					float mean_pi = 0.0f;
+					float cnt = 0.0f;
+					float rms_x = 0.0f;
+					float rms_pi = 0.0f;
+                    std::vector<float> data_x, data_pi;
+
+
+					t_rec = t_seq->FirstChild;
+					for (size_t m=0; m < t_seq->ChildCount; ++m)
+					{
+						if (t_rec)
+						{
+							data =  (TProjectData::TVtPD *)vt->GetNodeData(t_rec);
+							if (data)
+							{
+
+								switch (data->State)
+								{
+									case TProjectData::pdRecord :
+										Cells.OlePropertyGet("Item",i,j).OlePropertySet("Value", IntToStr( int(m+1) ).t_str() );
+										Cells.OlePropertyGet("Item",i,j+1).OlePropertySet("Value", FloatToStrF(data->x_pcs, ffFixed, 5, 2, format_settings).t_str());
+										Cells.OlePropertyGet("Item",i,j+2).OlePropertySet("Value", FloatToStrF(data->pi, ffFixed, 5, 2, format_settings).t_str());
+										Cells.OlePropertyGet("Item",i,j+3).OlePropertySet("Value", FloatToStrF(data->ScatAngle, ffFixed, 5, 2,format_settings).t_str());
+										mean_x += data->x_pcs;
+										mean_pi += data->pi;
+										data_x.push_back(data->x_pcs);
+										data_pi.push_back(data->pi);
+										cnt++;
+									break;
+									case TProjectData::pdMean :
+										Cells.OlePropertyGet("Item",i,j).OlePropertySet("Value", "Среднее" );
+										Cells.OlePropertyGet("Item",i,j).OlePropertyGet("Font").OlePropertySet("Bold", true);
+										Cells.OlePropertyGet("Item",i,j+1).OlePropertySet("Value", FloatToStrF(data->x_pcs, ffFixed, 5, 2, format_settings).t_str());
+										Cells.OlePropertyGet("Item",i,j+1).OlePropertyGet("Font").OlePropertySet("Bold", true);
+										Cells.OlePropertyGet("Item",i,j+2).OlePropertySet("Value", FloatToStrF(data->pi, ffFixed, 5, 2, format_settings).t_str());
+										Cells.OlePropertyGet("Item",i,j+2).OlePropertyGet("Font").OlePropertySet("Bold", true);
+										if (cnt > 1)
+										{
+											mean_x /= cnt;
+											mean_pi /= cnt;
+											for (size_t w=0; w < data_x.size(); ++w)
+											{
+												rms_x += (data_x[w] - mean_x)*(data_x[w] - mean_x);
+												rms_pi += (data_pi[w] - mean_pi)*(data_pi[w] - mean_pi);
+											}
+
+											rms_x = sqrt( rms_x/(cnt-1) );
+											rms_pi = sqrt( rms_pi/(cnt-1) );
+
+											++i;
+
+                                            Cells.OlePropertyGet("Item",i,j).OlePropertySet("Value", "СКО" );
+                                            Cells.OlePropertyGet("Item",i,j).OlePropertyGet("Font").OlePropertySet("Bold", true);
+											Cells.OlePropertyGet("Item",i,j+1).OlePropertySet("Value", FloatToStrF(rms_x, ffFixed, 5, 2, format_settings).t_str());
+											Cells.OlePropertyGet("Item",i,j+1).OlePropertyGet("Font").OlePropertySet("Bold", true);
+											Cells.OlePropertyGet("Item",i,j+2).OlePropertySet("Value", FloatToStrF(rms_pi, ffFixed, 5, 2, format_settings).t_str());
+											Cells.OlePropertyGet("Item",i,j+2).OlePropertyGet("Font").OlePropertySet("Bold", true);
+										}
+									break;
+								}
+								++i;
+							}
+						}
+
+						t_rec = t_rec->NextSibling;
+					}
+					t_seq = t_seq->NextSibling;
+				}
+			}
+
+			t_root=t_root->NextSibling;
+		}
+	}
+	__finally
+	{
+		ExcelApp.OlePropertySet("Visible", true);
+		ExcelApp=Unassigned();
+	}
+}
+
+
+void linear_approximate( TVirtualStringTree *vt )
+{
+	TVirtualNode *t = vt->GetFirstSelected(true);
+	TProjectData::TVtPD *d;
+
+	std::vector<float> x, y;   /*, angles*/
+	float q = 0.0f;
+	float t_mean = 0.0f;
+
+	while (t)
+	{
+		d = (TProjectData::TVtPD *)vt->GetNodeData(t);
+		if (d)
+		{
+			if ( (d->State == TProjectData::pdRecord) || (d->State == TProjectData::pdMean) )
+			{
+				float n = (*d->pd)[d->seq_num][d->rec_num].DataParams.RefIndex;
+				float lambda = (*d->pd)[d->seq_num][d->rec_num].DataParams.WaveLength;
+				float angle = (*d->pd)[d->seq_num][d->rec_num].DataParams.ScatAngle;
+				float a1 = (*d->pd)[d->seq_num][d->rec_num].a1;
+
+				q = 4*M_PI*n*sin(angle/2*M_PI/180)/(lambda);
+				q *= q;
+
+				x.push_back(q);
+				y.push_back(a1);
+//				angles.push_back(angle);
+				t_mean += (*d->pd)[d->seq_num][d->rec_num].DataParams.Temperature;
+			}
+		}
+		t = vt->GetNextSelected(t, true);
+	}
+
+
+	if (x.size() < 2)
+		return;
+
+	t_mean /= (float)x.size();
+
+	float t1 = 0.0f, t2 = 0.0f;
+
+	for (size_t i=0; i < x.size(); ++i)
+	{
+		t1 += x[i]*y[i];
+		t2 += x[i]*x[i];
+	}
+
+	float _a = t1/t2;
+
+	float eta = FormulaPuazeilia(t_mean);
+	float x_pcs=AcfParams.Kb*t_mean/(3*M_PI*eta*_a)*1e29;
+
+    GraphApproxForm->Series1->Clear();
+    GraphApproxForm->Series2->Clear();
+	GraphApproxForm->Label1->Caption = "Средний диаметр частиц = " + FloatToStrF(x_pcs, ffFixed, 5, 2) + " нм.";
+
+	for (size_t i=0; i < x.size(); ++i)
+	{
+		GraphApproxForm->Series1->AddXY(x[i], x[i]*_a);
+		GraphApproxForm->Series2->AddXY(x[i], y[i]);
+	}
+
+	GraphApproxForm->ShowModal();
 }

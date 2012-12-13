@@ -24,8 +24,11 @@
 // }
 // ---------------------------------------------------------------------------
 
+bool init_thread_is_active = false;
+
 __fastcall TDeviceInitThread::TDeviceInitThread(bool CreateSuspended) : TThread
 (CreateSuspended) {
+    init_thread_is_active = true;
 }
 
 // ---------------------------------------------------------------------------
@@ -121,6 +124,7 @@ void __fastcall TDeviceInitThread::Execute() {
 
 	*error_ = error;
 	SetEvent(wait_event);
+	init_thread_is_active = false;
 }
 
 

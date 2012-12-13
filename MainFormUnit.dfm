@@ -57,21 +57,20 @@ object MainForm: TMainForm
     ShowHint = True
     TabOrder = 0
     Transparent = False
-    ExplicitWidth = 965
-    object ToolButton6: TToolButton
-      Left = 0
-      Top = 0
-      Caption = #1048#1079#1084#1077#1088#1077#1085#1080#1077
-      ImageIndex = 7
-      OnClick = Button8Click
-    end
     object ToolButton1: TToolButton
-      Left = 100
+      Left = 0
       Top = 0
       AutoSize = True
       Caption = #1054#1090#1082#1088#1099#1090#1100
       ImageIndex = 0
       OnClick = N6Click
+    end
+    object ToolButton6: TToolButton
+      Left = 93
+      Top = 0
+      Caption = #1048#1079#1084#1077#1088#1077#1085#1080#1077
+      ImageIndex = 7
+      OnClick = Button8Click
     end
     object ToolButton2: TToolButton
       Left = 193
@@ -549,8 +548,6 @@ object MainForm: TMainForm
     object TabSheet4: TTabSheet
       Caption = #1050#1091#1084#1091#1083#1103#1085#1090#1099
       ImageIndex = 2
-      ExplicitLeft = -148
-      ExplicitTop = -24
       object Button1: TButton
         Left = 13
         Top = 9
@@ -714,8 +711,6 @@ object MainForm: TMainForm
     Align = alLeft
     BevelOuter = bvNone
     TabOrder = 3
-    ExplicitLeft = -3
-    ExplicitTop = 42
     object Splitter2: TSplitter
       Left = 0
       Top = 249
@@ -745,10 +740,6 @@ object MainForm: TMainForm
       Align = alClient
       BevelOuter = bvNone
       TabOrder = 0
-      ExplicitLeft = 83
-      ExplicitTop = 472
-      ExplicitWidth = 452
-      ExplicitHeight = 217
       object Chart3: TChart
         Left = 0
         Top = 33
@@ -786,10 +777,6 @@ object MainForm: TMainForm
         ShowHint = True
         TabOrder = 0
         OnMouseMove = Chart3MouseMove
-        ExplicitLeft = 50
-        ExplicitTop = 64
-        ExplicitWidth = 455
-        ExplicitHeight = 262
         PrintMargins = (
           15
           20
@@ -925,9 +912,6 @@ object MainForm: TMainForm
       BevelOuter = bvNone
       Caption = 'Panel12'
       TabOrder = 1
-      ExplicitLeft = 51
-      ExplicitTop = 272
-      ExplicitWidth = 492
       object Chart6: TChart
         Left = 0
         Top = 33
@@ -952,10 +936,6 @@ object MainForm: TMainForm
         ShowHint = True
         TabOrder = 0
         OnMouseMove = Chart5MouseMove
-        ExplicitLeft = 36
-        ExplicitTop = 43
-        ExplicitWidth = 373
-        ExplicitHeight = 157
         PrintMargins = (
           15
           20
@@ -1010,9 +990,6 @@ object MainForm: TMainForm
         Constraints.MaxHeight = 33
         Constraints.MinHeight = 33
         TabOrder = 1
-        ExplicitLeft = -26
-        ExplicitTop = -16
-        ExplicitWidth = 492
         object ToolBar4: TToolBar
           Left = 536
           Top = 0
@@ -1047,13 +1024,11 @@ object MainForm: TMainForm
       BevelOuter = bvNone
       Caption = 'Panel4'
       TabOrder = 2
-      ExplicitLeft = -3
-      ExplicitTop = 4
       object Chart5: TChart
         Left = 0
-        Top = 33
+        Top = 50
         Width = 621
-        Height = 216
+        Height = 199
         BackWall.Pen.Visible = False
         Legend.Visible = False
         Title.Text.Strings = (
@@ -1086,10 +1061,6 @@ object MainForm: TMainForm
         ShowHint = True
         TabOrder = 0
         OnMouseMove = Chart5MouseMove
-        ExplicitLeft = 113
-        ExplicitTop = 44
-        ExplicitWidth = 313
-        ExplicitHeight = 231
         PrintMargins = (
           15
           20
@@ -1138,13 +1109,12 @@ object MainForm: TMainForm
         Left = 0
         Top = 0
         Width = 621
-        Height = 33
+        Height = 50
         Align = alTop
         BevelOuter = bvNone
-        Constraints.MaxHeight = 33
-        Constraints.MinHeight = 33
+        Constraints.MaxHeight = 50
+        Constraints.MinHeight = 50
         TabOrder = 1
-        ExplicitTop = 3
         object Label2: TLabel
           Left = 15
           Top = 3
@@ -1185,7 +1155,7 @@ object MainForm: TMainForm
           Left = 491
           Top = 0
           Width = 130
-          Height = 33
+          Height = 50
           Align = alRight
           ButtonHeight = 30
           ButtonWidth = 127
@@ -1195,7 +1165,7 @@ object MainForm: TMainForm
           List = True
           ShowCaptions = True
           TabOrder = 1
-          ExplicitHeight = 55
+          Visible = False
           object ToolButton7: TToolButton
             Left = 0
             Top = 0
@@ -1218,9 +1188,6 @@ object MainForm: TMainForm
     BevelOuter = bvNone
     Caption = 'Panel5'
     TabOrder = 2
-    ExplicitLeft = 901
-    ExplicitTop = 74
-    ExplicitWidth = 110
     object Splitter3: TSplitter
       Left = 0
       Top = 349
@@ -1244,37 +1211,28 @@ object MainForm: TMainForm
       Font.Name = 'Tahoma'
       Font.Style = [fsBold]
       ParentFont = False
+      ReadOnly = True
       ScrollBars = ssVertical
       TabOrder = 0
-      ExplicitLeft = 3
-      ExplicitTop = 358
     end
     object ToolBar5: TToolBar
       Left = 0
       Top = 0
       Width = 587
-      Height = 22
+      Height = 36
       AutoSize = True
+      ButtonHeight = 36
+      ButtonWidth = 85
       Caption = 'ToolBar5'
       Images = ImageList2
+      ShowCaptions = True
       TabOrder = 1
       object ToolButton12: TToolButton
         Left = 0
         Top = 0
-        Caption = 'ToolButton12'
-        ImageIndex = 0
-      end
-      object ToolButton13: TToolButton
-        Left = 23
-        Top = 0
-        Caption = 'ToolButton13'
+        Caption = #1040#1087#1087#1088#1086#1082#1089#1080#1084#1072#1094#1080#1103
         ImageIndex = 1
-      end
-      object ToolButton14: TToolButton
-        Left = 46
-        Top = 0
-        Caption = 'ToolButton14'
-        ImageIndex = 2
+        OnClick = ToolButton12Click
       end
     end
   end
@@ -1293,10 +1251,10 @@ object MainForm: TMainForm
   object ImageList1: TImageList
     Height = 32
     Width = 32
-    Left = 504
-    Top = 65
+    Left = 744
+    Top = 121
     Bitmap = {
-      494C010108001800180020002000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010108002C002C0020002000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       00000000000036000000280000008000000060000000010020000000000000C0
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -2892,10 +2850,10 @@ object MainForm: TMainForm
     Top = 220
   end
   object ImageList2: TImageList
-    Left = 535
-    Top = 66
+    Left = 863
+    Top = 74
     Bitmap = {
-      494C010106001800180010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010106002C002C0010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000002000000001002000000000000020
       00000000000000000000000000000000000039724B0039724B0039724B00326C
       4600326C4600326C46002B6541002B6541002B654100255C3700255C3700255C
@@ -3216,10 +3174,10 @@ object MainForm: TMainForm
   object ImageList3: TImageList
     Height = 32
     Width = 32
-    Left = 571
-    Top = 69
+    Left = 819
+    Top = 133
     Bitmap = {
-      494C010108001800180020002000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010108002C002C0020002000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       00000000000036000000280000008000000060000000010020000000000000C0
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -4818,10 +4776,10 @@ object MainForm: TMainForm
   object ImageList4: TImageList
     Height = 24
     Width = 24
-    Left = 608
-    Top = 64
+    Left = 648
+    Top = 80
     Bitmap = {
-      494C010104001000100018001800FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010104002400240018001800FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000600000003000000001002000000000000048
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -5425,10 +5383,10 @@ object MainForm: TMainForm
   object ImageList5: TImageList
     Height = 24
     Width = 24
-    Left = 640
-    Top = 64
+    Left = 704
+    Top = 96
     Bitmap = {
-      494C010104001000100018001800FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010104002400240018001800FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000600000003000000001002000000000000048
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

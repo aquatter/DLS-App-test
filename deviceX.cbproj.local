@@ -14,5 +14,7 @@
     <Transaction>2012.05.28 00:31:28.812.cpp,F:\Files\Delphi Files\dls\Device X\Unit1.cpp=F:\Files\Delphi Files\dls\Device X\UPlease_stop_form.cpp</Transaction>
     <Transaction>2012.05.28 00:31:28.812.h,F:\Files\Delphi Files\dls\Device X\Unit1.h=F:\Files\Delphi Files\dls\Device X\UPlease_stop_form.h</Transaction>
     <Transaction>2012.05.28 00:31:28.812.dfm,F:\Files\Delphi Files\dls\Device X\Unit1.dfm=F:\Files\Delphi Files\dls\Device X\UPlease_stop_form.dfm</Transaction>
+    <Transaction>2012.11.12 00:59:07.221.cpp,E:\Files\Delphi Files\Device X\Unit1.cpp=E:\Files\Delphi Files\Device X\U_test_unit.cpp</Transaction>
+    <Transaction>2012.11.12 00:59:07.221.h,E:\Files\Delphi Files\Device X\Unit1.h=E:\Files\Delphi Files\Device X\U_test_unit.h</Transaction>
   </Transactions>
 </BorlandProject>

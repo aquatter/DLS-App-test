@@ -568,7 +568,7 @@ void __fastcall TReportForm::ToolButton6Click(TObject *Sender)
 
 	try
 	{
-    	ExcelApp.OlePropertySet("Visible", false);
+		ExcelApp.OlePropertySet("Visible", false);
 		Book = ExcelBooks.OleFunction("Add", s.t_str());
 		WorkSheet = Book.OlePropertyGet("Worksheets").OlePropertyGet("Item", 1);
 		Cells = WorkSheet.OlePropertyGet("Cells");

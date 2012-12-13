@@ -5,20 +5,20 @@
 #include <tchar.h>
 #include <windows.h>
 //---------------------------------------------------------------------------
-USEFORM("UGradForm.cpp", GradForm);
-USEFORM("UReportEditForm.cpp", ReportEditForm);
-USEFORM("MainFormUnit.cpp", MainForm);
-USEFORM("UGraphApproxForm.cpp", GraphApproxForm);
-USEFORM("UAddGradForm.cpp", AddGradForm);
-USEFORM("UTestRecForm.cpp", TestRecForm);
-USEFORM("UTAdjustAngleAperForm.cpp", AdjustAngleAperForm);
-USEFORM("UStatusRecForm.cpp", StatusRecForm);
-USEFORM("UOptionsForm.cpp", OptionsForm);
 USEFORM("UReportForm.cpp", ReportForm);
+USEFORM("UOptionsForm.cpp", OptionsForm);
 USEFORM("URecThreadStartForm.cpp", RecThreadStartForm);
-USEFORM("UAutoProgressForm.cpp", AutoProgressForm);
 USEFORM("UAdd2ReportForm.cpp", Add2ReportForm);
 USEFORM("UPlease_stop_form.cpp", Please_stop_form);
+USEFORM("UAutoProgressForm.cpp", AutoProgressForm);
+USEFORM("UGradForm.cpp", GradForm);
+USEFORM("MainFormUnit.cpp", MainForm);
+USEFORM("UReportEditForm.cpp", ReportEditForm);
+USEFORM("UStatusRecForm.cpp", StatusRecForm);
+USEFORM("UAddGradForm.cpp", AddGradForm);
+USEFORM("UGraphApproxForm.cpp", GraphApproxForm);
+USEFORM("UTAdjustAngleAperForm.cpp", AdjustAngleAperForm);
+USEFORM("UTestRecForm.cpp", TestRecForm);
 //---------------------------------------------------------------------------
 #include "MainFormUnit.h"
 //---------------------------------------------------------------------------

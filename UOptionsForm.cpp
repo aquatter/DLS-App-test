@@ -15,6 +15,7 @@
 #include "ShlObj.h"
 #include "UTAdjustAngleAperForm.h"
 #include "UTestRecForm.h"
+#include "UDeviceInitThread.h"
 
 
 //---------------------------------------------------------------------------
@@ -447,8 +448,29 @@ void __fastcall TOptionsForm::Button7Click(TObject *Sender)
 }
 //---------------------------------------------------------------------------
 
+void __fastcall TOptionsForm::Button9Click(TObject *Sender)
+{
+    update_params();
+	bool error = true;
+	MainForm->StopMonitoring();
 
+	TDeviceInitThread *t = new TDeviceInitThread(true);
+	t->FreeOnTerminate = true;
+	t->monitoring = true;
+	t->error_ = &error;
+	t->Start();
 
+	Button9->Enabled = false;
+	Sleep(100);
 
+	while ( init_thread_is_active )
+	{
+		Application->ProcessMessages();
+		Sleep(100);
+	}
 
+	Button9->Enabled = true;
+	MainForm->StartMonitoring();
+}
+//---------------------------------------------------------------------------
 

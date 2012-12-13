@@ -27,6 +27,7 @@
 #include "UTAdjustAngleAperForm.h"
 #include "UTestRecForm.h"
 #include "ShellApi.h"
+#include "U_test_unit.h"
 
 // ---------------------------------------------------------------------------
 #pragma package(smart_init)
@@ -87,13 +88,13 @@ __fastcall TMainForm::TMainForm(TComponent* Owner) : TForm(Owner) {
 	col->Width = 40;
 	col->Text = "Гамма";
 	col->Options << coVisible << coAllowFocus << coAutoSpring << coEnabled << coResizable << coAutoSpring << coSmartResize << coAllowFocus;
-	/*
 	col = vt->Header->Columns->Add();
 	col->Position = 6;
 	col->Width = 30;
 	col->Text = "Имп/сек";
 	col->Options << coVisible << coAllowFocus << coAutoSpring << coEnabled << coResizable << coAutoSpring << coSmartResize << coAllowFocus;
-	col = vt->Header->Columns->Add();
+
+	/*col = vt->Header->Columns->Add();
 	col->Position = 7;
 	col->Width = 30;
 	col->Text = "Призма";
@@ -121,7 +122,6 @@ __fastcall TMainForm::TMainForm(TComponent* Owner) : TForm(Owner) {
 	vt->OnMouseUp = VtMouseUp;
 	vt->PopupMenu = PopupMenu1;
 	Application->HintPause = 0;
-
 	// OptionsForm->Edit7->Text = IntToStr(device.deviceSettings.Amplification);
 	// OptionsForm->Edit8->Text = FloatToStr(device.deviceSettings.Temperature);
 	// OptionsForm->Edit9->Text = FloatToStr(device.deviceSettings.Angle);
@@ -879,7 +879,10 @@ void __fastcall TMainForm::ToolButton5Click(TObject *Sender) {
 	acfThread->Resume();
 	 */
 
-	ReportForm->Show();
+//	ReportForm->Show();
+
+    generate_report_to_excel( vt );
+
 }
 // ---------------------------------------------------------------------------
 
@@ -1303,7 +1306,7 @@ void __fastcall TMainForm::Button2Click(TObject *Sender) {
 	return;
 	}
 	 */
-	int w = acf.w, ind_left, ind_right;
+	int w = acf.w, ind_left = 0, ind_right = 0;
 //	double eta = FormulaPuazeilia(AcfParams.T);
 
 	double q = 4*M_PI*DataParams.RefIndex*sin(DataParams.ScatAngle/2*M_PI/180)/(DataParams.WaveLength*1e-9);
@@ -1313,7 +1316,6 @@ void __fastcall TMainForm::Button2Click(TObject *Sender) {
 	double left, right;
 
 	if (AcfParams.right_boundary) {
-		int ind_left = 0;
 
 		while ((ind_left < acf.w) && (acf_t.a[ind_left] < AcfParams.cut))
 			ind_left++;
@@ -1340,7 +1342,7 @@ void __fastcall TMainForm::Button2Click(TObject *Sender) {
 				ind = i;
 				break;
 			}
-         */
+		 */
 
 
 		left = AcfParams.cut;
@@ -2152,6 +2154,7 @@ void __fastcall TMainForm::VtGetText(TBaseVirtualTree *Sender, PVirtualNode Node
 					case 3: CellText = FloatToStrF(d->x_pcs, ffFixed, 5, 2); break;
 					case 4: CellText = FloatToStrF(d->pi, ffFixed, 5, 3); break;
 					case 5: CellText = FloatToStrF(d->gamma, ffFixed, 5, 3); break;
+					case 6: CellText = IntToStr( (int)d->rate ); break;
 				}
 				break;
 			case TProjectData::pdMean:
@@ -2161,7 +2164,7 @@ void __fastcall TMainForm::VtGetText(TBaseVirtualTree *Sender, PVirtualNode Node
 					case 3: CellText = FloatToStrF(d->x_pcs, ffFixed, 5, 2); break;
 					case 4: CellText = FloatToStrF(d->pi, ffFixed, 5, 3); break;
 					case 5: CellText = FloatToStrF(d->gamma, ffFixed, 5, 3); break;
-                }
+				}
                 break;
 			default :
 				if (Column == 0)
@@ -2369,9 +2372,13 @@ void __fastcall TMainForm::Button10Click(TObject *Sender)
 //   pd_vector[0].id = get_uuid();
 //   SaveProject(&pd_vector[0]);
 
-   ShellExecuteA(Handle, "explore", pd_vector[0].get_path().t_str(), NULL, NULL, SW_SHOW);
+//   ShellExecuteA(Handle, "explore", pd_vector[0].get_path().t_str(), NULL, NULL, SW_SHOW);
   //
 //  ShowMessage(file_name);
+	T_test_thread *t = new T_test_thread( true );
+	t->FreeOnTerminate = true;
+	t->Start();
+
 }
 //---------------------------------------------------------------------------
 
@@ -2391,4 +2398,10 @@ void __fastcall TMainForm::open_dir_with_data_pop_upClick(TObject *Sender)
 //---------------------------------------------------------------------------
 
 
+
+void __fastcall TMainForm::ToolButton12Click(TObject *Sender)
+{
+	linear_approximate( vt );
+}
+//---------------------------------------------------------------------------
 
